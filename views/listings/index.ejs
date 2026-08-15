@@ -1,4 +1,4 @@
-<% layout("/layouts/boilerplate") %>
+﻿<% layout("/layouts/boilerplate") %>
 
     <style>
         #filters {
@@ -130,7 +130,7 @@
         <!-- Filters button (opens modal) -->
         <div class="filter setting" data-bs-toggle="modal" data-bs-target="#priceFilterModal" style="cursor: pointer;">
             <i class="fa-solid fa-sliders"></i>
-            <p>Filters <%= (minPrice || maxPrice) ? '•' : '' %>
+            <p>Filters <%= (minPrice || maxPrice) ? 'â€¢' : '' %>
             </p>
         </div>
 
@@ -326,7 +326,7 @@
                                                 <% } %>
                                             </div>
                                             <p class="card-text text-muted mb-0" style="font-size: 0.8rem;">
-                                                <strong class="text-dark"><%= typeof formatPrice !== 'undefined' ? formatPrice(rv.price) : '₹ ' + rv.price.toLocaleString("en-IN") %></strong> / night
+                                                <strong class="text-dark"><%= typeof formatPrice !== 'undefined' ? formatPrice(rv.price) : 'â‚¹ ' + rv.price.toLocaleString("en-IN") %></strong> / night
                                             </p>
                                         </div>
                                     </div>
@@ -338,9 +338,9 @@
                 </div>
             <% } %>
 
-            <!-- Listings -->
+                                    <!-- Listings (CSS Grid: Part 3 spec) -->
             <% if (allListing && allListing.length > 0) { %>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+                <div class="listings-grid mb-5">
 
                     <% for (const listing of allListing) { %>
 
@@ -358,52 +358,53 @@
                             const isGuestFavourite = avgRating && avgRating >= 4.8;
                         %>
 
-                            <div class="col position-relative">
+                            <div class="position-relative">
 
                                 <!-- Guest Favourite Badge -->
                                 <% if (isGuestFavourite) { %>
-                                    <div class="position-absolute top-0 start-0 m-3 px-3 py-1 bg-white rounded-pill shadow-sm border border-light d-flex align-items-center"
-                                        style="z-index: 5; font-size: 0.74rem; font-weight: 700; color: #222; backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.95) !important; letter-spacing: -0.2px;">
+                                    <div class="guest-favourite-badge">
                                         Guest favourite
                                     </div>
                                 <% } %>
 
-                                <!-- Wishlist Heart Button -->
+                                <!-- Wishlist Heart Button (Min 40x40 touch area) -->
                                 <button type="button"
-                                    class="btn btn-light rounded-circle position-absolute top-0 end-0 m-3 p-0 d-flex align-items-center justify-content-center shadow-sm"
-                                    style="z-index: 5; width: 36px; height: 36px; border: 1px solid rgba(0,0,0,0.08); background-color: rgba(255, 255, 255, 0.9);"
+                                    class="listing-wishlist-btn"
                                     onclick="toggleWishlist('<%= listing._id %>', this, event)"
-                                    title="<%= inWishlist ? 'Remove from wishlist' : 'Save to wishlist' %>">
-                                    <i
-                                        class="<%= inWishlist ? 'fa-solid text-danger' : 'fa-regular text-dark' %> fa-heart fs-6"></i>
+                                    title="<%= inWishlist ? 'Remove from wishlist' : 'Save to wishlist' %>"
+                                    aria-label="Save to wishlist">
+                                    <i class="<%= inWishlist ? 'fa-solid text-danger' : 'fa-regular' %> fa-heart"></i>
                                 </button>
 
                                 <a href="/listings/<%= listing._id %>" class="card-link text-decoration-none">
 
-                                    <div class="card listing-card h-100 border-0">
+                                    <div class="listing-card">
 
-                                        <img class="card-img-top rounded-4"
-                                            src="<%= listing.images?.[0]?.url || listing.image?.url %>"
-                                            alt="<%= listing.title %>" style="height: 18rem; object-fit: cover;">
+                                        <div class="listing-card-img-wrapper">
+                                            <img class="card-img-top"
+                                                src="<%= listing.images?.[0]?.url || listing.image?.url %>"
+                                                alt="<%= listing.title %>"
+                                                loading="lazy">
+                                        </div>
 
+                                        <div class="listing-card-body">
 
-                                        <div class="card-body pt-2 px-0">
-
-                                            <div class="d-flex justify-content-between align-items-start mb-1">
-                                                <p class="card-text-title mb-0 text-truncate pe-2 fw-semibold text-dark">
+                                            <!-- Part 2: Title + Rating Row with ellipsis and non-wrapping star -->
+                                            <div class="listing-card-title-row">
+                                                <p class="listing-card-title">
                                                     <%= listing.title %>
                                                 </p>
                                                 <% if (avgRating) { %>
-                                                    <span class="d-inline-flex align-items-center text-nowrap small">
-                                                        <i class="fa-solid fa-star me-1" style="font-size: 0.72rem; color: #222;"></i>
-                                                        <span class="fw-bold text-dark"><%= avgRating %></span>
-                                                    </span>
+                                                    <div class="listing-card-rating">
+                                                        <i class="fa-solid fa-star"></i>
+                                                        <span><%= avgRating %></span>
+                                                    </div>
                                                 <% } %>
                                             </div>
 
-                                            <p class="card-text text-muted mb-0" style="font-size: 0.92rem;">
-                                                <span class="fw-bold text-dark"><%= typeof formatPrice !== 'undefined' ? formatPrice(listing.price) : '₹ ' + listing.price.toLocaleString("en-IN") %></span>
-                                                <span class="text-secondary"> / night</span>
+                                            <p class="listing-card-price">
+                                                <span><%= typeof formatPrice !== 'undefined' ? formatPrice(listing.price) : '₹ ' + listing.price.toLocaleString("en-IN") %></span>
+                                                <span class="unit"> / night</span>
                                             </p>
 
                                         </div>
@@ -414,7 +415,7 @@
 
                             </div>
 
-                            <% } %>
+                    <% } %>
 
                 </div>
 
@@ -523,3 +524,6 @@
                                             }
                                         }
                                     </script>
+
+
+

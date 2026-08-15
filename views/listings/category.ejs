@@ -1,48 +1,43 @@
-<% layout("/layouts/boilerplate") %>
-
+﻿<% layout("/layouts/boilerplate") %>
 
 <div class="mt-4 mb-4">
-
-    <h2>
-        Posts in "<%= category %>" Category
+    <h2 class="fw-bold fs-4">
+        Stays in "<%= category %>"
     </h2>
-
 </div>
-
 
 <% if (alisting && alisting.length > 0) { %>
 
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+    <div class="listings-grid mb-5">
 
         <% for (const listing of alisting) { %>
 
-            <div class="col mb-4">
+            <div class="position-relative">
 
-                <a
-                    href="/listings/<%= listing._id %>"
-                    class="card-link"
-                >
+                <a href="/listings/<%= listing._id %>" class="card-link text-decoration-none">
 
-                    <div class="card listing-card">
+                    <div class="listing-card">
 
-                        <img
-                            class="card-img-top"
-                            src="<%= listing.image?.url %>"
-                            alt="<%= listing.title %>"
-                            style="height: 18rem; object-fit: cover;"
-                        >
+                        <div class="listing-card-img-wrapper">
+                            <img
+                                class="card-img-top"
+                                src="<%= listing.images?.[0]?.url || listing.image?.url %>"
+                                alt="<%= listing.title %>"
+                                loading="lazy"
+                            >
+                        </div>
 
+                        <div class="listing-card-body">
 
-                        <div class="card-body">
+                            <div class="listing-card-title-row">
+                                <p class="listing-card-title">
+                                    <%= listing.title %>
+                                </p>
+                            </div>
 
-                            <p class="card-text-title">
-                                <%= listing.title %>
-                            </p>
-
-
-                            <p class="card-text">
-                                &#8377; <%= listing.price.toLocaleString("en-IN") %>
-                                /night
+                            <p class="listing-card-price">
+                                <span><%= typeof formatPrice !== 'undefined' ? formatPrice(listing.price) : '₹ ' + listing.price.toLocaleString("en-IN") %></span>
+                                <span class="unit"> / night</span>
                             </p>
 
                         </div>
@@ -59,12 +54,8 @@
 
 <% } else { %>
 
-    <div class="alert alert-info mt-4">
-
-        No listings found in the
-        "<%= category %>"
-        category.
-
+    <div class="alert alert-info mt-4 rounded-4 py-4 text-center">
+        No listings found in the "<%= category %>" category.
     </div>
 
 <% } %>
