@@ -1,0 +1,331 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row mt-3">
+
+    <div class="col-9 col-md-8 col-lg-7">
+
+        <h3>Create New Listing</h3>
+
+
+        <form
+            method="POST"
+            action="/listings"
+            novalidate
+            class="needs-validation"
+            enctype="multipart/form-data"
+        >
+
+
+            <!-- Title -->
+
+            <div class="mt-3">
+
+                <label
+                    for="title"
+                    class="form-label"
+                >
+                    Title
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="listing[title]"
+                    placeholder="Enter the listing title"
+                    class="form-control"
+                    required
+                >
+
+                <div class="invalid-feedback">
+                    Please enter the title.
+                </div>
+
+                <div class="valid-feedback">
+                    Title looks good!
+                </div>
+
+            </div>
+
+
+            <!-- Description -->
+
+            <div class="mt-3">
+
+                <label
+                    for="description"
+                    class="form-label"
+                >
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="listing[description]"
+                    placeholder="Describe your place..."
+                    class="form-control"
+                    rows="5"
+                    required
+                ></textarea>
+
+                <div class="invalid-feedback">
+                    Please enter a description.
+                </div>
+
+            </div>
+
+
+            <!-- Image -->
+
+            <div class="mt-3">
+
+                <label
+                    for="images"
+                    class="form-label"
+                >
+                    Upload Listing Photos (Up to 5)
+                </label>
+
+                <input
+                    type="file"
+                    id="images"
+                    name="listing[images]"
+                    class="form-control"
+                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                    multiple
+                    required
+                >
+
+                <small class="text-muted d-block mt-1">
+                    Select up to 5 photos. Formats: JPEG, PNG, WebP (Max 5MB each).
+                </small>
+
+                <div class="invalid-feedback">
+                    Please upload at least one image.
+                </div>
+
+            </div>
+
+
+            <!-- Price & Max Occupancy -->
+            <div class="row mt-3">
+
+                <div class="col-md-6">
+                    <label
+                        for="price"
+                        class="form-label"
+                    >
+                        Price per night (&#8377;)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="price"
+                        name="listing[price]"
+                        placeholder="Enter price"
+                        class="form-control"
+                        min="0"
+                        required
+                    >
+
+                    <div class="invalid-feedback">
+                        Please enter a valid price.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label
+                        for="maxGuests"
+                        class="form-label"
+                    >
+                        Max Guests / Occupancy
+                    </label>
+
+                    <input
+                        type="number"
+                        id="maxGuests"
+                        name="listing[maxGuests]"
+                        placeholder="e.g. 4"
+                        class="form-control"
+                        min="1"
+                        value="4"
+                        required
+                    >
+
+                    <div class="invalid-feedback">
+                        Please specify maximum guest capacity (minimum 1).
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Country + Location -->
+
+            <div class="row mt-3">
+
+                <div class="col-md-5">
+
+                    <label
+                        for="country"
+                        class="form-label"
+                    >
+                        Country
+                    </label>
+
+                    <input
+                        type="text"
+                        id="country"
+                        name="listing[country]"
+                        placeholder="Enter country"
+                        class="form-control"
+                        required
+                    >
+
+                    <div class="invalid-feedback">
+                        Please enter a valid country.
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-7">
+
+                    <label
+                        for="location"
+                        class="form-label"
+                    >
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="listing[location]"
+                        placeholder="Enter city or location"
+                        class="form-control"
+                        required
+                    >
+
+                    <div class="invalid-feedback">
+                        Please enter a valid location.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Category & Cancellation Policy -->
+            <div class="row mt-3">
+
+                <div class="col-md-6">
+                    <label
+                        for="category"
+                        class="form-label"
+                    >
+                        Category
+                    </label>
+
+                    <select
+                        id="category"
+                        name="listing[category]"
+                        class="form-select"
+                        required
+                    >
+                        <option value="" selected disabled>
+                            Select a category
+                        </option>
+                        <option value="Beach">Beach</option>
+                        <option value="Farm">Farm</option>
+                        <option value="OMG">OMG!</option>
+                        <option value="Arctic">Arctic</option>
+                        <option value="Trending">Trending</option>
+                        <option value="Lake">Lake</option>
+                        <option value="Bed & Breakfast">Bed & Breakfast</option>
+                    </select>
+
+                    <div class="invalid-feedback">
+                        Please select a category.
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label
+                        for="cancellationPolicy"
+                        class="form-label"
+                    >
+                        Cancellation Policy
+                    </label>
+
+                    <select
+                        id="cancellationPolicy"
+                        name="listing[cancellationPolicy]"
+                        class="form-select"
+                        required
+                    >
+                        <option value="flexible" selected>
+                            Flexible (Full refund up to 48h before check-in)
+                        </option>
+                        <option value="moderate">
+                            Moderate (Full refund up to 5 days before check-in)
+                        </option>
+                        <option value="strict">
+                            Strict (50% refund up to 7 days before check-in)
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+
+
+            <!-- Amenities -->
+            <div class="mt-4">
+                <label class="form-label fw-bold d-block">
+                    Amenities
+                </label>
+                <div class="row g-2">
+                    <% const availableAmenities = [
+                        { name: "Wifi", icon: "fa-wifi" },
+                        { name: "Pool", icon: "fa-person-swimming" },
+                        { name: "Free parking", icon: "fa-square-parking" },
+                        { name: "Air conditioning", icon: "fa-snowflake" },
+                        { name: "Kitchen", icon: "fa-kitchen-set" },
+                        { name: "Dedicated workspace", icon: "fa-laptop" },
+                        { name: "TV", icon: "fa-tv" },
+                        { name: "EV charger", icon: "fa-charging-station" }
+                    ]; %>
+
+                    <% for (const item of availableAmenities) { %>
+                        <div class="col-md-3 col-6">
+                            <div class="form-check p-2 border rounded-3 bg-light">
+                                <input
+                                    class="form-check-input ms-0 me-2"
+                                    type="checkbox"
+                                    name="listing[amenities]"
+                                    value="<%= item.name %>"
+                                    id="amenity-<%= item.name.replace(/\s+/g, '-') %>"
+                                >
+                                <label class="form-check-label small" for="amenity-<%= item.name.replace(/\s+/g, '-') %>">
+                                    <i class="fa-solid <%= item.icon %> me-1 text-secondary"></i><%= item.name %>
+                                </label>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+
+            <!-- Submit -->
+
+            <button
+                class="btn add-btn mt-4"
+                type="submit"
+            >
+                Add Listing
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

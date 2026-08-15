@@ -1,0 +1,70 @@
+<% layout("/layouts/boilerplate") %>
+
+
+<div class="mt-4 mb-4">
+
+    <h2>
+        Posts in "<%= category %>" Category
+    </h2>
+
+</div>
+
+
+<% if (alisting && alisting.length > 0) { %>
+
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+
+        <% for (const listing of alisting) { %>
+
+            <div class="col mb-4">
+
+                <a
+                    href="/listings/<%= listing._id %>"
+                    class="card-link"
+                >
+
+                    <div class="card listing-card">
+
+                        <img
+                            class="card-img-top"
+                            src="<%= listing.image?.url %>"
+                            alt="<%= listing.title %>"
+                            style="height: 18rem; object-fit: cover;"
+                        >
+
+
+                        <div class="card-body">
+
+                            <p class="card-text-title">
+                                <%= listing.title %>
+                            </p>
+
+
+                            <p class="card-text">
+                                &#8377; <%= listing.price.toLocaleString("en-IN") %>
+                                /night
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+<% } else { %>
+
+    <div class="alert alert-info mt-4">
+
+        No listings found in the
+        "<%= category %>"
+        category.
+
+    </div>
+
+<% } %>

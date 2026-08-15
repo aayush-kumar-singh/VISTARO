@@ -1,0 +1,252 @@
+<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top py-2 shadow-sm">
+
+    <div class="container-fluid px-3 px-lg-4">
+
+        <!-- Brand -->
+        <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none py-1" href="/listings">
+            <!-- Vistaro SVG Logo: V-shaped rooftop + location pin drop -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="36" height="36" aria-hidden="true" focusable="false">
+                <!-- Location pin body -->
+                <path d="M22 4C15.373 4 10 9.373 10 16c0 9 12 24 12 24s12-15 12-24c0-6.627-5.373-12-12-12z" fill="#dc3545"/>
+                <!-- V-shaped rooftop cut-out / highlight inside pin -->
+                <polyline points="16,13 22,20 28,13" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Inner circle accent -->
+                <circle cx="22" cy="16" r="3.5" fill="white" opacity="0.9"/>
+            </svg>
+
+            <!-- Wordmark -->
+            <span class="brand-text" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.35rem; letter-spacing: -0.5px; color: #1a1a2e; line-height: 1;">
+                Vis<span style="color: #dc3545;">taro</span>
+            </span>
+        </a>
+
+
+        <!-- Mobile menu button -->
+        <button
+            class="navbar-toggler border-0 shadow-none p-2"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <!-- Collapsible Content -->
+        <div
+            class="collapse navbar-collapse mt-2 mt-lg-0"
+            id="navbarNavAltMarkup"
+        >
+
+            <!-- Left navigation: Explore -->
+            <div class="navbar-nav me-lg-2">
+                <a class="nav-link fw-semibold px-2" href="/listings">
+                    Explore
+                </a>
+            </div>
+
+
+            <!-- Center: Search Pill Bar -->
+            <div class="search-container my-2 my-lg-0 mx-lg-auto">
+                <form
+                    class="d-flex align-items-center w-100"
+                    method="GET"
+                    action="/search"
+                >
+                    <i class="fa-solid fa-magnifying-glass text-muted ms-2 me-1" style="font-size: 0.9rem;"></i>
+
+                    <input
+                        class="form-control search-input"
+                        type="search"
+                        placeholder="Start your search"
+                        aria-label="Search"
+                        name="q"
+                        value="<%= typeof query !== 'undefined' ? query : '' %>"
+                        required
+                    >
+
+                    <button
+                        class="btn btn-danger btn-search rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        type="submit"
+                        aria-label="Search"
+                    >
+                        <i class="fa-solid fa-arrow-right" style="font-size: 0.8rem;"></i>
+                    </button>
+                </form>
+            </div>
+
+
+            <!-- Right navigation -->
+            <div class="navbar-nav ms-lg-auto align-items-lg-center gap-1 gap-lg-2 mt-2 mt-lg-0">
+
+                <a
+                    class="nav-link text-dark fw-medium px-2 d-flex align-items-center"
+                    href="/listings/new"
+                >
+                    <i class="fa-solid fa-house-plus text-danger me-1"></i>List on Vistaro
+                </a>
+
+
+                <!-- Currency Switcher Dropdown -->
+                <% if (typeof availableCurrencies !== "undefined") { %>
+                    <div class="nav-item dropdown d-inline-flex align-items-center my-1 my-lg-0">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle rounded-pill px-3 py-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 0.82rem;">
+                            <i class="fa-solid fa-globe me-1"></i><%= currCurrency || "INR" %> (<%= availableCurrencies[currCurrency]?.symbol || "₹" %>)
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                            <% for (const key in availableCurrencies) { %>
+                                <% const c = availableCurrencies[key]; %>
+                                <li>
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center <%= currCurrency === c.code ? 'active fw-bold' : '' %>" href="/currency/<%= c.code %>">
+                                        <span><%= c.name %> (<%= c.code %>)</span>
+                                        <span class="badge bg-light text-dark ms-2"><%= c.symbol %></span>
+                                    </a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <% if (!currUser) { %>
+
+                    <a
+                        class="nav-link px-2 fw-medium"
+                        href="/signup"
+                    >
+                        Sign Up
+                    </a>
+
+                    <a
+                        class="btn btn-dark btn-sm rounded-pill px-3 py-1 fw-semibold ms-lg-1 my-1 my-lg-0"
+                        href="/login"
+                    >
+                        Log In
+                    </a>
+
+                <% } %>
+
+
+                <% if (currUser) { %>
+
+                    <a
+                        class="nav-link position-relative px-2"
+                        href="/inbox"
+                    >
+                        <i class="fa-regular fa-message text-dark me-1"></i>Messages
+                        <% if (typeof unreadCount !== "undefined" && unreadCount > 0) { %>
+                            <span class="position-absolute top-1 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                <span class="visually-hidden">Unread messages</span>
+                            </span>
+                        <% } %>
+                    </a>
+
+                    <a
+                        class="nav-link px-2"
+                        href="/owner/dashboard"
+                    >
+                        <i class="fa-solid fa-chart-line text-dark me-1"></i>Dashboard
+                    </a>
+
+                    <a
+                        class="nav-link px-2"
+                        href="/wishlist"
+                    >
+                        <i class="fa-solid fa-heart text-danger me-1"></i>Wishlist
+                    </a>
+
+                    <a
+                        class="nav-link px-2"
+                        href="/profile"
+                    >
+                        <i class="fa-regular fa-user me-1"></i><b><%= currUser.username %></b>
+                    </a>
+
+                    <a
+                        class="btn btn-outline-dark btn-sm rounded-pill px-3 py-1 ms-lg-1 my-1 my-lg-0"
+                        href="/logout"
+                    >
+                        Log Out
+                    </a>
+
+                <% } %>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<style>
+
+    /* Navbar Search Bar Styling */
+    .search-container {
+        background-color: #ffffff;
+        border-radius: 40px;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        padding: 4px 6px 4px 12px;
+        width: 100%;
+        max-width: 440px;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-container:hover,
+    .search-container:focus-within {
+        border-color: #b0b8c1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control.search-input {
+        border: none;
+        background: transparent;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.88rem;
+        height: 36px;
+        box-shadow: none !important;
+    }
+
+    .form-control.search-input::placeholder {
+        color: #8c98a4;
+        font-size: 0.85rem;
+    }
+
+    .btn-search {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        background-color: #dc3545;
+        border: none;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .btn-search:hover {
+        background-color: #bb2d3b;
+        transform: scale(1.05);
+    }
+
+    @media (max-width: 991.98px) {
+        .search-container {
+            max-width: 100%;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .navbar-collapse {
+            padding: 0.75rem 0;
+            border-top: 1px solid #f1f3f5;
+        }
+
+        .navbar-nav .nav-link {
+            padding: 0.5rem 0.25rem;
+        }
+    }
+
+</style>

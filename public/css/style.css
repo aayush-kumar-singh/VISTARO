@@ -1,0 +1,159 @@
+/* =========================
+   GLOBAL
+========================= */
+
+body {
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    margin: 0;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar-brand {
+    height: 5rem;
+    display: flex;
+    align-items: center;
+}
+
+.fa-compass {
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+.nav-link {
+    color: #222222 !important;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.f-container {
+    background-color: #ffffff;
+    min-height: 8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 1.5rem 0;
+}
+
+.f-socilas {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.f-socilas a {
+    color: #222222;
+    text-decoration: none;
+}
+
+.f-socilas i {
+    font-size: 1.4rem;
+    margin-left: 1rem;
+}
+
+.f-tools {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.f-tools a {
+    text-decoration: none;
+    color: black;
+    margin-left: 2rem;
+}
+
+.f-tools a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   LISTING CARDS
+========================= */
+
+.listing-card {
+    border: none !important;
+    margin-bottom: 2rem !important;
+}
+
+.card-img-top {
+    border-radius: 1rem !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+.card-body {
+    padding: 0 !important;
+}
+
+.card-text-title {
+    font-weight: 700 !important;
+}
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.add-btn {
+    background-color: #fe424d !important;
+    border: none !important;
+    color: white !important;
+}
+
+.add-btn:hover {
+    background-color: #d9363e !important;
+}
+
+
+/* =========================
+   SHOW PAGE
+========================= */
+
+.show-img {
+    height: 30vh;
+    object-fit: cover;
+}
+
+.font-title {
+    font-size: 1.2rem;
+}
+
+.btns {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.image-ratio {
+    height: 200px;
+    width: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+
+/* =========================
+   MAP
+========================= */
+
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 12px;
+}

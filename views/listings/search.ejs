@@ -1,0 +1,305 @@
+<%
+function buildSearchUrl(overrideParams) {
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (minPrice) params.set('minPrice', minPrice);
+    if (maxPrice) params.set('maxPrice', maxPrice);
+    if (guests) params.set('guests', guests);
+    if (checkIn) params.set('checkIn', checkIn);
+    if (checkOut) params.set('checkOut', checkOut);
+    if (selectedAmenities && selectedAmenities.length > 0) {
+        selectedAmenities.forEach(a => params.append('amenities', a));
+    }
+    if (sortOption) params.set('sort', sortOption);
+
+    for (const key in overrideParams) {
+        if (overrideParams[key] === null || overrideParams[key] === undefined || overrideParams[key] === '') {
+            params.delete(key);
+        } else if (Array.isArray(overrideParams[key])) {
+            params.delete(key);
+            overrideParams[key].forEach(val => params.append(key, val));
+        } else {
+            params.set(key, overrideParams[key]);
+        }
+    }
+    return '/search?' + params.toString();
+}
+%>
+
+<div class="mt-4 mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+    <div>
+        <h2 class="fw-bold mb-1">
+            <% if (typeof query !== "undefined" && query) { %>
+                Search Results for "<%= query %>"
+            <% } else { %>
+                Search Results
+            <% } %>
+        </h2>
+        <p class="text-muted mb-0">
+            <%= results ? results.length : 0 %> property/properties available
+        </p>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- Advanced Filter Modal Trigger -->
+        <button class="btn btn-outline-dark btn-sm rounded-pill px-3 py-1" type="button" data-bs-toggle="modal" data-bs-target="#advancedSearchFilterModal" style="font-size: 0.85rem;">
+            <i class="fa-solid fa-sliders me-1"></i>Filters
+            <% const activeFilterCount = (minPrice ? 1 : 0) + (maxPrice ? 1 : 0) + (guests ? 1 : 0) + (checkIn ? 1 : 0) + (selectedAmenities ? selectedAmenities.length : 0); %>
+            <% if (activeFilterCount > 0) { %>
+                <span class="badge bg-danger ms-1"><%= activeFilterCount %></span>
+            <% } %>
+        </button>
+
+        <!-- Sort dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle rounded-pill px-3 py-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-arrow-down-short-wide me-1"></i>
+                <% if (typeof sortOption !== 'undefined' && sortOption === 'price_asc') { %>
+                    Price: Low to High
+                <% } else if (typeof sortOption !== 'undefined' && sortOption === 'price_desc') { %>
+                    Price: High to Low
+                <% } else if (typeof sortOption !== 'undefined' && sortOption === 'newest') { %>
+                    Newest First
+                <% } else { %>
+                    Sort By
+                <% } %>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                <li>
+                    <a class="dropdown-item <%= (!sortOption) ? 'active' : '' %>" href="<%= buildSearchUrl({ sort: '' }) %>">
+                        Featured / Relevancy
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item <%= (typeof sortOption !== 'undefined' && sortOption === 'price_asc') ? 'active' : '' %>" href="<%= buildSearchUrl({ sort: 'price_asc' }) %>">
+                        Price: Low to High
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item <%= (typeof sortOption !== 'undefined' && sortOption === 'price_desc') ? 'active' : '' %>" href="<%= buildSearchUrl({ sort: 'price_desc' }) %>">
+                        Price: High to Low
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item <%= (typeof sortOption !== 'undefined' && sortOption === 'newest') ? 'active' : '' %>" href="<%= buildSearchUrl({ sort: 'newest' }) %>">
+                        Newest First
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <a href="/listings" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+            <i class="fa-solid fa-arrow-left me-1"></i>All Listings
+        </a>
+    </div>
+
+</div>
+
+<!-- Active Filter Badges / Chips -->
+<% if (minPrice || maxPrice || guests || (checkIn && checkOut) || (selectedAmenities && selectedAmenities.length > 0)) { %>
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+        <span class="small text-muted fw-bold">Active Filters:</span>
+        <% if (minPrice || maxPrice) { %>
+            <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
+                Price: &#8377;<%= minPrice || '0' %> &ndash; &#8377;<%= maxPrice || 'Any' %>
+                <a href="<%= buildSearchUrl({ minPrice: '', maxPrice: '' }) %>" class="text-dark ms-2 text-decoration-none">&times;</a>
+            </span>
+        <% } %>
+        <% if (guests) { %>
+            <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
+                <i class="fa-solid fa-user-group me-1"></i><%= guests %> Guests
+                <a href="<%= buildSearchUrl({ guests: '' }) %>" class="text-dark ms-2 text-decoration-none">&times;</a>
+            </span>
+        <% } %>
+        <% if (checkIn && checkOut) { %>
+            <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
+                <i class="fa-regular fa-calendar me-1"></i><%= checkIn %> to <%= checkOut %>
+                <a href="<%= buildSearchUrl({ checkIn: '', checkOut: '' }) %>" class="text-dark ms-2 text-decoration-none">&times;</a>
+            </span>
+        <% } %>
+        <% if (selectedAmenities && selectedAmenities.length > 0) { %>
+            <% for (const a of selectedAmenities) { %>
+                <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
+                    <%= a %>
+                    <% const remaining = selectedAmenities.filter(item => item !== a); %>
+                    <a href="<%= buildSearchUrl({ amenities: remaining }) %>" class="text-dark ms-2 text-decoration-none">&times;</a>
+                </span>
+            <% } %>
+        <% } %>
+        <a href="/search?q=<%= encodeURIComponent(query || '') %>" class="small text-danger text-decoration-none fw-bold ms-2">
+            Clear all
+        </a>
+    </div>
+<% } %>
+
+<!-- Advanced Search Filter Modal -->
+<div class="modal fade" id="advancedSearchFilterModal" tabindex="-1" aria-labelledby="advancedSearchFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold" id="advancedSearchFilterModalLabel">
+                    <i class="fa-solid fa-sliders me-2 text-danger"></i>Filter Stays
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="GET" action="/search">
+                <div class="modal-body py-3">
+                    <input type="hidden" name="q" value="<%= query || '' %>">
+                    <% if (sortOption) { %>
+                        <input type="hidden" name="sort" value="<%= sortOption %>">
+                    <% } %>
+
+                    <!-- Dates -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase">Dates of Stay</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fa-regular fa-calendar-days text-danger"></i></span>
+                            <input type="text" id="searchDateRange" name="dateRange" class="form-control" placeholder="Select check-in and checkout dates" value="<%= dateRange || '' %>" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Guests & Price -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-uppercase">Minimum Guests</label>
+                            <input type="number" name="guests" class="form-control" min="1" max="20" placeholder="e.g. 2" value="<%= guests || '' %>">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-uppercase">Min Price (&#8377;)</label>
+                            <input type="number" name="minPrice" class="form-control" min="0" placeholder="0" value="<%= minPrice || '' %>">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-uppercase">Max Price (&#8377;)</label>
+                            <input type="number" name="maxPrice" class="form-control" min="0" placeholder="50000" value="<%= maxPrice || '' %>">
+                        </div>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div class="mb-2">
+                        <label class="form-label fw-bold small text-uppercase d-block">Amenities</label>
+                        <div class="row g-2">
+                            <% const filterAmenities = [
+                                { name: "Wifi", icon: "fa-wifi" },
+                                { name: "Pool", icon: "fa-person-swimming" },
+                                { name: "Free parking", icon: "fa-square-parking" },
+                                { name: "Air conditioning", icon: "fa-snowflake" },
+                                { name: "Kitchen", icon: "fa-kitchen-set" },
+                                { name: "Dedicated workspace", icon: "fa-laptop" },
+                                { name: "TV", icon: "fa-tv" },
+                                { name: "EV charger", icon: "fa-charging-station" }
+                            ]; %>
+                            <% for (const item of filterAmenities) { %>
+                                <div class="col-md-3 col-6">
+                                    <div class="form-check p-2 border rounded-3 bg-light">
+                                        <input
+                                            class="form-check-input ms-0 me-2"
+                                            type="checkbox"
+                                            name="amenities"
+                                            value="<%= item.name %>"
+                                            id="search-amenity-<%= item.name.replace(/\s+/g, '-') %>"
+                                            <%= (selectedAmenities && selectedAmenities.includes(item.name)) ? 'checked' : '' %>
+                                        >
+                                        <label class="form-check-label small" for="search-amenity-<%= item.name.replace(/\s+/g, '-') %>">
+                                            <i class="fa-solid <%= item.icon %> me-1 text-secondary"></i><%= item.name %>
+                                        </label>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 d-flex justify-content-between">
+                    <a href="/search?q=<%= encodeURIComponent(query || '') %>" class="btn btn-outline-secondary rounded-pill px-3">
+                        Reset Filters
+                    </a>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">
+                        Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (typeof flatpickr !== "undefined" && document.getElementById("searchDateRange")) {
+            flatpickr("#searchDateRange", {
+                mode: "range",
+                minDate: "today",
+                dateFormat: "Y-m-d",
+            });
+        }
+    });
+</script>
+
+
+<% if (results && results.length > 0) { %>
+
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+
+        <% for (const listing of results) { %>
+
+            <div class="col mb-4">
+
+                <a
+                    href="/listings/<%= listing._id %>"
+                    class="card-link"
+                >
+
+                    <div class="card listing-card">
+
+                        <img
+                            class="card-img-top"
+                            src="<%= listing.image?.url %>"
+                            alt="<%= listing.title %>"
+                            style="height: 18rem; object-fit: cover;"
+                        >
+
+
+                        <div class="card-body">
+
+                            <p class="card-text-title">
+                                <%= listing.title %>
+                            </p>
+
+                            <p class="card-text text-muted small mb-1">
+                                <i class="fa-solid fa-location-dot text-danger me-1"></i><%= listing.location %>, <%= listing.country %>
+                            </p>
+
+                            <p class="card-text fw-bold">
+                                <%= typeof formatPrice !== 'undefined' ? formatPrice(listing.price) : '₹ ' + listing.price.toLocaleString("en-IN") %>
+                                <span class="fw-normal text-muted">/night</span>
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+
+<% } else { %>
+
+    <div class="text-center py-5 border rounded-4 bg-light mt-4">
+
+        <i class="fa-solid fa-magnifying-glass fs-1 text-muted mb-3 d-block"></i>
+
+        <h4>No listings found matching "<%= typeof query !== "undefined" ? query : "" %>"</h4>
+
+        <p class="text-muted">Try searching for a different city, country, or villa title.</p>
+
+        <a href="/listings" class="btn add-btn btn-danger px-4 mt-2">
+            Explore All Listings
+        </a>
+
+    </div>
+
+<% } %>

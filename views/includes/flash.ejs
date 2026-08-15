@@ -1,0 +1,52 @@
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1200; margin-top: 4.5rem;">
+
+    <% if (success && success.length > 0) { %>
+        <div class="toast align-items-center text-white bg-dark border-0 shadow-lg show rounded-4 overflow-hidden mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4500" data-bs-autohide="true">
+            <div class="d-flex align-items-center">
+                <div class="toast-body d-flex align-items-center gap-2 py-3 px-3">
+                    <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                    <span class="fw-medium"><%= success %></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-progress bg-success" style="height: 3px; animation: toastProgress 4.5s linear forwards;"></div>
+        </div>
+    <% } %>
+
+    <% if (error && error.length > 0) { %>
+        <div class="toast align-items-center text-white bg-dark border-0 shadow-lg show rounded-4 overflow-hidden mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5500" data-bs-autohide="true">
+            <div class="d-flex align-items-center">
+                <div class="toast-body d-flex align-items-center gap-2 py-3 px-3">
+                    <i class="fa-solid fa-circle-exclamation text-danger fs-5"></i>
+                    <span class="fw-medium"><%= error %></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-progress bg-danger" style="height: 3px; animation: toastProgress 5.5s linear forwards;"></div>
+        </div>
+    <% } %>
+
+</div>
+
+<style>
+@keyframes toastProgress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const toastElList = document.querySelectorAll('.toast');
+        if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+            [...toastElList].forEach(toastEl => {
+                const delay = toastEl.getAttribute('data-bs-delay') ? parseInt(toastEl.getAttribute('data-bs-delay'), 10) : 4500;
+                const toast = new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: delay
+                });
+                toast.show();
+            });
+        }
+    });
+</script>

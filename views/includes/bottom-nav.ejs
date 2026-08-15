@@ -1,0 +1,103 @@
+<!-- Mobile Persistent Bottom Navigation Bar -->
+<div class="mobile-bottom-nav d-md-none fixed-bottom bg-white border-top shadow-lg">
+    <div class="d-flex justify-content-around align-items-center h-100 py-1">
+        <!-- 1. Explore -->
+        <a href="/listings" class="mobile-nav-item text-decoration-none d-flex flex-column align-items-center" id="nav-explore">
+            <i class="fa-solid fa-magnifying-glass mb-1 fs-5"></i>
+            <span class="small-nav-label">Explore</span>
+        </a>
+
+        <!-- 2. Wishlists -->
+        <a href="/wishlist" class="mobile-nav-item text-decoration-none d-flex flex-column align-items-center" id="nav-wishlists">
+            <i class="fa-regular fa-heart mb-1 fs-5"></i>
+            <span class="small-nav-label">Wishlists</span>
+        </a>
+
+        <!-- 3. Trips -->
+        <a href="/profile" class="mobile-nav-item text-decoration-none d-flex flex-column align-items-center" id="nav-trips">
+            <i class="fa-solid fa-suitcase-rolling mb-1 fs-5"></i>
+            <span class="small-nav-label">Trips</span>
+        </a>
+
+        <!-- 4. Messages -->
+        <a href="/inbox" class="mobile-nav-item text-decoration-none d-flex flex-column align-items-center position-relative" id="nav-messages">
+            <i class="fa-regular fa-message mb-1 fs-5"></i>
+            <span class="small-nav-label">Messages</span>
+            <% if (typeof unreadCount !== "undefined" && unreadCount > 0) { %>
+                <span class="position-absolute top-1 start-60 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+            <% } %>
+        </a>
+
+        <!-- 5. Profile -->
+        <a href="<%= currUser ? '/profile' : '/login' %>" class="mobile-nav-item text-decoration-none d-flex flex-column align-items-center" id="nav-profile">
+            <i class="fa-regular fa-circle-user mb-1 fs-5"></i>
+            <span class="small-nav-label"><%= currUser ? 'Profile' : 'Log in' %></span>
+        </a>
+    </div>
+</div>
+
+<style>
+    .mobile-bottom-nav {
+        height: 62px;
+        z-index: 1040;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        background-color: rgba(255, 255, 255, 0.97) !important;
+    }
+
+    .mobile-nav-item {
+        color: #717171;
+        transition: color 0.2s ease, transform 0.15s ease;
+        padding: 4px 10px;
+        min-width: 58px;
+    }
+
+    .mobile-nav-item:active {
+        transform: scale(0.92);
+    }
+
+    .mobile-nav-item.active {
+        color: #dc3545 !important;
+        font-weight: 700;
+    }
+
+    .mobile-nav-item.active i {
+        color: #dc3545 !important;
+    }
+
+    .small-nav-label {
+        font-size: 0.68rem;
+        letter-spacing: -0.2px;
+    }
+
+    @media (max-width: 767.98px) {
+        body {
+            padding-bottom: 70px !important;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const path = window.location.pathname;
+        const hash = window.location.hash;
+
+        document.querySelectorAll(".mobile-nav-item").forEach(el => el.classList.remove("active"));
+
+        if (path === "/" || path.startsWith("/listings") || path.startsWith("/category") || path.startsWith("/search")) {
+            document.getElementById("nav-explore")?.classList.add("active");
+        } else if (path.startsWith("/wishlist")) {
+            document.getElementById("nav-wishlists")?.classList.add("active");
+        } else if (path.startsWith("/inbox")) {
+            document.getElementById("nav-messages")?.classList.add("active");
+        } else if (path.startsWith("/profile")) {
+            if (hash === "#upcoming" || hash === "#past") {
+                document.getElementById("nav-trips")?.classList.add("active");
+            } else {
+                document.getElementById("nav-profile")?.classList.add("active");
+            }
+        } else if (path.startsWith("/login") || path.startsWith("/signup")) {
+            document.getElementById("nav-profile")?.classList.add("active");
+        }
+    });
+</script>
