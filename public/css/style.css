@@ -1,4 +1,4 @@
-﻿/* =====================================================================
+/* =====================================================================
    DESIGN SYSTEM TOKENS (Part 0)
 ===================================================================== */
 :root {
@@ -82,6 +82,7 @@ input, select, textarea {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-5);
     width: 100%;
+    justify-content: start;
 }
 
 .listings-grid > * {
@@ -330,8 +331,12 @@ input, select, textarea {
 ========================= */
 
 .show-img {
-    height: 30vh;
-    object-fit: cover;
+    width: 100% !important;
+    height: 420px !important;
+    max-height: 55vh !important;
+    object-fit: cover !important;
+    aspect-ratio: unset !important;
+    border-radius: var(--radius-md) !important;
 }
 
 .font-title {

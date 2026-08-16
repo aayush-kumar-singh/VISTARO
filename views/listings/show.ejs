@@ -8,7 +8,7 @@
 <div class="row mt-3">
 
     <!-- Listing title & Wishlist action -->
-    <div class="col-8 offset-2">
+    <div class="col-12 col-lg-10 offset-lg-1">
         <div class="d-flex justify-content-between align-items-center py-2">
             <h2 class="fw-bold mb-0"><%= listing.title %></h2>
             <% const inWishlist = currUser && currUser.wishlist && currUser.wishlist.some(w => w.toString() === listing._id.toString()); %>
@@ -26,7 +26,7 @@
 
 
     <!-- Main content: 2-column on desktop -->
-    <div class="col-8 offset-2">
+    <div class="col-12 col-lg-10 offset-lg-1">
 
         <div class="row">
 
@@ -335,7 +335,7 @@
 
 
     <!-- Reviews section -->
-    <div class="col-8 offset-2 mt-3 mb-3">
+    <div class="col-12 col-lg-10 offset-lg-1 mt-3 mb-3">
 
         <hr>
 
@@ -522,7 +522,7 @@
 
             <% for (const review of listing.reviews || []) { %>
 
-                <div class="card col-5 mb-3 ms-3">
+                <div class="card col-12 col-md-5 mb-3 ms-md-3">
 
                     <div class="card-body">
 
@@ -616,7 +616,7 @@
 
 
     <!-- Map -->
-    <div class="col-8 offset-2 mb-3">
+    <div class="col-12 col-lg-10 offset-lg-1 mb-3">
 
         <h3>Where You will be</h3>
 
@@ -627,7 +627,25 @@
 <!-- Booking widget client script -->
 <script>
     const activeBookings = <%- JSON.stringify(activeBookings || []) %>;
-    const nightlyPrice = <%= listing.price %>;
+    const nightlyPrice = <%= listing.price %>; // always in INR (base)
+
+    // Active currency injected from server session
+    const currencyCode  = "<%= currCurrency || 'INR' %>";
+    const currencyRate  = <%= (availableCurrencies && availableCurrencies[currCurrency]) ? availableCurrencies[currCurrency].rate : 1 %>;
+    const currencyLocale = "<%= (availableCurrencies && availableCurrencies[currCurrency]) ? availableCurrencies[currCurrency].locale : 'en-IN' %>";
+
+    function formatAmountInINR(amountINR) {
+        const converted = amountINR * currencyRate;
+        try {
+            return new Intl.NumberFormat(currencyLocale, {
+                style: "currency",
+                currency: currencyCode,
+                maximumFractionDigits: 0,
+            }).format(converted);
+        } catch (e) {
+            return currencyCode + " " + Math.round(converted).toLocaleString();
+        }
+    }
 
     const checkInInput = document.getElementById("checkIn");
     const checkOutInput = document.getElementById("checkOut");
@@ -681,10 +699,10 @@
         const gst = Math.round(base * 0.18);
         const total = base + gst;
 
-        if (priceNightsCalc) priceNightsCalc.innerText = "₹ " + nightlyPrice.toLocaleString("en-IN") + " × " + diffDays + " night(s)";
-        if (basePriceTotal) basePriceTotal.innerText = "₹ " + base.toLocaleString("en-IN");
-        if (gstAmount) gstAmount.innerText = "₹ " + gst.toLocaleString("en-IN");
-        if (grandTotal) grandTotal.innerText = "₹ " + total.toLocaleString("en-IN");
+        if (priceNightsCalc) priceNightsCalc.innerText = formatAmountInINR(nightlyPrice) + " × " + diffDays + " night(s)";
+        if (basePriceTotal) basePriceTotal.innerText = formatAmountInINR(base);
+        if (gstAmount) gstAmount.innerText = formatAmountInINR(gst);
+        if (grandTotal) grandTotal.innerText = formatAmountInINR(total);
 
         if (priceCalculation) priceCalculation.classList.remove("d-none");
     }
@@ -764,6 +782,11 @@
     }
 
     async function toggleShowWishlist(listingId) {
+        // Redirect to login if not authenticated
+        if (!<%= currUser ? 'true' : 'false' %>) {
+            window.location.href = '/login';
+            return;
+        }
         try {
             const res = await fetch(`/listings/${listingId}/toggle`, {
                 method: 'POST',

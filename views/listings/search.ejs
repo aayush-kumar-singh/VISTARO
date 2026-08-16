@@ -1,4 +1,5 @@
-﻿<%
+<% layout("/layouts/boilerplate") %>
+<%
 function buildSearchUrl(overrideParams) {
     const params = new URLSearchParams();
     if (query) params.set('q', query);

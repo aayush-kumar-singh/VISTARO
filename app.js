@@ -237,15 +237,16 @@ app.use(async (req, res, next) => {
 // Currency switcher route
 app.get("/currency/:code", (req, res) => {
     const code = (req.params.code || "").toUpperCase();
+    const backUrl = req.headers.referer || "/listings";
     if (EXCHANGE_RATES[code]) {
         req.session.currency = code;
-        req.flash(
-            "success",
-            `Currency changed to ${EXCHANGE_RATES[code].name} (${EXCHANGE_RATES[code].symbol})`
-        );
+        req.session.save((err) => {
+            if (err) console.error("Session save error on currency change:", err);
+            res.redirect(backUrl);
+        });
+    } else {
+        res.redirect(backUrl);
     }
-    const backUrl = req.headers.referer || "/listings";
-    res.redirect(backUrl);
 });
 
 // Root route -> redirect to /listings

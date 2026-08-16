@@ -35,7 +35,7 @@ module.exports.index = async (req, res) => {
         sortQuery = { _id: -1 };
     }
 
-    const limit = 9; // 9 items per page (3x3 grid)
+    const limit = 10; // 10 items per page
     const totalListings = await listings.countDocuments(filter);
     const totalPages = Math.max(1, Math.ceil(totalListings / limit));
     const requestedPage = parseInt(page, 10) || 1;

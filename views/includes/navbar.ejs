@@ -1,4 +1,4 @@
-﻿<nav class="navbar custom-navbar">
+<nav class="navbar custom-navbar">
 
     <!-- Child 1 — .navbar-left (flex: 0 0 auto) -->
     <div class="navbar-left">
@@ -299,6 +299,22 @@
         height: 100% !important;
         box-shadow: none !important;
         outline: none !important;
+    }
+
+    /* Prevent blue autofill/autocomplete highlight on selection */
+    .search-input:focus {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .search-input:-webkit-autofill,
+    .search-input:-webkit-autofill:hover,
+    .search-input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px white inset !important;
+        box-shadow: 0 0 0 1000px white inset !important;
+        -webkit-text-fill-color: var(--color-ink) !important;
+        background-color: transparent !important;
     }
 
     .search-input::placeholder {
