@@ -139,13 +139,6 @@ input, select, textarea {
     object-fit: cover !important;
     border-radius: var(--radius-md) !important;
     display: block;
-    transition: transform 150ms ease;
-}
-
-@media (min-width: 1024px) {
-    .listing-card:hover img {
-        transform: scale(1.01);
-    }
 }
 
 .listing-card-body {
@@ -230,17 +223,17 @@ input, select, textarea {
     border: none;
     cursor: pointer;
     padding: 0;
-    transition: transform 150ms ease;
 }
 
-.listing-wishlist-btn:hover {
-    transform: scale(1.1);
+.listing-wishlist-btn:hover i {
+    color: var(--color-primary) !important;
 }
 
 .listing-wishlist-btn i {
     font-size: 1.35rem;
     filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
     color: white;
+    transition: color 150ms ease;
 }
 
 .listing-wishlist-btn i.fa-solid.text-danger {
