@@ -6,13 +6,14 @@
             margin-bottom: 1.25rem;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 1rem;
             padding: 4px 2px 8px 2px;
         }
 
-        /* Scrollable strip for category items only */
+        /* Scrollable strip for category items — shown on desktop (>=768px) */
         .filter-scroll {
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: space-between;
             overflow-x: auto;
@@ -20,6 +21,12 @@
             flex-wrap: nowrap;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
+        }
+
+        @media (min-width: 768px) {
+            .filter-scroll {
+                display: flex;
+            }
         }
 
         .filter-scroll::-webkit-scrollbar {
@@ -92,7 +99,19 @@
 
     <div id="filters">
 
-        <!-- Scrollable category strip (overflow here, NOT on #filters) -->
+        <!-- Mobile-only button to trigger Category Side Panel -->
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 d-md-none d-flex align-items-center gap-2"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#categorySidePanel"
+                aria-controls="categorySidePanel"
+                style="font-size: 0.85rem;">
+            <i class="fa-solid fa-layer-group text-danger"></i>
+            <span><%= selectedCategory || 'Categories' %></span>
+            <i class="fa-solid fa-chevron-right ms-1" style="font-size: 0.65rem; opacity: 0.6;"></i>
+        </button>
+
+        <!-- Scrollable category strip for Desktop (>=768px) -->
         <div class="filter-scroll">
 
         <div class="filter">
@@ -203,6 +222,53 @@
             </ul>
         </div>
 
+    </div>
+
+    <!-- Mobile Category Side Panel (Offcanvas) -->
+    <div class="offcanvas offcanvas-start rounded-end-4" tabindex="-1" id="categorySidePanel" aria-labelledby="categorySidePanelLabel" style="max-width: 300px;">
+        <div class="offcanvas-header border-bottom py-3">
+            <h5 class="offcanvas-title fw-bold fs-6 d-flex align-items-center gap-2 mb-0" id="categorySidePanelLabel">
+                <i class="fa-solid fa-layer-group text-danger"></i>
+                <span>Explore Categories</span>
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <div class="list-group list-group-flush">
+                <a href="/listings" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 px-4 border-0 <%= !selectedCategory ? 'bg-danger-subtle text-danger fw-bold' : 'text-dark' %>">
+                    <i class="fa-solid fa-compass fs-5" style="width: 26px; text-align: center;"></i>
+                    <span>All</span>
+                </a>
+                <a href="/category/Bed%20%26%20Breakfast" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 px-4 border-0 <%= selectedCategory === 'Bed & Breakfast' ? 'bg-danger-subtle text-danger fw-bold' : 'text-dark' %>">
+                    <i class="fa-solid fa-mug-hot fs-5" style="width: 26px; text-align: center;"></i>
+                    <span>Bed & Breakfast</span>
+                </a>
+                <a href="/category/Farm" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 px-4 border-0 <%= selectedCategory === 'Farm' ? 'bg-danger-subtle text-danger fw-bold' : 'text-dark' %>">
+                    <i class="fa-solid fa-cow fs-5" style="width: 26px; text-align: center;"></i>
+                    <span>Farm</span>
+                </a>
+                <a href="/category/OMG" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 px-4 border-0 <%= selectedCategory === 'OMG' || selectedCategory === 'OMG!' ? 'bg-danger-subtle text-danger fw-bold' : 'text-dark' %>">
+                    <i class="fa-solid fa-satellite fs-5" style="width: 26px; text-align: center;"></i>
+                    <span>OMG!</span>
+                </a>
+                <a href="/category/Arctic" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 px-4 border-0 <%= selectedCategory === 'Arctic' ? 'bg-danger-subtle text-danger fw-bold' : 'text-dark' %>">
+                    <i class="fa-solid fa-snowflake fs-5" style="width: 26px; text-align: center;"></i>
+                    <span>Arctic</span>
+                </a>
+                <a href="/category/Trending" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 px-4 border-0 <%= selectedCategory === 'Trending' ? 'bg-danger-subtle text-danger fw-bold' : 'text-dark' %>">
+                    <i class="fa-solid fa-fire fs-5" style="width: 26px; text-align: center;"></i>
+                    <span>Trending</span>
+                </a>
+                <a href="/category/Lake" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 px-4 border-0 <%= selectedCategory === 'Lake' ? 'bg-danger-subtle text-danger fw-bold' : 'text-dark' %>">
+                    <i class="fa-solid fa-water fs-5" style="width: 26px; text-align: center;"></i>
+                    <span>Lake</span>
+                </a>
+                <a href="/category/Beach" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 px-4 border-0 <%= selectedCategory === 'Beach' ? 'bg-danger-subtle text-danger fw-bold' : 'text-dark' %>">
+                    <i class="fa-solid fa-umbrella-beach fs-5" style="width: 26px; text-align: center;"></i>
+                    <span>Beach</span>
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- Active Filter Badges Bar -->
