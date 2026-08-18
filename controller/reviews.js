@@ -12,7 +12,7 @@ module.exports.createReview = async (req, res) => {
     }
 
     // 1. Owner cannot review own listing
-    if (listing.owner.equals(req.user._id)) {
+    if (listing.owner && listing.owner.equals(req.user._id)) {
         req.flash("error", "Hosts cannot submit reviews for their own listings.");
         return res.redirect(`/listings/${listing._id}`);
     }

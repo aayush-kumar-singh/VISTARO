@@ -2,6 +2,11 @@ if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
 
+// S3 Security: Warn loudly if using the fallback session secret
+if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET === "development-secret-change-later") {
+    console.warn("\x1b[33m[SECURITY WARNING] SESSION_SECRET is not set or is using the default value. Set a strong secret in .env before deploying to production.\x1b[0m");
+}
+
 const http = require("http");
 const { Server } = require("socket.io");
 const express = require("express");

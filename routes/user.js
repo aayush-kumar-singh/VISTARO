@@ -51,6 +51,12 @@ router.get("/logout", usercontroller.logout);
 // User Profile & Trips Dashboard
 router.get("/profile", isLoggedIn, wrapAsync(usercontroller.renderProfile));
 
+// Update bio (Settings tab)
+router.post("/profile/update", isLoggedIn, wrapAsync(usercontroller.updateProfile));
+
+// Change password (Settings tab)
+router.post("/profile/change-password", isLoggedIn, wrapAsync(usercontroller.changePassword));
+
 // Google OAuth routes
 if (
     process.env.GOOGLE_CLIENT_ID &&

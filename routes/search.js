@@ -5,9 +5,12 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const listings = require("../models/listing.js");
 const Booking = require("../models/booking.js");
 
+const RESULTS_PER_PAGE = 12;
+
 const searchHandler = async (req, res) => {
     const queryStr = (req.query.q || req.body.search || "").trim();
     const { minPrice, maxPrice, sort, guests, checkIn, checkOut, dateRange } = req.query;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
 
     let selectedAmenities = req.query.amenities;
     if (selectedAmenities) {
@@ -98,7 +101,18 @@ const searchHandler = async (req, res) => {
         sortQuery = { _id: -1 };
     }
 
-    const results = await listings.find(filter).populate("reviews").sort(sortQuery);
+    // 7. Paginate
+    const totalResults = await listings.countDocuments(filter);
+    const totalPages   = Math.ceil(totalResults / RESULTS_PER_PAGE) || 1;
+    const currentPage  = Math.min(page, totalPages);
+    const skip         = (currentPage - 1) * RESULTS_PER_PAGE;
+
+    const results = await listings
+        .find(filter)
+        .populate("reviews")
+        .sort(sortQuery)
+        .skip(skip)
+        .limit(RESULTS_PER_PAGE);
 
     res.render("listings/search.ejs", {
         results,
@@ -111,6 +125,9 @@ const searchHandler = async (req, res) => {
         dateRange: (parsedCheckIn && parsedCheckOut) ? `${parsedCheckIn} to ${parsedCheckOut}` : "",
         selectedAmenities,
         sortOption: sort || "",
+        currentPage,
+        totalPages,
+        totalResults,
     });
 };
 

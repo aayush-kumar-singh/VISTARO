@@ -73,24 +73,33 @@
             </div>
 
 
-            <!-- Existing images gallery -->
+            <!-- Existing images gallery with delete option -->
             <div class="mb-3 mt-3">
                 <label class="form-label fw-bold">
-                    Current Listing Photos (<%= listing.images && listing.images.length > 0 ? listing.images.length : (listing.image?.url ? 1 : 0) %>)
+                    Current Listing Photos (<span id="existingPhotoCount"><%= listing.images && listing.images.length > 0 ? listing.images.length : (listing.image?.url ? 1 : 0) %></span>)
+                    <small class="text-muted fw-normal ms-1">— click ✕ to remove a photo</small>
                 </label>
-                <div class="d-flex flex-wrap gap-2 mt-2">
-                    <% if (listing.images && listing.images.length > 0) { %>
-                        <% for (const img of listing.images) { %>
-                            <div class="border rounded-3 overflow-hidden" style="width: 100px; height: 80px;">
-                                <img src="<%= img.url %>" class="w-100 h-100" style="object-fit: cover;" alt="listing photo">
+                <div class="d-flex flex-wrap gap-2 mt-2" id="existingPhotosGrid">
+                    <% const photosToShow = (listing.images && listing.images.length > 0) ? listing.images : (listing.image?.url ? [listing.image] : []); %>
+                    <% for (let i = 0; i < photosToShow.length; i++) { %>
+                        <% const img = photosToShow[i]; %>
+                        <div class="position-relative existing-photo-item" data-filename="<%= img.filename %>" style="width: 100px; height: 80px;">
+                            <div class="border rounded-3 overflow-hidden w-100 h-100">
+                                <img src="<%= img.url %>" class="w-100 h-100" style="object-fit: cover; transition: opacity 0.2s;" alt="listing photo">
                             </div>
-                        <% } %>
-                    <% } else if (listing.image?.url) { %>
-                        <div class="border rounded-3 overflow-hidden" style="width: 100px; height: 80px;">
-                            <img src="<%= listing.image.url %>" class="w-100 h-100" style="object-fit: cover;" alt="listing photo">
+                            <!-- Delete overlay button -->
+                            <button type="button"
+                                class="btn btn-danger btn-sm position-absolute top-0 end-0 d-flex align-items-center justify-content-center p-0 rounded-circle shadow photo-delete-btn"
+                                style="width: 22px; height: 22px; font-size: 0.65rem; margin: 3px; z-index: 5;"
+                                title="Remove this photo"
+                                onclick="toggleDeletePhoto(this, '<%= img.filename %>')">
+                                &times;
+                            </button>
                         </div>
                     <% } %>
                 </div>
+                <div id="deleteInputsContainer"></div>
+                <small class="text-muted d-block mt-1">Removed photos will be permanently deleted when you save.</small>
             </div>
 
             <!-- Upload additional/new images -->
@@ -343,3 +352,43 @@
     </div>
 
 </div>
+
+<script>
+    // 1.1: Toggle photo for deletion on the edit form
+    var pendingDeletes = {};
+
+    function toggleDeletePhoto(btn, filename) {
+        var wrapper = btn.closest('.existing-photo-item');
+        var img     = wrapper.querySelector('img');
+        var container = document.getElementById('deleteInputsContainer');
+        var countEl   = document.getElementById('existingPhotoCount');
+
+        if (pendingDeletes[filename]) {
+            // Un-mark for deletion
+            delete pendingDeletes[filename];
+            var existing = container.querySelector('input[value="' + filename + '"]');
+            if (existing) existing.remove();
+            img.style.opacity = '1';
+            wrapper.style.outline = '';
+            btn.style.background  = '';
+            btn.textContent = '\u00d7';
+        } else {
+            // Mark for deletion
+            pendingDeletes[filename] = true;
+            var input = document.createElement('input');
+            input.type  = 'hidden';
+            input.name  = 'deleteImages[]';
+            input.value = filename;
+            container.appendChild(input);
+            img.style.opacity = '0.35';
+            wrapper.style.outline = '2px solid #dc3545';
+            btn.style.background  = '#555';
+            btn.textContent = '\u21ba'; // ↺ undo icon
+        }
+
+        // Update counter
+        var total   = document.querySelectorAll('.existing-photo-item').length;
+        var deleted = Object.keys(pendingDeletes).length;
+        if (countEl) countEl.textContent = (total - deleted);
+    }
+</script>

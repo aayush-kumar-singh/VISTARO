@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
         lowercase: true,
         trim: true,
     },
@@ -27,6 +28,13 @@ const userSchema = new mongoose.Schema({
             ref: "listing",
         },
     ],
+
+    bio: {
+        type: String,
+        default: "",
+        maxlength: 300,
+        trim: true,
+    },
 });
 
 userSchema.plugin(passportLocalMongoose);

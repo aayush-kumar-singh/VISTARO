@@ -10,9 +10,22 @@ const {
 
 const wrapAsync = require("../utils/wrapAsync.js");
 const listingController = require("../controller/listing.js");
+const rateLimit = require("express-rate-limit");
 
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
+
+// S5: Rate limit listing creation — max 10 per hour per IP
+const createListingLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        req.flash("error", "You are creating listings too quickly. Please wait before adding more.");
+        res.redirect("/listings/new");
+    },
+});
 
 const upload = multer({
     storage,
@@ -55,6 +68,7 @@ router
     .route("/")
     .get(wrapAsync(listingController.index))
     .post(
+        createListingLimiter,
         isLoggedIn,
         handleImageUpload,
         validateListing,

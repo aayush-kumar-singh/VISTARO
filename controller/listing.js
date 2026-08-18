@@ -139,9 +139,20 @@ module.exports.showsallListings = async (req, res) => {
         checkOut: { $gte: new Date() },
     }).select("checkIn checkOut");
 
+    // 2.2: Similar listings (same category, exclude current, limit 4)
+    const similarFilter = { _id: { $ne: listing._id } };
+    if (listing.category) similarFilter.category = listing.category;
+    const similarListings = await listings
+        .find(similarFilter)
+        .select("title location country price images image category reviews")
+        .populate("reviews", "rating")
+        .limit(4)
+        .lean();
+
     res.render("listings/show.ejs", {
         listing,
         activeBookings,
+        similarListings,
     });
 };
 
@@ -240,14 +251,42 @@ module.exports.updateListing = async (req, res) => {
         }
     }
 
-    // If new images were uploaded
+    // If images were marked for deletion, remove from Cloudinary and from listing.images
+    if (req.body.deleteImages && req.body.deleteImages.length > 0) {
+        const toDelete = Array.isArray(req.body.deleteImages)
+            ? req.body.deleteImages
+            : [req.body.deleteImages];
+
+        for (const filename of toDelete) {
+            if (filename && filename !== "listingimage") {
+                try {
+                    await cloudinary.uploader.destroy(filename);
+                } catch (delErr) {
+                    console.error("Failed to delete image from Cloudinary:", filename, delErr);
+                }
+            }
+        }
+
+        // Remove deleted images from listing.images array
+        listing.images = (listing.images || []).filter(
+            (img) => !toDelete.includes(img.filename)
+        );
+    }
+
+    // If new images were uploaded, append but cap total at 5
     if (req.files && req.files.length > 0) {
         const uploadedImages = req.files.map((file) => ({
             url: file.path,
             filename: file.filename,
         }));
 
-        listing.images = [...(listing.images || []), ...uploadedImages];
+        const combined = [...(listing.images || []), ...uploadedImages];
+        listing.images = combined.slice(0, 5); // enforce max 5 images
+        listing.image = listing.images[0];
+    }
+
+    // Sync listing.image to first in array
+    if (listing.images && listing.images.length > 0) {
         listing.image = listing.images[0];
     }
 

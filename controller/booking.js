@@ -1,6 +1,7 @@
 const Booking = require("../models/booking.js");
 const Listing = require("../models/listing.js");
 const { sendBookingConfirmation, sendCancellationConfirmation } = require("../utils/sendEmail.js");
+const { formatPrice } = require("../utils/currency.js");
 
 module.exports.createBooking = async (req, res) => {
     const { id } = req.params;
@@ -38,14 +39,12 @@ module.exports.createBooking = async (req, res) => {
     }
 
     // Check for existing confirmed booking conflicts
+    // Strict overlap: booking A overlaps B if A.checkIn < B.checkOut AND A.checkOut > B.checkIn
     const conflict = await Booking.findOne({
         listing: id,
         status: "confirmed",
-        $or: [
-            { checkIn: { $lt: endDate, $gte: startDate } },
-            { checkOut: { $gt: startDate, $lte: endDate } },
-            { checkIn: { $lte: startDate }, checkOut: { $gte: endDate } },
-        ],
+        checkIn: { $lt: endDate },
+        checkOut: { $gt: startDate },
     });
 
     if (conflict) {
@@ -184,7 +183,7 @@ module.exports.cancelBooking = async (req, res) => {
 
     req.flash(
         "success",
-        `Reservation cancelled. ${refundPercentage > 0 ? `A refund of ₹${refundAmount.toLocaleString('en-IN')} (${refundPercentage}%) has been issued.` : 'No refund was eligible under the ' + policy + ' policy.'}`
+        `Reservation cancelled. ${refundPercentage > 0 ? `A refund of ${formatPrice(refundAmount)} (${refundPercentage}%) has been issued.` : 'No refund was eligible under the ' + policy + ' policy.'}`
     );
     res.redirect(redirectPath);
 };

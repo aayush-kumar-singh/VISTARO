@@ -7,20 +7,39 @@
 
 <div class="row mt-3">
 
-    <!-- Listing title & Wishlist action -->
+    <!-- 2.2 Breadcrumb Navigation -->
     <div class="col-12 col-lg-10 offset-lg-1">
-        <div class="d-flex justify-content-between align-items-center py-2">
+        <nav class="vistaro-breadcrumb pt-2" aria-label="breadcrumb">
+            <a href="/listings">All Listings</a>
+            <% if (listing.category) { %>
+                &nbsp;&rsaquo;&nbsp;
+                <a href="/category/<%= encodeURIComponent(listing.category) %>"><%= listing.category %></a>
+            <% } %>
+            &nbsp;&rsaquo;&nbsp;
+            <span><%= listing.title.length > 40 ? listing.title.substring(0, 40) + '...' : listing.title %></span>
+        </nav>
+    </div>
+
+    <!-- Listing title & actions -->
+    <div class="col-12 col-lg-10 offset-lg-1">
+        <div class="d-flex justify-content-between align-items-center py-2 flex-wrap gap-2">
             <h2 class="fw-bold mb-0"><%= listing.title %></h2>
-            <% const inWishlist = currUser && currUser.wishlist && currUser.wishlist.some(w => w.toString() === listing._id.toString()); %>
-            <button
-                type="button"
-                class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 d-flex align-items-center gap-2"
-                id="showWishlistBtn"
-                onclick="toggleShowWishlist('<%= listing._id %>')"
-            >
-                <i class="<%= inWishlist ? 'fa-solid' : 'fa-regular' %> fa-heart" id="showHeartIcon"></i>
-                <span id="showWishlistText"><%= inWishlist ? 'Saved' : 'Save' %></span>
-            </button>
+            <div class="d-flex gap-2 align-items-center">
+                <!-- 2.2 Share Button -->
+                <button class="share-btn" id="shareBtn" onclick="shareListingPage('<%= listing.title %>')" type="button">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i> Share
+                </button>
+                <% const inWishlist = currUser && currUser.wishlist && currUser.wishlist.some(w => w.toString() === listing._id.toString()); %>
+                <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 d-flex align-items-center gap-2"
+                    id="showWishlistBtn"
+                    onclick="toggleShowWishlist('<%= listing._id %>')"
+                >
+                    <i class="<%= inWishlist ? 'fa-solid' : 'fa-regular' %> fa-heart" id="showHeartIcon"></i>
+                    <span id="showWishlistText"><%= inWishlist ? 'Saved' : 'Save' %></span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -70,9 +89,17 @@
                     <div class="card-body">
 
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                            <p class="card-text text-muted mb-0">
-                                Hosted by <b>@<%= listing.owner ? listing.owner.username : "host" %></b>
-                            </p>
+                            <div>
+                                <p class="card-text text-muted mb-0">
+                                    Hosted by <b>@<%= listing.owner ? listing.owner.username : "host" %></b>
+                                </p>
+                                <% if (listing.owner && listing.owner._id) { %>
+                                    <p class="text-muted small mb-0" style="font-size:0.78rem;">
+                                        <% const joinYear = listing.owner.createdAt ? new Date(listing.owner.createdAt).getFullYear() : new Date(listing.owner._id.getTimestamp()).getFullYear(); %>
+                                        Member since <%= joinYear %>
+                                    </p>
+                                <% } %>
+                            </div>
                             <% if (currUser && listing.owner && !listing.owner._id.equals(currUser._id)) { %>
                                 <form method="POST" action="/inbox/start/<%= listing._id %>" class="d-inline">
                                     <button type="submit" class="btn btn-outline-dark btn-sm rounded-pill px-3">
@@ -288,9 +315,11 @@
                             </div>
 
                             <button
-                                type="submit"
+                                type="button"
                                 class="btn add-btn btn-danger w-100 py-2 fw-bold"
                                 id="reserveBtn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#bookingConfirmModal"
                             >
                                 Reserve
                             </button>
@@ -322,6 +351,62 @@
                             </div>
 
                         </form>
+
+                        <!-- 1.2: Booking Confirmation Modal -->
+                        <div class="modal fade" id="bookingConfirmModal" tabindex="-1" aria-labelledby="bookingConfirmModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content rounded-4 border-0 shadow">
+                                    <div class="modal-header border-bottom-0 pb-0">
+                                        <h5 class="modal-title fw-bold" id="bookingConfirmModalLabel">
+                                            <i class="fa-solid fa-calendar-check text-danger me-2"></i>Confirm Your Reservation
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body py-3">
+                                        <div class="bg-light rounded-3 p-3 mb-3">
+                                            <p class="fw-bold mb-1 text-truncate"><%= listing.title %></p>
+                                            <p class="small text-muted mb-0"><i class="fa-solid fa-location-dot me-1 text-danger"></i><%= listing.location %>, <%= listing.country %></p>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Check-in</span>
+                                            <strong id="confirmCheckIn">&mdash;</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Check-out</span>
+                                            <strong id="confirmCheckOut">&mdash;</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Guests</span>
+                                            <strong id="confirmGuests">&mdash;</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Duration</span>
+                                            <strong id="confirmNights">&mdash;</strong>
+                                        </div>
+                                        <hr class="my-2">
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Base price</span>
+                                            <span id="confirmBase">&mdash;</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">GST (18%)</span>
+                                            <span id="confirmGst">&mdash;</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between fw-bold fs-6 mt-2">
+                                            <span>Total (incl. taxes)</span>
+                                            <span id="confirmTotal" class="text-danger">&mdash;</span>
+                                        </div>
+                                        <p class="text-center text-muted small mt-3 mb-0">You won't be charged yet — payment is settled at the property.</p>
+                                    </div>
+                                    <div class="modal-footer border-top-0 pt-0 d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-secondary rounded-pill flex-grow-1" data-bs-dismiss="modal">Go Back</button>
+                                        <button type="button" class="btn btn-danger rounded-pill flex-grow-1 fw-bold" id="confirmReserveBtn" onclick="handleConfirmReserve(this)">
+                                            <i class="fa-solid fa-check me-1"></i>Confirm Reservation
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     <% } %>
 
@@ -707,6 +792,47 @@
         if (priceCalculation) priceCalculation.classList.remove("d-none");
     }
 
+    // 1.2: Populate booking confirmation modal before it shows
+    var confirmModal = document.getElementById('bookingConfirmModal');
+    if (confirmModal) {
+        confirmModal.addEventListener('show.bs.modal', function (ev) {
+            var ciVal = checkInInput  ? checkInInput.value  : '';
+            var coVal = checkOutInput ? checkOutInput.value : '';
+
+            if (!ciVal || !coVal) {
+                ev.preventDefault();
+                var drInput = document.getElementById('dateRange');
+                if (drInput) drInput.focus();
+                return;
+            }
+
+            var start  = new Date(ciVal);
+            var end    = new Date(coVal);
+            var nights = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24));
+            var base   = nights * nightlyPrice;
+            var gst    = Math.round(base * 0.18);
+            var total  = base + gst;
+            var gEl    = document.getElementById('guests');
+            var gVal   = gEl ? parseInt(gEl.value) || 1 : 1;
+
+            var fmt = function(d) {
+                return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            };
+            var setEl = function(id, val) {
+                var el = document.getElementById(id);
+                if (el) el.textContent = val;
+            };
+
+            setEl('confirmCheckIn',  fmt(start));
+            setEl('confirmCheckOut', fmt(end));
+            setEl('confirmGuests',   gVal + ' guest' + (gVal !== 1 ? 's' : ''));
+            setEl('confirmNights',   nights + ' night' + (nights !== 1 ? 's' : ''));
+            setEl('confirmBase',     formatAmountInINR(base));
+            setEl('confirmGst',      formatAmountInINR(gst));
+            setEl('confirmTotal',    formatAmountInINR(total));
+        });
+    }
+
     // Prepare disabled dates for Flatpickr calendar
     const disabledDates = activeBookings.map((b) => ({
         from: new Date(b.checkIn).toISOString().split("T")[0],
@@ -816,3 +942,140 @@
 
 <!-- Leaflet map -->
 <script src="/js/map.js"></script>
+
+<% if (typeof similarListings !== 'undefined' && similarListings && similarListings.length > 0) { %>
+<!-- 2.2: Similar Stays -->
+<div class="row mt-2 mb-5">
+    <div class="col-12 col-lg-10 offset-lg-1">
+        <hr>
+        <h4 class="fw-bold mb-3">
+            <i class="fa-solid fa-layer-group text-danger me-2"></i>Similar stays
+            <% if (listing.category) { %><span class="text-muted fw-normal fs-6 ms-1">in <%= listing.category %></span><% } %>
+        </h4>
+        <div class="listings-grid mb-2">
+            <% for (const sim of similarListings) { %>
+                <%
+                    let simRating = null;
+                    if (sim.reviews && sim.reviews.length > 0) {
+                        const simSum = sim.reviews.reduce((a, r) => a + (r.rating || 0), 0);
+                        const simAvg = simSum / sim.reviews.length;
+                        if (!isNaN(simAvg) && simAvg > 0) simRating = Number(simAvg.toFixed(1));
+                    }
+                %>
+                <a href="/listings/<%= sim._id %>" class="card-link text-decoration-none">
+                    <div class="listing-card">
+                        <div class="listing-card-img-wrapper">
+                            <img class="card-img-top"
+                                src="<%= sim.images?.[0]?.url || sim.image?.url %>"
+                                alt="<%= sim.title %>" loading="lazy" style="cursor:default;">
+                        </div>
+                        <div class="listing-card-body">
+                            <div class="listing-card-title-row">
+                                <p class="listing-card-title"><%= sim.title %></p>
+                                <% if (simRating) { %>
+                                    <div class="listing-card-rating">
+                                        <i class="fa-solid fa-star"></i>
+                                        <span><%= simRating %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <p class="text-muted mb-0" style="font-size:0.78rem;"><%= sim.location %>, <%= sim.country %></p>
+                            <p class="listing-card-price mt-1">
+                                <span><%= typeof formatPrice !== 'undefined' ? formatPrice(sim.price) : '&#8377;' + sim.price.toLocaleString('en-IN') %></span>
+                                <span class="unit"> / night</span>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            <% } %>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<!-- 2.2: Lightbox overlay -->
+<div id="vistaro-lightbox" role="dialog" aria-modal="true" aria-label="Photo lightbox">
+    <button class="lb-close" onclick="closeLightbox()" aria-label="Close lightbox">&times;</button>
+    <button class="lb-nav lb-prev" onclick="lightboxNav(-1)" aria-label="Previous photo"><i class="fa-solid fa-chevron-left"></i></button>
+    <img id="lb-img" src="" alt="Listing photo">
+    <button class="lb-nav lb-next" onclick="lightboxNav(1)" aria-label="Next photo"><i class="fa-solid fa-chevron-right"></i></button>
+    <p class="lb-counter" id="lb-counter"></p>
+</div>
+
+<script>
+// 2.2: Lightbox
+var lbImages = [];
+var lbIndex = 0;
+
+(function setupLightbox() {
+    // Gather all listing images
+    var imgEls = document.querySelectorAll('.carousel-item img, .show-img');
+    imgEls.forEach(function(img, i) {
+        lbImages.push(img.src);
+        img.addEventListener('click', function() { openLightbox(i); });
+    });
+    // Close on backdrop click
+    document.getElementById('vistaro-lightbox').addEventListener('click', function(e) {
+        if (e.target === this) closeLightbox();
+    });
+    // Keyboard nav
+    document.addEventListener('keydown', function(e) {
+        var lb = document.getElementById('vistaro-lightbox');
+        if (!lb.classList.contains('active')) return;
+        if (e.key === 'ArrowRight') lightboxNav(1);
+        else if (e.key === 'ArrowLeft') lightboxNav(-1);
+        else if (e.key === 'Escape') closeLightbox();
+    });
+})();
+
+function openLightbox(idx) {
+    if (!lbImages.length) return;
+    lbIndex = idx;
+    document.getElementById('lb-img').src = lbImages[lbIndex];
+    document.getElementById('lb-counter').textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+    document.getElementById('vistaro-lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    document.getElementById('vistaro-lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function lightboxNav(dir) {
+    if (!lbImages.length) return;
+    lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length;
+    document.getElementById('lb-img').src = lbImages[lbIndex];
+    document.getElementById('lb-counter').textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+}
+
+// 2.2: Share button (Web Share API with copy-link fallback)
+function shareListingPage(title) {
+    var url = window.location.href;
+    if (navigator.share) {
+        navigator.share({ title: title + ' on Vistaro', url: url })
+            .catch(function() {});
+    } else {
+        navigator.clipboard.writeText(url).then(function() {
+            var btn = document.getElementById('shareBtn');
+            if (btn) {
+                var orig = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(function() { btn.innerHTML = orig; }, 2000);
+            }
+        }).catch(function() {
+            prompt('Copy this link:', url);
+        });
+    }
+}
+
+// 2.4: Booking confirm spinner
+function handleConfirmReserve(btn) {
+    var form = document.getElementById('bookingForm');
+    if (form) {
+        btn.classList.add('btn-loading');
+        btn.innerHTML = '<i class="fa-solid fa-check me-1"></i>Processing...';
+        form.submit();
+    }
+}
+</script>

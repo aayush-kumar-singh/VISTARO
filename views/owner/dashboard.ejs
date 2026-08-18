@@ -40,10 +40,10 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <span class="text-muted small fw-bold text-uppercase">Total Revenue</span>
-                        <h3 class="fw-bold text-dark mt-1 mb-0">&#8377; <%= totalRevenue.toLocaleString('en-IN') %></h3>
+                        <h3 class="fw-bold text-dark mt-1 mb-0"><%= formatPrice(totalRevenue) %></h3>
                     </div>
                     <div class="p-3 bg-light rounded-circle text-success fs-5">
-                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <i class="fa-solid fa-coins"></i>
                     </div>
                 </div>
                 <small class="text-muted mt-2 d-block">From confirmed reservations</small>
@@ -96,6 +96,13 @@
                 <i class="fa-solid fa-calendar-days me-1 text-primary"></i>Guest Reservations (<%= incomingBookings ? incomingBookings.length : 0 %>)
             </button>
         </li>
+        <% if (listingStats && listingStats.length > 0) { %>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-dark" id="revenue-chart-tab" data-bs-toggle="tab" data-bs-target="#revenue-chart-pane" type="button" role="tab" aria-controls="revenue-chart-pane" aria-selected="false">
+                <i class="fa-solid fa-chart-bar me-1 text-success"></i>Revenue Chart
+            </button>
+        </li>
+        <% } %>
     </ul>
 
     <!-- Tab Content -->
@@ -138,7 +145,7 @@
                                         </div>
                                     </td>
                                     <td><%= l.location %>, <%= l.country %></td>
-                                    <td class="fw-bold">&#8377; <%= l.price.toLocaleString('en-IN') %></td>
+                                    <td class="fw-bold"><%= formatPrice(l.price) %></td>
                                     <td>
                                         <span class="badge bg-light text-dark border text-capitalize"><%= l.cancellationPolicy || 'flexible' %></span>
                                     </td>
@@ -148,7 +155,7 @@
                                             <small class="text-success d-block fw-semibold">(<%= stat.upcomingBookings %> upcoming)</small>
                                         <% } %>
                                     </td>
-                                    <td class="fw-bold text-success">&#8377; <%= stat.revenue.toLocaleString('en-IN') %></td>
+                                    <td class="fw-bold text-success"><%= formatPrice(stat.revenue) %></td>
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             <a href="/listings/<%= l._id %>" class="btn btn-outline-secondary" title="View Property">
@@ -214,7 +221,7 @@
                                         <%= new Date(b.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %> &ndash; <%= new Date(b.checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %>
                                     </td>
                                     <td><%= b.nights %> night(s)</td>
-                                    <td class="fw-bold text-success">&#8377; <%= b.totalPrice ? b.totalPrice.toLocaleString('en-IN') : '0' %></td>
+                                    <td class="fw-bold text-success"><%= formatPrice(b.totalPrice || 0) %></td>
                                     <td>
                                         <% if (b.status === 'confirmed') { %>
                                             <span class="badge bg-success">Confirmed</span>
@@ -248,3 +255,67 @@
     </div>
 
 </div>
+
+<% if (listingStats && listingStats.length > 0) { %>
+<!-- Revenue Chart Tab Pane (rendered outside main tab-content to avoid Chart.js canvas issues) -->
+<!-- This is added as a real tab pane inside the tab-content div via JS below -->
+<script>
+// 1.5: Revenue Chart — inject pane and render Chart.js bar chart
+document.addEventListener('DOMContentLoaded', function () {
+    // Build the revenue-chart pane and append to tab-content
+    var tabContent = document.getElementById('dashboardTabContent');
+    if (!tabContent) return;
+
+    var pane = document.createElement('div');
+    pane.className = 'tab-pane fade';
+    pane.id = 'revenue-chart-pane';
+    pane.setAttribute('role', 'tabpanel');
+    pane.setAttribute('aria-labelledby', 'revenue-chart-tab');
+    pane.setAttribute('tabindex', '0');
+
+    pane.innerHTML = '<div class="bg-white rounded-4 shadow-sm border p-4">' +
+        '<h5 class="fw-bold mb-3"><i class="fa-solid fa-chart-bar text-success me-2"></i>Revenue per Listing</h5>' +
+        '<div style="position:relative; max-height:360px;"><canvas id="revenueBarChart"></canvas></div>' +
+        '<p class="text-muted small mt-2 mb-0">Revenue from confirmed bookings only.</p>' +
+        '</div>';
+
+    tabContent.appendChild(pane);
+
+    // Load Chart.js from CDN then render
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js';
+    script.onload = function () {
+        var labels = <%- JSON.stringify(listingStats.map(s => (s.listing.title || 'Untitled').substring(0, 18))) %>;
+        var revenues = <%- JSON.stringify(listingStats.map(s => s.revenue || 0)) %>;
+        var ctx = document.getElementById('revenueBarChart');
+        if (!ctx) return;
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue (INR)',
+                    data: revenues,
+                    backgroundColor: 'rgba(220, 53, 69, 0.75)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { callback: function(v) { return '₹' + v.toLocaleString('en-IN'); } }
+                    }
+                }
+            }
+        });
+    };
+    document.head.appendChild(script);
+});
+</script>
+<% } %>

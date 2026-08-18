@@ -270,6 +270,21 @@
         </div>
     </div>
 
+    <script>
+        // F1 Fix: Auto-close the mobile category offcanvas when a category is selected
+        (function () {
+            var panel = document.getElementById('categorySidePanel');
+            if (panel) {
+                panel.querySelectorAll('a.list-group-item').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        var offcanvasInstance = bootstrap.Offcanvas.getInstance(panel);
+                        if (offcanvasInstance) offcanvasInstance.hide();
+                    });
+                });
+            }
+        })();
+    </script>
+
     <!-- Active Filter Badges Bar -->
     <% if (minPrice || maxPrice || selectedCategory || sortOption) { %>
         <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
@@ -435,8 +450,8 @@
 
                     <% for (const listing of allListing) { %>
 
-                        <% 
-                            const inWishlist = currUser && currUser.wishlist && currUser.wishlist.some(w => w.toString() === listing._id.toString()); 
+                        <%
+                            const inWishlist = currUser && currUser.wishlist && currUser.wishlist.some(w => w.toString() === listing._id.toString());
                             let avgRating = null;
                             let reviewCount = (listing.reviews && listing.reviews.length) || 0;
                             if (reviewCount > 0) {
@@ -447,9 +462,17 @@
                                 }
                             }
                             const isGuestFavourite = avgRating && avgRating >= 4.8;
+                            // 2.1: New badge — listings created within last 7 days
+                            const createdAt = listing.createdAt || listing._id.getTimestamp();
+                            const isNew = createdAt && (Date.now() - new Date(createdAt).getTime()) < 7 * 24 * 60 * 60 * 1000;
                         %>
 
-                            <div class="position-relative">
+                            <div class="position-relative reveal-card">
+
+                                <!-- 2.1 New Badge -->
+                                <% if (isNew && !isGuestFavourite) { %>
+                                    <div class="listing-new-badge">New</div>
+                                <% } %>
 
                                 <!-- Guest Favourite Badge -->
                                 <% if (isGuestFavourite) { %>
@@ -493,8 +516,13 @@
                                                 <% } %>
                                             </div>
 
+                                            <!-- 2.1 Review count sub-text -->
+                                            <% if (reviewCount > 0) { %>
+                                                <p class="listing-card-review-count"><%= reviewCount %> <%= reviewCount === 1 ? 'review' : 'reviews' %></p>
+                                            <% } %>
+
                                             <p class="listing-card-price">
-                                                <span><%= typeof formatPrice !== 'undefined' ? formatPrice(listing.price) : '₹ ' + listing.price.toLocaleString("en-IN") %></span>
+                                                <span><%= typeof formatPrice !== 'undefined' ? formatPrice(listing.price) : '&#8377; ' + listing.price.toLocaleString("en-IN") %></span>
                                                 <span class="unit"> / night</span>
                                             </p>
 
@@ -604,11 +632,16 @@
                                                 if (res.ok) {
                                                     const data = await res.json();
                                                     const icon = btn.querySelector('i');
+                                                    // 2.4: Heart pop animation
+                                                    icon.classList.remove('heart-pop');
+                                                    void icon.offsetWidth; // reflow
+                                                    icon.classList.add('heart-pop');
                                                     if (data.inWishlist) {
-                                                        icon.className = 'fa-solid fa-heart text-danger fs-6';
+                                                        icon.className = icon.className.replace('fa-regular', 'fa-solid') + ' text-danger';
+                                                        icon.className += ' heart-pop';
                                                         btn.title = 'Remove from wishlist';
                                                     } else {
-                                                        icon.className = 'fa-regular fa-heart text-dark fs-6';
+                                                        icon.className = 'fa-regular fa-heart text-dark fs-6 heart-pop';
                                                         btn.title = 'Save to wishlist';
                                                     }
                                                 } else if (res.status === 401 || res.redirected) {
@@ -618,7 +651,31 @@
                                                 console.error('Wishlist toggle failed:', e);
                                             }
                                         }
-                                    </script>
+                                        </script>
+
+<script>
+// 2.4: Scroll-reveal for listing cards (IntersectionObserver)
+(function () {
+    var cards = document.querySelectorAll('.reveal-card');
+    if (!cards.length || !('IntersectionObserver' in window)) {
+        cards.forEach(function(c) { c.classList.add('is-visible'); });
+        return;
+    }
+    var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry, idx) {
+            if (entry.isIntersecting) {
+                var el = entry.target;
+                var delay = (Array.from(cards).indexOf(el) % 4) * 60;
+                setTimeout(function () {
+                    el.classList.add('is-visible');
+                }, delay);
+                observer.unobserve(el);
+            }
+        });
+    }, { threshold: 0.08 });
+    cards.forEach(function (card) { observer.observe(card); });
+})();
+</script>
 
 
 

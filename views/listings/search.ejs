@@ -38,7 +38,12 @@ function buildSearchUrl(overrideParams) {
             <% } %>
         </h2>
         <p class="text-muted mb-0">
-            <%= results ? results.length : 0 %> property/properties available
+            <% const totalCount = (typeof totalResults !== 'undefined') ? totalResults : (results ? results.length : 0); %>
+            <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+                Showing <%= results ? results.length : 0 %> of <%= totalCount %> <%= totalCount === 1 ? 'property' : 'properties' %>
+            <% } else { %>
+                <%= totalCount %> <%= totalCount === 1 ? 'property' : 'properties' %> available
+            <% } %>
         </p>
     </div>
 
@@ -285,6 +290,38 @@ function buildSearchUrl(overrideParams) {
         <% } %>
 
     </div>
+
+    <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+        <% function buildPageUrl(p) {
+            const p2 = new URLSearchParams();
+            if (query) p2.set('q', query);
+            if (minPrice) p2.set('minPrice', minPrice);
+            if (maxPrice) p2.set('maxPrice', maxPrice);
+            if (guests) p2.set('guests', guests);
+            if (checkIn) p2.set('checkIn', checkIn);
+            if (checkOut) p2.set('checkOut', checkOut);
+            if (selectedAmenities && selectedAmenities.length > 0) { selectedAmenities.forEach(a => p2.append('amenities', a)); }
+            if (sortOption) p2.set('sort', sortOption);
+            p2.set('page', p);
+            return '/search?' + p2.toString();
+        } %>
+        <nav aria-label="Search results pages" class="mt-4 mb-5">
+            <ul class="pagination justify-content-center flex-wrap">
+                <li class="page-item <%= currentPage <= 1 ? 'disabled' : '' %>">
+                    <a class="page-link rounded-start-pill px-3" href="<%= buildPageUrl(currentPage - 1) %>" aria-label="Previous"><i class="fa-solid fa-chevron-left me-1"></i>Prev</a>
+                </li>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                        <a class="page-link" href="<%= buildPageUrl(i) %>"><%= i %></a>
+                    </li>
+                <% } %>
+                <li class="page-item <%= currentPage >= totalPages ? 'disabled' : '' %>">
+                    <a class="page-link rounded-end-pill px-3" href="<%= buildPageUrl(currentPage + 1) %>" aria-label="Next">Next <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                </li>
+            </ul>
+            <p class="text-center text-muted small">Page <%= currentPage %> of <%= totalPages %> (<%= totalResults %> total)</p>
+        </nav>
+    <% } %>
 
 <% } else { %>
 

@@ -375,3 +375,137 @@ textarea.form-control {
     border-radius: var(--radius-sm) !important;
     border-color: var(--color-border) !important;
 }
+
+/* =====================================================================
+   PHASE 2 - UI/UX POLISH
+===================================================================== */
+
+/* 2.4 Page Fade-In */
+@keyframes vistaro-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+body { animation: vistaro-fade-in 0.3s ease both; }
+
+/* 2.4 Scroll-Reveal */
+.reveal-card {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.reveal-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 2.4 Wishlist Heart Pop */
+@keyframes heart-pop {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.45); }
+    65%  { transform: scale(0.88); }
+    100% { transform: scale(1); }
+}
+.heart-pop { animation: heart-pop 0.38s cubic-bezier(0.36,0.07,0.19,0.97) both; }
+
+/* 2.4 Booking Submit Spinner */
+.btn-loading { position: relative; pointer-events: none; opacity: 0.8; }
+.btn-loading::after {
+    content: '';
+    display: inline-block;
+    width: 14px; height: 14px;
+    margin-left: 8px;
+    border: 2px solid rgba(255,255,255,0.5);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 2.4 Category Filter Active Underline Slide */
+.filter { position: relative; }
+.filter::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 50%;
+    width: 0; height: 2px;
+    background-color: var(--color-ink);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    transition: width 0.25s ease;
+}
+.filter.active::after, .filter:hover::after { width: 60%; }
+
+/* 2.1 New Badge */
+.listing-new-badge {
+    position: absolute;
+    top: var(--space-3); left: var(--space-3);
+    z-index: 10;
+    background: linear-gradient(135deg,#dc3545 0%,#c0392b 100%);
+    color: #fff;
+    font-size: 0.65rem; font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.4px;
+    box-shadow: var(--shadow-sm);
+    text-transform: uppercase;
+}
+
+/* 2.1 Review count sub-text */
+.listing-card-review-count {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+    margin: 0; line-height: 1.2;
+}
+
+/* 2.2 Lightbox */
+#vistaro-lightbox {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.93);
+    align-items: center; justify-content: center; flex-direction: column;
+}
+#vistaro-lightbox.active { display: flex; }
+#vistaro-lightbox img {
+    max-width: 90vw; max-height: 80vh;
+    object-fit: contain;
+    border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+}
+#vistaro-lightbox .lb-close {
+    position: absolute; top: 16px; right: 20px;
+    color: #fff; font-size: 2rem; cursor: pointer;
+    background: none; border: none; line-height: 1; z-index: 10001;
+}
+#vistaro-lightbox .lb-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    color: #fff; font-size: 1.5rem; cursor: pointer;
+    background: rgba(255,255,255,0.12); border: none; border-radius: 50%;
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+}
+#vistaro-lightbox .lb-nav:hover { background: rgba(255,255,255,0.25); }
+#vistaro-lightbox .lb-prev { left: 16px; }
+#vistaro-lightbox .lb-next { right: 16px; }
+#vistaro-lightbox .lb-counter { color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 12px; }
+.carousel-item img, .show-img { cursor: zoom-in; }
+
+/* 2.2 Breadcrumb */
+.vistaro-breadcrumb { font-size: 0.82rem; color: var(--color-ink-muted); margin-bottom: 4px; }
+.vistaro-breadcrumb a { color: var(--color-ink-muted); text-decoration: underline; text-underline-offset: 2px; }
+.vistaro-breadcrumb a:hover { color: var(--color-ink); }
+
+/* 2.3 Modal scrollable on mobile */
+@media (max-width: 575.98px) {
+    .modal-dialog { margin: 0.5rem; }
+    .modal-body { max-height: 70vh; overflow-y: auto; }
+}
+
+/* 2.2 Share button */
+.share-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.85rem; cursor: pointer;
+    border: none; background: none;
+    color: var(--color-ink);
+    text-decoration: underline; text-underline-offset: 2px; padding: 0;
+}
+.share-btn:hover { color: var(--color-primary); }
