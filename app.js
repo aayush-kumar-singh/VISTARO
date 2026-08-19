@@ -11,6 +11,10 @@ const http = require("http");
 const { Server } = require("socket.io");
 const express = require("express");
 const app = express();
+
+// Enable reverse proxy trust (required for Render, Heroku, AWS ELB behind HTTPS)
+app.set("trust proxy", 1);
+
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -132,19 +136,21 @@ passport.use(
 // Google authentication
 // --------------------------------------------------
 
+const googleCallbackUrl =
+    process.env.GOOGLE_CALLBACK_URL ||
+    (process.env.APP_URL ? `${process.env.APP_URL.replace(/\/$/, "")}/auth/google/callback` : "http://localhost:3003/auth/google/callback");
+
 if (
     process.env.GOOGLE_CLIENT_ID &&
-    process.env.GOOGLE_CLIENT_SECRET &&
-    process.env.GOOGLE_CALLBACK_URL
+    process.env.GOOGLE_CLIENT_SECRET
 ) {
     passport.use(
         new GoogleStrategy(
             {
                 clientID: process.env.GOOGLE_CLIENT_ID,
-
                 clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-
-                callbackURL: process.env.GOOGLE_CALLBACK_URL,
+                callbackURL: googleCallbackUrl,
+                proxy: true,
             },
 
             async (accessToken, refreshToken, profile, done) => {
