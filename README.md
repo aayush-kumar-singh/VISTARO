@@ -103,11 +103,15 @@ You can now access:
 - **Frontend App**: [http://localhost:5173](http://localhost:5173)
 - **Backend API**: [http://localhost:3003/api/health](http://localhost:3003/api/health)
 
-### 5. Other Helpful Scripts
 - `npm run server` — Runs backend server only.
 - `npm run client` — Runs Vite frontend only.
-- `npm run build` — Builds production bundle in `client/dist`.
+- `npm run build` — Installs client dependencies and builds production bundle in `client/dist`.
 - `npm start` — Starts the production Node.js server (serves API and `client/dist` static assets).
+
+### 6. Deployment (Render / Heroku / Railway)
+* **Build Command**: `npm run build` (or `npm install && npm run build`)
+* **Start Command**: `node server/server.js` (or `npm start` or `node app.js`)
+* **Environment Variables**: Add all variables from `.env.example` in your hosting dashboard.
 
 ---
 

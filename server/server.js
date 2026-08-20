@@ -231,14 +231,20 @@ app.get("/api/health", (req, res) => {
 // --------------------------------------------------
 // Production Static Build Serving
 // --------------------------------------------------
-if (isProduction) {
-    const clientDist = path.join(__dirname, "../client/dist");
+const fs = require("fs");
+const clientDist = path.join(__dirname, "../client/dist");
+
+if (isProduction || fs.existsSync(clientDist)) {
     app.use(express.static(clientDist));
 
-    app.get("*", (req, res) => {
-        if (!req.path.startsWith("/api")) {
-            res.sendFile(path.join(clientDist, "index.html"));
+    app.get("*", (req, res, next) => {
+        if (!req.path.startsWith("/api") && !req.path.startsWith("/auth")) {
+            const indexPath = path.join(clientDist, "index.html");
+            if (fs.existsSync(indexPath)) {
+                return res.sendFile(indexPath);
+            }
         }
+        next();
     });
 }
 
