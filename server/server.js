@@ -232,21 +232,20 @@ app.get("/api/health", (req, res) => {
 // Production Static Build Serving
 // --------------------------------------------------
 const fs = require("fs");
-const clientDist = path.join(__dirname, "../client/dist");
+const clientDist = path.resolve(__dirname, "../client/dist");
 
-if (isProduction || fs.existsSync(clientDist)) {
-    app.use(express.static(clientDist));
+app.use(express.static(clientDist));
 
-    app.get("*", (req, res, next) => {
-        if (!req.path.startsWith("/api") && !req.path.startsWith("/auth")) {
-            const indexPath = path.join(clientDist, "index.html");
-            if (fs.existsSync(indexPath)) {
-                return res.sendFile(indexPath);
-            }
-        }
-        next();
-    });
-}
+app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api") || req.path.startsWith("/auth") || req.path.startsWith("/socket.io")) {
+        return next();
+    }
+    const indexPath = path.resolve(clientDist, "index.html");
+    if (fs.existsSync(indexPath)) {
+        return res.sendFile(indexPath);
+    }
+    next();
+});
 
 // --------------------------------------------------
 // 404 Handler for API Routes
