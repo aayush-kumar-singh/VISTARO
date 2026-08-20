@@ -1,8 +1,8 @@
 require("dotenv").config();
 
 const mongoose = require("mongoose");
-const listing = require("../models/listing.js");
-const User = require("../models/user.js");
+const listing = require("../server/models/Listing.js");
+const User = require("../server/models/User.js");
 const initData = require("./data.js");
 
 const dbUrl = process.env.ATLAS_DB_URL || process.env.MONGO_URI || "mongodb://127.0.0.1:27017/wanderlust";

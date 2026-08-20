@@ -1,0 +1,579 @@
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { authApi } from '../api/authApi.js';
+import { bookingsApi } from '../api/bookingsApi.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import { useCurrency } from '../context/CurrencyContext.jsx';
+import { useToast } from '../context/ToastContext.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
+import {
+  User,
+  Plane,
+  Clock,
+  Home,
+  CalendarCheck,
+  Settings,
+  PlusCircle,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
+  KeyRound,
+  FileText,
+  MapPin,
+} from 'lucide-react';
+
+export default function ProfilePage() {
+  const { user, updateUser, logout } = useAuth();
+  const { formatPrice } = useCurrency();
+  const { showSuccess, showError } = useToast();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [activeTab, setActiveTab] = useState('upcoming');
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Bio state
+  const [bio, setBio] = useState('');
+  const [isSavingBio, setIsSavingBio] = useState(false);
+
+  // Password state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  // Cancellation Modal state
+  const [cancellingBooking, setCancellingBooking] = useState(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const [isSubmittingCancel, setIsSubmittingCancel] = useState(false);
+
+  useEffect(() => {
+    if (location.hash === '#upcoming') setActiveTab('upcoming');
+    else if (location.hash === '#past') setActiveTab('past');
+    else if (location.hash === '#hosted') setActiveTab('hosted');
+    else if (location.hash === '#incoming') setActiveTab('incoming');
+    else if (location.hash === '#settings') setActiveTab('settings');
+  }, [location.hash]);
+
+  const loadProfile = async () => {
+    try {
+      setLoading(true);
+      const data = await authApi.getProfile();
+      setProfileData(data);
+      setBio(data.user?.bio || '');
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) loadProfile();
+  }, [user]);
+
+  if (!user) {
+    return (
+      <div className="max-w-md mx-auto my-16 p-8 bg-white border border-zinc-200 rounded-3xl text-center space-y-4 shadow-sm">
+        <User className="w-10 h-10 text-[#dc3545] mx-auto" />
+        <h2 className="text-xl font-bold text-zinc-900">Sign in to view your profile</h2>
+        <p className="text-sm text-zinc-500">Access your upcoming trips, hosted properties, and account settings.</p>
+        <Link
+          to="/login"
+          className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-sm font-bold py-3 px-6 rounded-full transition-colors"
+        >
+          Log In
+        </Link>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return <LoadingSpinner fullScreen text="Loading your account profile..." />;
+  }
+
+  const handleUpdateBio = async (e) => {
+    e.preventDefault();
+    try {
+      setIsSavingBio(true);
+      const data = await authApi.updateProfile({ bio });
+      updateUser({ bio: data.user.bio });
+      showSuccess(data.message);
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      setIsSavingBio(false);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    try {
+      setIsChangingPassword(true);
+      const data = await authApi.changePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      });
+      showSuccess(data.message);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      logout();
+      navigate('/login');
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
+  const handleConfirmCancel = async () => {
+    if (!cancellingBooking) return;
+    try {
+      setIsSubmittingCancel(true);
+      const data = await bookingsApi.cancelBooking(cancellingBooking._id, {
+        reason: cancelReason,
+      });
+      showSuccess(data.message);
+      setCancellingBooking(null);
+      setCancelReason('');
+      loadProfile();
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      setIsSubmittingCancel(false);
+    }
+  };
+
+  const upcomingTrips = profileData?.upcomingTrips || [];
+  const pastTrips = profileData?.pastTrips || [];
+  const hostedListings = profileData?.hostedListings || [];
+  const incomingBookings = profileData?.incomingBookings || [];
+
+  return (
+    <div className="w-full space-y-8">
+      
+      {/* 1. Profile Banner Header */}
+      <div className="bg-[#F7F7F7] rounded-3xl p-6 sm:p-8 border border-zinc-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#dc3545] text-white flex items-center justify-center font-extrabold text-2xl sm:text-3xl shadow-sm">
+            {user.username.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
+              {user.username}
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-600 mt-0.5 flex items-center gap-2">
+              <span>{user.email}</span>
+              {user.googleId && (
+                <span className="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  Google Linked
+                </span>
+              )}
+            </p>
+            {user.bio && (
+              <p className="text-xs text-zinc-500 mt-2 italic max-w-md">"{user.bio}"</p>
+            )}
+          </div>
+        </div>
+
+        <Link
+          to="/listings/new"
+          className="inline-flex items-center justify-center gap-2 bg-[#dc3545] hover:bg-[#b02a37] text-white font-bold text-xs sm:text-sm py-3 px-6 rounded-full transition-all shadow-xs shrink-0 cursor-pointer"
+        >
+          <PlusCircle className="w-4 h-4" /> List on Vistaro
+        </Link>
+      </div>
+
+      {/* 2. Navigation Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar border-b border-zinc-200 pb-2">
+        {[
+          { id: 'upcoming', label: `Upcoming Trips (${upcomingTrips.length})`, icon: Plane },
+          { id: 'past', label: `History (${pastTrips.length})`, icon: Clock },
+          { id: 'hosted', label: `My Listings (${hostedListings.length})`, icon: Home },
+          { id: 'incoming', label: `Guest Bookings (${incomingBookings.length})`, icon: CalendarCheck },
+          { id: 'settings', label: 'Settings', icon: Settings },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all shrink-0 cursor-pointer ${
+                isActive
+                  ? 'bg-[#222222] text-white shadow-xs'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 3. Tab Contents */}
+
+      {/* TAB: Upcoming Trips */}
+      {activeTab === 'upcoming' && (
+        <div className="space-y-4">
+          {upcomingTrips.length === 0 ? (
+            <div className="text-center py-16 bg-zinc-50 rounded-3xl border border-zinc-200">
+              <Plane className="w-10 h-10 text-zinc-300 mx-auto mb-2" />
+              <h3 className="font-bold text-base text-zinc-800">No upcoming trips</h3>
+              <p className="text-xs text-zinc-500 max-w-sm mx-auto mt-1 mb-4">
+                Time to dust off your bags and start planning your next getaway.
+              </p>
+              <Link
+                to="/"
+                className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
+              >
+                Start Exploring
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {upcomingTrips.map((trip) => {
+                const checkInDate = new Date(trip.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                const checkOutDate = new Date(trip.checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                return (
+                  <div
+                    key={trip._id}
+                    className="bg-white rounded-2xl border border-zinc-200 overflow-hidden shadow-xs flex flex-col sm:flex-row"
+                  >
+                    <div className="sm:w-44 h-40 sm:h-auto bg-zinc-100 shrink-0">
+                      <img
+                        src={trip.listing?.images?.[0]?.url || trip.listing?.image?.url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60'}
+                        alt={trip.listing?.title || 'Trip'}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-4 flex flex-col flex-1 justify-between gap-3">
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <h4 className="font-bold text-sm text-zinc-900 truncate">
+                            {trip.listing?.title || 'Listing'}
+                          </h4>
+                          <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                            Confirmed
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-500 mt-1">
+                          {checkInDate} &ndash; {checkOutDate} ({trip.nights} night{trip.nights > 1 ? 's' : ''})
+                        </p>
+                        <p className="text-xs text-zinc-500 mt-0.5">
+                          {trip.guests} guest{trip.guests > 1 ? 's' : ''} &middot; Total: <span className="font-semibold text-zinc-900">{formatPrice(trip.totalPrice)}</span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-zinc-100">
+                        {trip.listing && (
+                          <Link
+                            to={`/listings/${trip.listing._id}`}
+                            className="text-xs font-bold text-[#dc3545] hover:underline"
+                          >
+                            View stay details
+                          </Link>
+                        )}
+                        <button
+                          onClick={() => setCancellingBooking(trip)}
+                          className="text-xs font-semibold text-zinc-500 hover:text-[#dc3545] underline cursor-pointer"
+                        >
+                          Cancel trip
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB: History */}
+      {activeTab === 'past' && (
+        <div className="space-y-4">
+          {pastTrips.length === 0 ? (
+            <div className="text-center py-16 bg-zinc-50 rounded-3xl border border-zinc-200">
+              <Clock className="w-10 h-10 text-zinc-300 mx-auto mb-2" />
+              <h3 className="font-bold text-base text-zinc-800">No past stays</h3>
+              <p className="text-xs text-zinc-500">Your completed and cancelled reservations will appear here.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {pastTrips.map((trip) => {
+                const isCancelled = trip.status === 'cancelled';
+                const checkInDate = new Date(trip.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                const checkOutDate = new Date(trip.checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                return (
+                  <div
+                    key={trip._id}
+                    className="bg-white rounded-2xl border border-zinc-200 p-4 shadow-xs flex items-center gap-4"
+                  >
+                    <div className="w-20 h-20 rounded-xl bg-zinc-100 shrink-0 overflow-hidden">
+                      <img
+                        src={trip.listing?.images?.[0]?.url || trip.listing?.image?.url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60'}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="font-bold text-sm text-zinc-900 truncate">
+                          {trip.listing?.title || 'Past Stay'}
+                        </h4>
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            isCancelled ? 'bg-red-100 text-red-800' : 'bg-zinc-100 text-zinc-700'
+                          }`}
+                        >
+                          {isCancelled ? 'Cancelled' : 'Completed'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-500 mt-1">
+                        {checkInDate} &ndash; {checkOutDate}
+                      </p>
+                      {isCancelled && trip.cancellation?.refundPercentage !== undefined && (
+                        <p className="text-xs font-semibold text-emerald-600 mt-0.5">
+                          Refunded: {trip.cancellation.refundPercentage}% ({formatPrice(trip.cancellation.refundAmount || 0)})
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB: My Listings */}
+      {activeTab === 'hosted' && (
+        <div className="space-y-4">
+          {hostedListings.length === 0 ? (
+            <div className="text-center py-16 bg-zinc-50 rounded-3xl border border-zinc-200">
+              <Home className="w-10 h-10 text-zinc-300 mx-auto mb-2" />
+              <h3 className="font-bold text-base text-zinc-800">You haven't listed any spaces yet</h3>
+              <p className="text-xs text-zinc-500 max-w-sm mx-auto mt-1 mb-4">
+                Earn extra income by hosting travelers from all over the world.
+              </p>
+              <Link
+                to="/listings/new"
+                className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
+              >
+                Create First Listing
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {hostedListings.map((l) => (
+                <div key={l._id} className="bg-white rounded-2xl border border-zinc-200 overflow-hidden shadow-xs flex flex-col">
+                  <div className="aspect-4/3 bg-zinc-100 relative">
+                    <img
+                      src={l.images?.[0]?.url || l.image?.url}
+                      alt={l.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <span className="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-xs">
+                      {l.category}
+                    </span>
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h4 className="font-bold text-sm text-zinc-900 truncate">{l.title}</h4>
+                      <p className="text-xs text-zinc-500 mt-0.5">{l.location}, {l.country}</p>
+                      <p className="text-xs font-semibold text-zinc-900 mt-1">{formatPrice(l.price)} / night</p>
+                    </div>
+                    <div className="flex items-center justify-between pt-3 mt-3 border-t border-zinc-100">
+                      <Link to={`/listings/${l._id}`} className="text-xs font-bold text-zinc-700 hover:underline">
+                        View
+                      </Link>
+                      <Link to={`/listings/${l._id}/edit`} className="text-xs font-bold text-[#dc3545] hover:underline">
+                        Edit
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB: Guest Bookings */}
+      {activeTab === 'incoming' && (
+        <div className="space-y-4">
+          {incomingBookings.length === 0 ? (
+            <div className="text-center py-16 bg-zinc-50 rounded-3xl border border-zinc-200">
+              <CalendarCheck className="w-10 h-10 text-zinc-300 mx-auto mb-2" />
+              <h3 className="font-bold text-base text-zinc-800">No guest bookings yet</h3>
+              <p className="text-xs text-zinc-500">Reservations made on your hosted stays will appear here.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-zinc-200 bg-white rounded-2xl border border-zinc-200 overflow-hidden shadow-xs">
+              {incomingBookings.map((b) => (
+                <div key={b._id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-bold text-[#dc3545]">{b.listing?.title || 'Property'}</span>
+                    <h4 className="font-bold text-sm text-zinc-900 mt-0.5">
+                      Guest: @{b.user?.username || 'Guest'} ({b.guests} guest{b.guests > 1 ? 's' : ''})
+                    </h4>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      {new Date(b.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} &ndash; {new Date(b.checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} &middot; {b.nights} night(s)
+                    </p>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <span className="text-sm font-bold text-zinc-900 block">{formatPrice(b.totalPrice)}</span>
+                    <span
+                      className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1 ${
+                        b.status === 'confirmed' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {b.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB: Settings */}
+      {activeTab === 'settings' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Bio Form */}
+          <form onSubmit={handleUpdateBio} className="bg-white rounded-3xl p-6 border border-zinc-200 shadow-xs space-y-4">
+            <h3 className="font-bold text-base text-zinc-900 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-[#dc3545]" /> About You (Bio)
+            </h3>
+            <textarea
+              rows={4}
+              maxLength={300}
+              placeholder="Tell guests and hosts a little about yourself, your travels, and interests..."
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl p-3.5 text-xs focus:outline-hidden focus:border-[#dc3545]"
+            />
+            <div className="flex items-center justify-between text-xs text-zinc-400">
+              <span>{300 - bio.length} characters left</span>
+              <button
+                type="submit"
+                disabled={isSavingBio}
+                className="bg-[#222222] hover:bg-black text-white text-xs font-bold py-2 px-5 rounded-full transition-colors cursor-pointer"
+              >
+                {isSavingBio ? 'Saving...' : 'Save Bio'}
+              </button>
+            </div>
+          </form>
+
+          {/* Change Password Form */}
+          {!user.googleId ? (
+            <form onSubmit={handleChangePassword} className="bg-white rounded-3xl p-6 border border-zinc-200 shadow-xs space-y-4">
+              <h3 className="font-bold text-base text-zinc-900 flex items-center gap-2">
+                <KeyRound className="w-4 h-4 text-[#dc3545]" /> Change Password
+              </h3>
+              <input
+                type="password"
+                placeholder="Current password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-hidden focus:border-[#dc3545]"
+                required
+              />
+              <input
+                type="password"
+                placeholder="New password (min 6 characters)"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-hidden focus:border-[#dc3545]"
+                required
+                minLength={6}
+              />
+              <input
+                type="password"
+                placeholder="Confirm new password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-hidden focus:border-[#dc3545]"
+                required
+                minLength={6}
+              />
+              <div className="text-right">
+                <button
+                  type="submit"
+                  disabled={isChangingPassword}
+                  className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors cursor-pointer"
+                >
+                  {isChangingPassword ? 'Updating...' : 'Update Password'}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-200 flex flex-col items-center justify-center text-center space-y-2">
+              <KeyRound className="w-8 h-8 text-zinc-400" />
+              <h4 className="font-bold text-sm text-zinc-800">Google Linked Account</h4>
+              <p className="text-xs text-zinc-500 max-w-xs">
+                Your account is authenticated via Google. Password change is handled directly through your Google account.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Cancellation Modal */}
+      {cancellingBooking && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <h3 className="font-bold text-lg text-zinc-900">Cancel Reservation</h3>
+            <p className="text-xs text-zinc-600">
+              Are you sure you want to cancel your stay at <b>{cancellingBooking.listing?.title}</b>?
+            </p>
+
+            <div className="bg-zinc-50 p-3.5 rounded-2xl border border-zinc-200 text-xs text-zinc-700 space-y-1">
+              <p><b>Policy:</b> {cancellingBooking.policySnapshot || 'flexible'}</p>
+              <p>Refunds are automatically calculated and returned to your original payment method in 3–5 business days.</p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">Reason for cancellation (optional)</label>
+              <textarea
+                rows={2}
+                placeholder="Let the host know why plans changed..."
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-2.5 text-xs focus:outline-hidden focus:border-[#dc3545]"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setCancellingBooking(null)}
+                className="text-xs font-semibold px-4 py-2 text-zinc-600 hover:text-zinc-900"
+              >
+                Keep Reservation
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmCancel}
+                disabled={isSubmittingCancel}
+                className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold px-5 py-2.5 rounded-full transition-colors cursor-pointer"
+              >
+                {isSubmittingCancel ? 'Cancelling...' : 'Confirm Cancellation'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}

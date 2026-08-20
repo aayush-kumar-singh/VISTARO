@@ -1,0 +1,142 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { useCurrency } from '../../context/CurrencyContext.jsx';
+import { useToast } from '../../context/ToastContext.jsx';
+import { wishlistApi } from '../../api/wishlistApi.js';
+import { Heart, Star, MapPin } from 'lucide-react';
+
+export default function ListingCard({ listing, onWishlistToggle }) {
+  const { user, updateUser } = useAuth();
+  const { formatPrice } = useCurrency();
+  const { showSuccess, showError } = useToast();
+  const navigate = useNavigate();
+
+  const isInitiallySaved = user?.wishlist?.some(
+    (item) => (typeof item === 'string' ? item : item?._id) === listing._id
+  );
+
+  const [isSaved, setIsSaved] = useState(Boolean(isInitiallySaved));
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  // Calculate average rating
+  const reviews = listing.reviews || [];
+  const validRatings = reviews
+    .map((r) => (typeof r === 'object' ? r.rating : 0))
+    .filter((r) => r > 0);
+  const averageRating =
+    validRatings.length > 0
+      ? (validRatings.reduce((sum, r) => sum + r, 0) / validRatings.length).toFixed(2)
+      : null;
+
+  const isGuestFavourite = validRatings.length >= 3 && Number(averageRating) >= 4.8;
+  const isNew = reviews.length === 0;
+
+  const handleHeartClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setIsAnimating(true);
+      const data = await wishlistApi.toggleWishlist(listing._id);
+      setIsSaved(data.inWishlist);
+      updateUser({ wishlist: data.wishlist });
+      showSuccess(data.message);
+      if (onWishlistToggle) onWishlistToggle(listing._id, data.inWishlist);
+      setTimeout(() => setIsAnimating(false), 400);
+    } catch (err) {
+      showError(err.message);
+      setIsAnimating(false);
+    }
+  };
+
+  const primaryImage =
+    listing.images?.[0]?.url ||
+    listing.image?.url ||
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60';
+
+  return (
+    <div className="group relative flex flex-col h-full bg-transparent">
+      {/* 1. Image Container (1:1 aspect ratio) */}
+      <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-zinc-100 mb-3 shadow-xs">
+        <Link to={`/listings/${listing._id}`} className="block w-full h-full">
+          <img
+            src={imgError ? 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60' : primaryImage}
+            alt={listing.title}
+            onError={() => setImgError(true)}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
+          />
+        </Link>
+
+        {/* Top-Left Badge */}
+        {isGuestFavourite ? (
+          <div className="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-xs text-[#222222] text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+            Guest favourite
+          </div>
+        ) : isNew ? (
+          <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-[#dc3545] to-[#c0392b] text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shadow-sm tracking-wider">
+            New
+          </div>
+        ) : null}
+
+        {/* Top-Right Heart Button (min 40x40px touch area) */}
+        <button
+          type="button"
+          onClick={handleHeartClick}
+          className={`absolute top-2 right-2 z-10 w-10 h-10 flex items-center justify-center bg-transparent border-none cursor-pointer focus:outline-hidden ${
+            isAnimating ? 'animate-heart-pop' : ''
+          }`}
+          aria-label={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
+        >
+          <Heart
+            className={`w-6 h-6 transition-colors drop-shadow-md ${
+              isSaved
+                ? 'fill-[#dc3545] text-[#dc3545]'
+                : 'fill-black/30 text-white hover:text-[#dc3545]'
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* 2. Content Info */}
+      <Link to={`/listings/${listing._id}`} className="flex flex-col flex-1 text-inherit no-underline">
+        {/* Title + Rating Row */}
+        <div className="flex items-center justify-between gap-2 w-full mb-0.5">
+          <h3 className="font-semibold text-sm sm:text-base text-[#222222] truncate flex-1 leading-snug">
+            {listing.title}
+          </h3>
+
+          <div className="flex items-center gap-1 shrink-0 text-xs sm:text-sm font-semibold text-[#222222]">
+            <Star className="w-3.5 h-3.5 fill-[#222222] text-[#222222]" />
+            <span>{averageRating ? averageRating : 'New'}</span>
+          </div>
+        </div>
+
+        {/* Location Subtitle */}
+        <p className="text-xs text-[#717171] truncate mb-1">
+          {listing.location}, {listing.country}
+        </p>
+
+        {/* Category tag */}
+        {listing.category && (
+          <p className="text-xs text-zinc-400 truncate mb-1">
+            {listing.category} stay
+          </p>
+        )}
+
+        {/* Price Row */}
+        <p className="text-sm sm:text-base font-semibold text-[#222222] mt-auto pt-1">
+          <span>{formatPrice(listing.price)}</span>
+          <span className="font-normal text-xs text-[#717171]"> / night</span>
+        </p>
+      </Link>
+    </div>
+  );
+}
