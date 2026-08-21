@@ -2,10 +2,26 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const bookingSchema = new Schema({
+    bookingType: {
+        type: String,
+        enum: ["stay", "package", "experience"],
+        default: "stay",
+        index: true,
+    },
     listing: {
         type: Schema.Types.ObjectId,
         ref: "listing",
-        required: true,
+        default: null,
+    },
+    tourPackage: {
+        type: Schema.Types.ObjectId,
+        ref: "TourPackage",
+        default: null,
+    },
+    experience: {
+        type: Schema.Types.ObjectId,
+        ref: "Experience",
+        default: null,
     },
     user: {
         type: Schema.Types.ObjectId,

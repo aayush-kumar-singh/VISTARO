@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { listingsApi } from '../api/listingsApi.js';
+import { destinationsApi } from '../api/destinationsApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
-import { UploadCloud, X, ArrowLeft, Plus, Check } from 'lucide-react';
+import { UploadCloud, X, ArrowLeft, Plus, Check, MapPin } from 'lucide-react';
 
 const CATEGORIES = [
   'Beach',
@@ -36,6 +37,8 @@ export default function CreateListingPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('Trending');
+  const [destination, setDestination] = useState('');
+  const [destinationsList, setDestinationsList] = useState([]);
   const [price, setPrice] = useState('');
   const [maxGuests, setMaxGuests] = useState('4');
   const [cancellationPolicy, setCancellationPolicy] = useState('flexible');
@@ -45,6 +48,18 @@ export default function CreateListingPage() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function loadDestinations() {
+      try {
+        const data = await destinationsApi.getDestinations();
+        setDestinationsList(data.destinations || []);
+      } catch (err) {
+        console.warn('Could not load destinations list:', err);
+      }
+    }
+    loadDestinations();
+  }, []);
 
   // Require login
   if (!user) {
@@ -104,6 +119,7 @@ export default function CreateListingPage() {
       formData.append('title', title.trim());
       formData.append('description', description.trim());
       formData.append('category', category);
+      formData.append('destination', destination);
       formData.append('price', price);
       formData.append('maxGuests', maxGuests);
       formData.append('cancellationPolicy', cancellationPolicy);
@@ -176,8 +192,8 @@ export default function CreateListingPage() {
             />
           </div>
 
-          {/* Category & Price */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Category, Destination & Price */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1.5">
                 Category *
@@ -190,6 +206,24 @@ export default function CreateListingPage() {
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1.5">
+                Destination (Optional)
+              </label>
+              <select
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:border-[#dc3545] cursor-pointer"
+              >
+                <option value="">None / Other</option>
+                {destinationsList.map((d) => (
+                  <option key={d._id} value={d._id}>
+                    {d.name} {d.state ? `(${d.state})` : ''}
                   </option>
                 ))}
               </select>

@@ -55,6 +55,7 @@ module.exports.signUpUser = async (req, res, next) => {
                 _id: registeredUser._id,
                 username: registeredUser.username,
                 email: registeredUser.email,
+                role: registeredUser.role || "user",
                 bio: registeredUser.bio || "",
                 wishlist: registeredUser.wishlist || [],
             };
@@ -85,6 +86,7 @@ module.exports.login = (req, res) => {
         _id: req.user._id,
         username: req.user.username,
         email: req.user.email,
+        role: req.user.role || "user",
         bio: req.user.bio || "",
         wishlist: req.user.wishlist || [],
     };
@@ -99,10 +101,22 @@ module.exports.login = (req, res) => {
 module.exports.logout = (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
-        res.json({
-            success: true,
-            message: "Logout successful.",
-        });
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        if (req.session) {
+            req.session.destroy(() => {
+                res.clearCookie("connect.sid", { path: "/" });
+                return res.json({
+                    success: true,
+                    message: "Logout successful.",
+                });
+            });
+        } else {
+            res.clearCookie("connect.sid", { path: "/" });
+            return res.json({
+                success: true,
+                message: "Logout successful.",
+            });
+        }
     });
 };
 
@@ -125,6 +139,7 @@ module.exports.getCurrentUser = async (req, res) => {
             _id: req.user._id,
             username: req.user.username,
             email: req.user.email,
+            role: req.user.role || "user",
             bio: req.user.bio || "",
             wishlist: req.user.wishlist || [],
             googleId: req.user.googleId || null,
@@ -147,11 +162,19 @@ module.exports.getCurrentUser = async (req, res) => {
 module.exports.getProfile = async (req, res) => {
     const userId = req.user._id;
 
-    // 1. Fetch user's bookings (with listing details)
+    // 1. Fetch user's bookings (with listing, tourPackage, and experience details)
     const allBookings = await Booking.find({ user: userId })
         .populate({
             path: "listing",
             populate: { path: "owner", select: "username email" },
+        })
+        .populate({
+            path: "tourPackage",
+            populate: { path: "destination", select: "name slug state country" },
+        })
+        .populate({
+            path: "experience",
+            populate: { path: "destination", select: "name slug state country" },
         })
         .sort({ checkIn: -1 });
 

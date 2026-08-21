@@ -26,6 +26,22 @@ module.exports.isLoggedIn = (req, res, next) => {
     next();
 };
 
+module.exports.isAdmin = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({
+            success: false,
+            error: "Please log in as an administrator to continue.",
+        });
+    }
+    if (!req.user || req.user.role !== "admin") {
+        return res.status(403).json({
+            success: false,
+            error: "Access denied. Administrator privileges required.",
+        });
+    }
+    next();
+};
+
 module.exports.isOwner = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -45,7 +61,7 @@ module.exports.isOwner = async (req, res, next) => {
             });
         }
 
-        if (!req.user || !listing.owner.equals(req.user._id)) {
+        if (!req.user || (!listing.owner.equals(req.user._id) && req.user.role !== "admin")) {
             return res.status(403).json({
                 success: false,
                 error: "You do not have permission to modify this listing.",
@@ -77,10 +93,10 @@ module.exports.isReviewAuthor = async (req, res, next) => {
             });
         }
 
-        if (!req.user || !review.author.equals(req.user._id)) {
+        if (!req.user || (!review.author.equals(req.user._id) && req.user.role !== "admin")) {
             return res.status(403).json({
                 success: false,
-                error: "You are not the author of this review.",
+                error: "You do not have permission to delete this review.",
             });
         }
 

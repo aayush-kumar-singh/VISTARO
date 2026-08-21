@@ -18,13 +18,18 @@ async function getOrCreateDemoUser() {
     });
 
     if (demoUser) {
-        console.log("Demo user already exists");
+        if (demoUser.role !== "admin") {
+            demoUser.role = "admin";
+            await demoUser.save();
+        }
+        console.log("Demo user already exists (admin)");
         return demoUser;
     }
 
     demoUser = new User({
         email: "demo@villavista.com",
         username: "demo",
+        role: "admin",
     });
 
     await User.register(demoUser, "VillaVistaDemo123");

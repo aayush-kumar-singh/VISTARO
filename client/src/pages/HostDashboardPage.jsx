@@ -25,13 +25,16 @@ export default function HostDashboardPage() {
 
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const loadDashboard = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await dashboardApi.getDashboard();
       setDashboard(data);
     } catch (err) {
+      setError(err.message);
       showError(err.message);
     } finally {
       setLoading(false);
@@ -60,6 +63,27 @@ export default function HostDashboardPage() {
 
   if (loading) {
     return <LoadingSpinner fullScreen text="Loading host analytics & reservations..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-md mx-auto my-16 p-8 bg-white border border-red-200 rounded-3xl text-center space-y-4 shadow-sm">
+        <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc3545] flex items-center justify-center mx-auto">
+          <LayoutDashboard className="w-6 h-6" />
+        </div>
+        <h2 className="text-xl font-bold text-zinc-900">Dashboard Failed to Load</h2>
+        <p className="text-sm text-zinc-500">{error}</p>
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={loadDashboard}
+            className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
+          >
+            Retry Loading
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const metrics = dashboard?.metrics || {

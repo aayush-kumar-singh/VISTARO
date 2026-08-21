@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Compass,
+  Shield,
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -50,6 +51,17 @@ export default function Navbar() {
     if (searchQuery.trim()) {
       setIsMobileSearchOpen(false);
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleLogout = async () => {
+    setIsUserMenuOpen(false);
+    setIsMobileSearchOpen(false);
+    setSearchQuery('');
+    await logout();
+    const protectedPaths = ['/admin', '/listings/new', '/profile', '/inbox', '/dashboard'];
+    if (protectedPaths.some((p) => location.pathname.startsWith(p))) {
+      navigate('/', { replace: true });
     }
   };
 
@@ -92,6 +104,27 @@ export default function Navbar() {
           >
             Explore
           </Link>
+
+          <Link
+            to="/destinations"
+            className="hidden md:inline-flex items-center font-semibold text-zinc-600 hover:text-[#dc3545] text-sm transition-colors"
+          >
+            Destinations
+          </Link>
+
+          <Link
+            to="/tours"
+            className="hidden md:inline-flex items-center font-semibold text-zinc-600 hover:text-[#dc3545] text-sm transition-colors"
+          >
+            Tours
+          </Link>
+
+          <Link
+            to="/experiences"
+            className="hidden md:inline-flex items-center font-semibold text-zinc-600 hover:text-purple-600 text-sm transition-colors"
+          >
+            Experiences
+          </Link>
         </div>
 
         {/* 2. Middle: Search Bar (Desktop & Tablet >= 768px) */}
@@ -121,13 +154,15 @@ export default function Navbar() {
         {/* 3. Right: Nav actions & User Menu (Desktop) */}
         <div className="hidden md:flex items-center gap-4 shrink-0">
           
-          <Link
-            to="/listings/new"
-            className="flex items-center gap-1.5 text-sm font-semibold text-[#222222] hover:text-[#dc3545] transition-colors py-2 px-3 rounded-full hover:bg-zinc-100"
-          >
-            <PlusCircle className="w-4 h-4 text-[#dc3545]" />
-            <span>List on Vistaro</span>
-          </Link>
+          {user?.role === 'admin' && (
+            <Link
+              to="/admin"
+              className="flex items-center gap-1.5 text-xs font-bold text-[#dc3545] bg-red-50 hover:bg-red-100 transition-colors py-2 px-4 rounded-full border border-red-200 shadow-2xs"
+            >
+              <Shield className="w-3.5 h-3.5" />
+              <span>Admin Portal</span>
+            </Link>
+          )}
 
           {/* Currency Switcher */}
           <div className="relative" ref={currencyRef}>
@@ -308,13 +343,25 @@ export default function Navbar() {
                   >
                     <Compass className="w-4 h-4 text-zinc-500" /> Explore
                   </Link>
-                  <Link
-                    to="/listings/new"
-                    onClick={() => setIsUserMenuOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2 text-sm font-semibold text-[#dc3545] hover:bg-red-50"
-                  >
-                    <PlusCircle className="w-4 h-4" /> List on Vistaro
-                  </Link>
+
+                  {user?.role === 'admin' && (
+                    <>
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm font-bold text-[#dc3545] hover:bg-red-50"
+                      >
+                        <Shield className="w-4 h-4 text-[#dc3545]" /> Admin Console
+                      </Link>
+                      <Link
+                        to="/listings/new"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm font-semibold text-zinc-800 hover:bg-zinc-100"
+                      >
+                        <PlusCircle className="w-4 h-4 text-[#dc3545]" /> Create Listing
+                      </Link>
+                    </>
+                  )}
                 </div>
 
                 {!user ? (
@@ -345,13 +392,6 @@ export default function Navbar() {
                         <MessageSquare className="w-4 h-4 text-zinc-500" /> Messages {unreadCount > 0 && `(${unreadCount})`}
                       </Link>
                       <Link
-                        to="/dashboard"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-100"
-                      >
-                        <LayoutDashboard className="w-4 h-4 text-zinc-500" /> Host Dashboard
-                      </Link>
-                      <Link
                         to="/wishlist"
                         onClick={() => setIsUserMenuOpen(false)}
                         className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-100"
@@ -368,11 +408,8 @@ export default function Navbar() {
                     </div>
                     <div className="py-1">
                       <button
-                        onClick={() => {
-                          setIsUserMenuOpen(false);
-                          logout();
-                        }}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#dc3545] hover:bg-red-50 text-left font-medium"
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#dc3545] hover:bg-red-50 text-left font-medium cursor-pointer"
                       >
                         <LogOut className="w-4 h-4" /> Log Out
                       </button>

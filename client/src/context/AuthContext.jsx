@@ -56,13 +56,18 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    // Immediately clear all client auth state & cached session storage
+    setUser(null);
+    setUnreadCount(0);
     try {
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
       await authApi.logout();
-      setUser(null);
-      setUnreadCount(0);
       showSuccess('Logged out successfully.');
     } catch (err) {
-      showError(err.message);
+      showError(err.message || 'Logout completed.');
     }
   };
 

@@ -38,10 +38,10 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 
     router.get(
         "/google/callback",
-        passport.authenticate("google", { failureRedirect: "/login?error=google_failed" }),
+        passport.authenticate("google", { failureRedirect: "/login" }),
         (req, res) => {
             const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-            res.redirect(`${clientUrl}/?auth=success`);
+            res.redirect(clientUrl);
         }
     );
 }

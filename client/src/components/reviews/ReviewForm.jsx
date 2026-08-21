@@ -4,7 +4,7 @@ import { useToast } from '../../context/ToastContext.jsx';
 import { reviewsApi } from '../../api/reviewsApi.js';
 import StarRating from '../common/StarRating.jsx';
 
-export default function ReviewForm({ listingId, onReviewAdded }) {
+export default function ReviewForm({ listingId, packageId, experienceId, onReviewAdded }) {
   const { user } = useAuth();
   const { showSuccess, showError } = useToast();
 
@@ -12,11 +12,20 @@ export default function ReviewForm({ listingId, onReviewAdded }) {
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isPackage = Boolean(packageId);
+  const isExperience = Boolean(experienceId);
+
   if (!user) {
     return (
       <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-5 text-center">
         <h4 className="text-sm font-semibold text-zinc-800 mb-1">Leave a Review</h4>
-        <p className="text-xs text-zinc-500 mb-3">Please sign in to share your stay experience with future guests.</p>
+        <p className="text-xs text-zinc-500 mb-3">
+          {isExperience
+            ? 'Please sign in with your account to review this host-led experience.'
+            : isPackage
+            ? 'Please sign in with your explorer account to review this tour package.'
+            : 'Please sign in to share your stay experience with future guests.'}
+        </p>
         <a
           href="/login"
           className="inline-block bg-[#222222] hover:bg-black text-white text-xs font-bold py-2 px-5 rounded-full transition-colors"
@@ -36,19 +45,27 @@ export default function ReviewForm({ listingId, onReviewAdded }) {
 
     try {
       setIsSubmitting(true);
-      const data = await reviewsApi.createReview(listingId, {
-        review: {
-          rating,
-          comment: comment.trim(),
-        },
-      });
+      let data;
+      if (experienceId) {
+        data = await reviewsApi.createExperienceReview(experienceId, {
+          review: { rating, comment: comment.trim() },
+        });
+      } else if (packageId) {
+        data = await reviewsApi.createPackageReview(packageId, {
+          review: { rating, comment: comment.trim() },
+        });
+      } else {
+        data = await reviewsApi.createReview(listingId, {
+          review: { rating, comment: comment.trim() },
+        });
+      }
 
-      showSuccess('Thank you! Your review has been submitted.');
+      showSuccess(data.message || 'Thank you! Your review has been submitted.');
       setComment('');
       setRating(5);
       if (onReviewAdded) onReviewAdded(data.review);
     } catch (err) {
-      showError(err.message);
+      showError(err.response?.data?.error || err.message || 'Failed to submit review.');
     } finally {
       setIsSubmitting(false);
     }

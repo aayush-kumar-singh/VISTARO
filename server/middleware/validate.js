@@ -36,6 +36,7 @@ const listingSchema = Joi.object({
     maxGuests: Joi.number().integer().min(1).optional(),
     amenities: Joi.array().items(Joi.string().escapeHTML()).optional(),
     cancellationPolicy: Joi.string().valid("flexible", "moderate", "strict").optional(),
+    destination: Joi.string().allow("", null).optional(),
     category: Joi.string().valid(
         "Beach",
         "Farm",

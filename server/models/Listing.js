@@ -60,6 +60,11 @@ const listingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
+    destination: {
+        type: Schema.Types.ObjectId,
+        ref: "Destination",
+        default: null,
+    },
     geometry: {
         type: {
             type: String,
@@ -85,6 +90,8 @@ const listingSchema = new Schema({
         required: true,
     },
 }, { timestamps: true });
+
+listingSchema.index({ destination: 1 });
 
 // Cascade delete reviews when a listing is removed
 listingSchema.post("findOneAndDelete", async (listing) => {

@@ -163,6 +163,7 @@ module.exports.sendMessage = async (req, res) => {
     if (io) {
         io.to(conversationId.toString()).emit("new_message", {
             _id: newMessage._id,
+            conversation: conversationId.toString(),
             conversationId: conversationId.toString(),
             body: newMessage.body,
             sender: {
@@ -176,5 +177,6 @@ module.exports.sendMessage = async (req, res) => {
     res.status(201).json({
         success: true,
         message: newMessage,
+        messageDoc: newMessage,
     });
 };

@@ -51,9 +51,12 @@ module.exports.sendBookingConfirmation = async ({ user, listing, booking }) => {
             year: "numeric",
         });
 
-        const basePrice = (booking.nights * listing.price).toLocaleString("en-IN");
-        const gst = Math.round(booking.nights * listing.price * 0.18).toLocaleString("en-IN");
-        const total = booking.totalPrice.toLocaleString("en-IN");
+        const itemName = (listing && listing.title) || (booking && booking.tourPackage && booking.tourPackage.title) || "Vistaro Reservation";
+        const itemLocation = listing ? `${listing.location}, ${listing.country}` : "Curated Expedition";
+        const itemPrice = (listing && listing.price) || (booking && booking.totalPrice) || 0;
+        const total = (booking.totalPrice || 0).toLocaleString("en-IN");
+        const gst = Math.round((booking.totalPrice || 0) * (18 / 118)).toLocaleString("en-IN");
+        const basePrice = ((booking.totalPrice || 0) - Math.round((booking.totalPrice || 0) * (18 / 118))).toLocaleString("en-IN");
 
         const htmlContent = `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 12px; background-color: #ffffff;">
@@ -63,18 +66,18 @@ module.exports.sendBookingConfirmation = async ({ user, listing, booking }) => {
             </div>
 
             <p style="font-size: 16px; color: #333;">Hi <strong>${user.username}</strong>,</p>
-            <p style="font-size: 15px; color: #555; line-height: 1.5;">Your reservation at <strong>${listing.title}</strong> is officially confirmed! Here is your complete booking receipt.</p>
+            <p style="font-size: 15px; color: #555; line-height: 1.5;">Your reservation for <strong>${itemName}</strong> is officially confirmed! Here is your complete booking receipt.</p>
 
             <div style="background-color: #f8f9fa; border-radius: 8px; padding: 16px; margin: 20px 0;">
                 <h3 style="margin-top: 0; color: #222; font-size: 18px; border-bottom: 1px solid #e9ecef; padding-bottom: 8px;">Trip Details</h3>
                 <table style="width: 100%; font-size: 14px; color: #444; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 6px 0;"><strong>Property:</strong></td>
-                        <td style="padding: 6px 0; text-align: right;">${listing.title}</td>
+                        <td style="padding: 6px 0;"><strong>Experience / Stay:</strong></td>
+                        <td style="padding: 6px 0; text-align: right;">${itemName}</td>
                     </tr>
                     <tr>
                         <td style="padding: 6px 0;"><strong>Location:</strong></td>
-                        <td style="padding: 6px 0; text-align: right;">${listing.location}, ${listing.country}</td>
+                        <td style="padding: 6px 0; text-align: right;">${itemLocation}</td>
                     </tr>
                     <tr>
                         <td style="padding: 6px 0;"><strong>Dates:</strong></td>
@@ -85,8 +88,8 @@ module.exports.sendBookingConfirmation = async ({ user, listing, booking }) => {
                         <td style="padding: 6px 0; text-align: right;">${booking.nights} night(s)</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0;"><strong>Guests:</strong></td>
-                        <td style="padding: 6px 0; text-align: right;">${booking.guests || 1} guest(s)</td>
+                        <td style="padding: 6px 0;"><strong>Travelers / Guests:</strong></td>
+                        <td style="padding: 6px 0; text-align: right;">${booking.guests || 1}</td>
                     </tr>
                     <tr>
                         <td style="padding: 6px 0;"><strong>Confirmation Code:</strong></td>
@@ -99,7 +102,7 @@ module.exports.sendBookingConfirmation = async ({ user, listing, booking }) => {
                 <h3 style="margin-top: 0; color: #222; font-size: 18px; border-bottom: 1px solid #e9ecef; padding-bottom: 8px;">Price Breakdown</h3>
                 <table style="width: 100%; font-size: 14px; color: #444; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 6px 0;">&#8377; ${listing.price.toLocaleString("en-IN")} &times; ${booking.nights} nights</td>
+                        <td style="padding: 6px 0;">Subtotal Base</td>
                         <td style="padding: 6px 0; text-align: right;">&#8377; ${basePrice}</td>
                     </tr>
                     <tr>
@@ -123,8 +126,8 @@ module.exports.sendBookingConfirmation = async ({ user, listing, booking }) => {
         const mailOptions = {
             from: process.env.EMAIL_FROM || '"Vistaro" <no-reply@vistaro.com>',
             to: user.email,
-            subject: `Reservation Confirmed: ${listing.title}`,
-            text: `Hi ${user.username}, your booking for ${listing.title} from ${checkInStr} to ${checkOutStr} is confirmed! Total: Rs. ${total}`,
+            subject: `Reservation Confirmed: ${itemName}`,
+            text: `Hi ${user.username}, your booking for ${itemName} from ${checkInStr} to ${checkOutStr} is confirmed! Total: Rs. ${total}`,
             html: htmlContent,
         };
 
@@ -151,6 +154,8 @@ module.exports.sendCancellationConfirmation = async ({ user, listing, booking, r
             year: "numeric",
         });
 
+        const itemName = (listing && listing.title) || (booking && booking.tourPackage && booking.tourPackage.title) || "Vistaro Reservation";
+
         const htmlContent = `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 12px; background-color: #ffffff;">
             <div style="text-align: center; border-bottom: 2px solid #dc3545; padding-bottom: 16px; margin-bottom: 24px;">
@@ -159,14 +164,14 @@ module.exports.sendCancellationConfirmation = async ({ user, listing, booking, r
             </div>
 
             <p style="font-size: 16px; color: #333;">Hi <strong>${user.username}</strong>,</p>
-            <p style="font-size: 15px; color: #555; line-height: 1.5;">Your reservation at <strong>${listing.title}</strong> has been cancelled. Below is the confirmation of your cancellation and refund details.</p>
+            <p style="font-size: 15px; color: #555; line-height: 1.5;">Your reservation for <strong>${itemName}</strong> has been cancelled. Below is the confirmation of your cancellation and refund details.</p>
 
             <div style="background-color: #f8f9fa; border-radius: 8px; padding: 16px; margin: 20px 0;">
                 <h3 style="margin-top: 0; color: #222; font-size: 18px; border-bottom: 1px solid #e9ecef; padding-bottom: 8px;">Cancellation Summary</h3>
                 <table style="width: 100%; font-size: 14px; color: #444; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 6px 0;"><strong>Property:</strong></td>
-                        <td style="padding: 6px 0; text-align: right;">${listing.title}</td>
+                        <td style="padding: 6px 0;"><strong>Reservation:</strong></td>
+                        <td style="padding: 6px 0; text-align: right;">${itemName}</td>
                     </tr>
                     <tr>
                         <td style="padding: 6px 0;"><strong>Dates:</strong></td>
@@ -198,8 +203,8 @@ module.exports.sendCancellationConfirmation = async ({ user, listing, booking, r
         const mailOptions = {
             from: process.env.EMAIL_FROM || '"Vistaro" <no-reply@vistaro.com>',
             to: user.email,
-            subject: `Reservation Cancelled: ${listing.title}`,
-            text: `Hi ${user.username}, your booking for ${listing.title} has been cancelled. Refund: ${refundPercentage}% (Rs. ${refundAmount}).`,
+            subject: `Reservation Cancelled: ${itemName}`,
+            text: `Hi ${user.username}, your booking for ${itemName} has been cancelled. Refund: ${refundPercentage}% (Rs. ${refundAmount}).`,
             html: htmlContent,
         };
 

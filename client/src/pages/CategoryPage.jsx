@@ -53,8 +53,27 @@ export default function CategoryPage() {
       {loading && <LoadingSpinner fullScreen text={`Discovering ${decodedCategory} stays...`} />}
 
       {error && !loading && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center text-sm text-[#dc3545]">
-          {error}
+        <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
+          <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc3545] flex items-center justify-center mx-auto">
+            <Compass className="w-6 h-6" />
+          </div>
+          <h3 className="font-bold text-base text-zinc-900">Failed to Load Category</h3>
+          <p className="text-xs text-zinc-600 max-w-sm mx-auto">{error}</p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+            >
+              Retry
+            </button>
+            <Link
+              to="/"
+              className="bg-white border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
+            >
+              All Categories
+            </Link>
+          </div>
         </div>
       )}
 
@@ -63,13 +82,13 @@ export default function CategoryPage() {
           <Compass className="w-12 h-12 text-zinc-400 mx-auto mb-3" />
           <h3 className="font-bold text-lg text-zinc-800">No stays in "{decodedCategory}"</h3>
           <p className="text-sm text-zinc-500 max-w-md mx-auto mt-1 mb-4">
-            Be the first host to list a stay in this category!
+            Browse all our featured homes across other destinations and categories.
           </p>
           <Link
-            to="/listings/new"
+            to="/"
             className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
           >
-            List a Space
+            Explore All Stays
           </Link>
         </div>
       )}

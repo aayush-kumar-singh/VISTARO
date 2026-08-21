@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { listingsApi } from '../api/listingsApi.js';
+import { destinationsApi } from '../api/destinationsApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
-import { UploadCloud, X, ArrowLeft, Check, Trash2 } from 'lucide-react';
+import { UploadCloud, X, ArrowLeft, Check, Trash2, MapPin } from 'lucide-react';
 
 const CATEGORIES = [
   'Beach',
@@ -38,6 +39,8 @@ export default function EditListingPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('Trending');
+  const [destination, setDestination] = useState('');
+  const [destinationsList, setDestinationsList] = useState([]);
   const [price, setPrice] = useState('');
   const [maxGuests, setMaxGuests] = useState('4');
   const [cancellationPolicy, setCancellationPolicy] = useState('flexible');
@@ -54,15 +57,20 @@ export default function EditListingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    async function fetchListing() {
+    async function loadData() {
       try {
         setLoading(true);
-        const data = await listingsApi.getListingById(id);
-        const l = data.listing;
+        const [listingData, destsData] = await Promise.all([
+          listingsApi.getListingById(id),
+          destinationsApi.getDestinations().catch(() => ({ destinations: [] }))
+        ]);
+
+        setDestinationsList(destsData.destinations || []);
+        const l = listingData.listing;
 
         // Check ownership
         const ownerId = typeof l.owner === 'object' ? l.owner._id : l.owner;
-        if (user && ownerId !== user._id) {
+        if (user && ownerId !== user._id && user.role !== 'admin') {
           showError('You do not have permission to edit this listing.');
           navigate(`/listings/${id}`);
           return;
@@ -71,6 +79,7 @@ export default function EditListingPage() {
         setTitle(l.title || '');
         setDescription(l.description || '');
         setCategory(l.category || 'Trending');
+        setDestination(l.destination?._id || l.destination || '');
         setPrice(l.price?.toString() || '');
         setMaxGuests(l.maxGuests?.toString() || '4');
         setCancellationPolicy(l.cancellationPolicy || 'flexible');
@@ -80,13 +89,12 @@ export default function EditListingPage() {
         setExistingImages(l.images || (l.image?.url ? [l.image] : []));
       } catch (err) {
         showError(err.message);
-        navigate('/listings');
+        navigate('/');
       } finally {
         setLoading(false);
       }
     }
-
-    fetchListing();
+    loadData();
   }, [id, user]);
 
   if (loading) {
@@ -144,6 +152,7 @@ export default function EditListingPage() {
       formData.append('title', title.trim());
       formData.append('description', description.trim());
       formData.append('category', category);
+      formData.append('destination', destination || '');
       formData.append('price', price);
       formData.append('maxGuests', maxGuests);
       formData.append('cancellationPolicy', cancellationPolicy);
@@ -217,8 +226,8 @@ export default function EditListingPage() {
             />
           </div>
 
-          {/* Category & Price */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Category, Destination & Price */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1.5">
                 Category *
@@ -231,6 +240,24 @@ export default function EditListingPage() {
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1.5">
+                Destination (Optional)
+              </label>
+              <select
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:border-[#dc3545] cursor-pointer"
+              >
+                <option value="">None / Other</option>
+                {destinationsList.map((d) => (
+                  <option key={d._id} value={d._id}>
+                    {d.name} {d.state ? `(${d.state})` : ''}
                   </option>
                 ))}
               </select>

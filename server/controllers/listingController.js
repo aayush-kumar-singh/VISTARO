@@ -7,11 +7,15 @@ const { cloudinary } = require("../config/cloudinary.js");
 // Get all listings (paginated + filtered)
 // --------------------------------------------------
 module.exports.index = async (req, res) => {
-    const { minPrice, maxPrice, category, sort, page, limit: queryLimit } = req.query;
+    const { minPrice, maxPrice, category, destination, sort, page, limit: queryLimit } = req.query;
     const filter = {};
 
     if (category && category !== "All") {
         filter.category = category;
+    }
+
+    if (destination) {
+        filter.destination = destination;
     }
 
     if (minPrice || maxPrice) {
@@ -42,6 +46,7 @@ module.exports.index = async (req, res) => {
 
     const listings = await Listing.find(filter)
         .populate("reviews")
+        .populate("destination", "name slug state country shortTagline heroImage")
         .sort(sortQuery)
         .skip(skip)
         .limit(limit);
@@ -88,7 +93,8 @@ module.exports.getListingById = async (req, res) => {
                 select: "username email createdAt",
             },
         })
-        .populate("owner", "username email createdAt");
+        .populate("owner", "username email createdAt")
+        .populate("destination", "name slug state country shortTagline heroImage");
 
     if (!listing) {
         return res.status(404).json({
@@ -188,8 +194,13 @@ module.exports.createListing = async (req, res, next) => {
             }
         }
 
+        const destinationId = (listingData.destination && listingData.destination !== "none" && listingData.destination !== "")
+            ? listingData.destination
+            : null;
+
         const newListing = new Listing({
             ...listingData,
+            destination: destinationId,
             amenities,
             owner: req.user._id,
             geometry,
@@ -239,9 +250,18 @@ module.exports.updateListing = async (req, res, next) => {
             });
         }
 
+        // Handle destination assignment
+        let destinationId = listing.destination;
+        if (listingData.destination !== undefined) {
+            destinationId = (listingData.destination && listingData.destination !== "none" && listingData.destination !== "")
+                ? listingData.destination
+                : null;
+        }
+
         // Update scalar fields
         Object.assign(listing, {
             ...listingData,
+            destination: destinationId,
             amenities: amenities || listing.amenities,
         });
 

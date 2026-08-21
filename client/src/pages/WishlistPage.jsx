@@ -79,8 +79,27 @@ export default function WishlistPage() {
       {loading && <LoadingSpinner fullScreen text="Loading saved stays..." />}
 
       {error && !loading && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center text-sm text-[#dc3545]">
-          {error}
+        <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
+          <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc3545] flex items-center justify-center mx-auto">
+            <Heart className="w-6 h-6" />
+          </div>
+          <h3 className="font-bold text-base text-zinc-900">Failed to Load Wishlist</h3>
+          <p className="text-xs text-zinc-600 max-w-sm mx-auto">{error}</p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+            >
+              Retry
+            </button>
+            <Link
+              to="/"
+              className="bg-white border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
+            >
+              Explore Stays
+            </Link>
+          </div>
         </div>
       )}
 

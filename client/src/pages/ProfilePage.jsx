@@ -32,6 +32,7 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Bio state
   const [bio, setBio] = useState('');
@@ -59,10 +60,12 @@ export default function ProfilePage() {
   const loadProfile = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await authApi.getProfile();
       setProfileData(data);
       setBio(data.user?.bio || '');
     } catch (err) {
+      setError(err.message);
       showError(err.message);
     } finally {
       setLoading(false);
@@ -91,6 +94,27 @@ export default function ProfilePage() {
 
   if (loading) {
     return <LoadingSpinner fullScreen text="Loading your account profile..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-md mx-auto my-16 p-8 bg-white border border-red-200 rounded-3xl text-center space-y-4 shadow-sm">
+        <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc3545] flex items-center justify-center mx-auto">
+          <User className="w-6 h-6" />
+        </div>
+        <h2 className="text-xl font-bold text-zinc-900">Profile Loading Failed</h2>
+        <p className="text-sm text-zinc-500">{error}</p>
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={loadProfile}
+            className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
+          >
+            Retry Loading
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const handleUpdateBio = async (e) => {
@@ -179,12 +203,14 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <Link
-          to="/listings/new"
-          className="inline-flex items-center justify-center gap-2 bg-[#dc3545] hover:bg-[#b02a37] text-white font-bold text-xs sm:text-sm py-3 px-6 rounded-full transition-all shadow-xs shrink-0 cursor-pointer"
-        >
-          <PlusCircle className="w-4 h-4" /> List on Vistaro
-        </Link>
+        {user.role === 'admin' && (
+          <Link
+            to="/admin"
+            className="inline-flex items-center justify-center gap-2 bg-[#dc3545] hover:bg-[#b02a37] text-white font-bold text-xs sm:text-sm py-3 px-6 rounded-full transition-all shadow-xs shrink-0 cursor-pointer"
+          >
+            Admin Console
+          </Link>
+        )}
       </div>
 
       {/* 2. Navigation Pills */}
@@ -238,6 +264,24 @@ export default function ProfilePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {upcomingTrips.map((trip) => {
+                const isExperience = trip.bookingType === 'experience' || !!trip.experience;
+                const isPackage = trip.bookingType === 'package' || !!trip.tourPackage;
+                const tripTitle = isExperience
+                  ? trip.experience?.title
+                  : isPackage
+                  ? trip.tourPackage?.title
+                  : trip.listing?.title;
+                const tripImage = isExperience
+                  ? (trip.experience?.coverImage?.url || trip.experience?.image?.url)
+                  : isPackage
+                  ? (trip.tourPackage?.coverImage?.url || trip.tourPackage?.image?.url)
+                  : (trip.listing?.images?.[0]?.url || trip.listing?.image?.url);
+                const detailUrl = isExperience
+                  ? `/experiences/${trip.experience?.slug}`
+                  : isPackage
+                  ? `/tours/${trip.tourPackage?.slug}`
+                  : `/listings/${trip.listing?._id}`;
+
                 const checkInDate = new Date(trip.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
                 const checkOutDate = new Date(trip.checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
@@ -248,8 +292,8 @@ export default function ProfilePage() {
                   >
                     <div className="sm:w-44 h-40 sm:h-auto bg-zinc-100 shrink-0">
                       <img
-                        src={trip.listing?.images?.[0]?.url || trip.listing?.image?.url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60'}
-                        alt={trip.listing?.title || 'Trip'}
+                        src={tripImage || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60'}
+                        alt={tripTitle || 'Trip'}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -257,29 +301,33 @@ export default function ProfilePage() {
                       <div>
                         <div className="flex items-center justify-between gap-2">
                           <h4 className="font-bold text-sm text-zinc-900 truncate">
-                            {trip.listing?.title || 'Listing'}
+                            {tripTitle || (isExperience ? 'Experience' : isPackage ? 'Tour Package' : 'Stay')}
                           </h4>
-                          <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                            Confirmed
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            isExperience
+                              ? 'bg-purple-100 text-purple-900'
+                              : isPackage
+                              ? 'bg-amber-100 text-amber-900'
+                              : 'bg-emerald-100 text-emerald-800'
+                          }`}>
+                            {isExperience ? 'Experience' : isPackage ? 'Tour Package' : 'Confirmed'}
                           </span>
                         </div>
                         <p className="text-xs text-zinc-500 mt-1">
-                          {checkInDate} &ndash; {checkOutDate} ({trip.nights} night{trip.nights > 1 ? 's' : ''})
+                          {isExperience ? `Date: ${checkInDate}` : `${checkInDate} – ${checkOutDate} (${trip.nights} night${trip.nights > 1 ? 's' : ''})`}
                         </p>
                         <p className="text-xs text-zinc-500 mt-0.5">
-                          {trip.guests} guest{trip.guests > 1 ? 's' : ''} &middot; Total: <span className="font-semibold text-zinc-900">{formatPrice(trip.totalPrice)}</span>
+                          {trip.guests} {isExperience ? 'participant' : isPackage ? 'traveler' : 'guest'}{trip.guests > 1 ? 's' : ''} &middot; Total: <span className="font-semibold text-zinc-900">{formatPrice(trip.totalPrice)}</span>
                         </p>
                       </div>
 
                       <div className="flex items-center justify-between pt-2 border-t border-zinc-100">
-                        {trip.listing && (
-                          <Link
-                            to={`/listings/${trip.listing._id}`}
-                            className="text-xs font-bold text-[#dc3545] hover:underline"
-                          >
-                            View stay details
-                          </Link>
-                        )}
+                        <Link
+                          to={detailUrl}
+                          className="text-xs font-bold text-[#dc3545] hover:underline"
+                        >
+                          {isExperience ? 'View experience details' : isPackage ? 'View expedition details' : 'View stay details'}
+                        </Link>
                         <button
                           onClick={() => setCancellingBooking(trip)}
                           className="text-xs font-semibold text-zinc-500 hover:text-[#dc3545] underline cursor-pointer"
@@ -302,13 +350,26 @@ export default function ProfilePage() {
           {pastTrips.length === 0 ? (
             <div className="text-center py-16 bg-zinc-50 rounded-3xl border border-zinc-200">
               <Clock className="w-10 h-10 text-zinc-300 mx-auto mb-2" />
-              <h3 className="font-bold text-base text-zinc-800">No past stays</h3>
+              <h3 className="font-bold text-base text-zinc-800">No past trips</h3>
               <p className="text-xs text-zinc-500">Your completed and cancelled reservations will appear here.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {pastTrips.map((trip) => {
                 const isCancelled = trip.status === 'cancelled';
+                const isExperience = trip.bookingType === 'experience' || !!trip.experience;
+                const isPackage = trip.bookingType === 'package' || !!trip.tourPackage;
+                const tripTitle = isExperience
+                  ? trip.experience?.title
+                  : isPackage
+                  ? trip.tourPackage?.title
+                  : trip.listing?.title;
+                const tripImage = isExperience
+                  ? (trip.experience?.coverImage?.url || trip.experience?.image?.url)
+                  : isPackage
+                  ? (trip.tourPackage?.coverImage?.url || trip.tourPackage?.image?.url)
+                  : (trip.listing?.images?.[0]?.url || trip.listing?.image?.url);
+
                 const checkInDate = new Date(trip.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
                 const checkOutDate = new Date(trip.checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
@@ -319,7 +380,7 @@ export default function ProfilePage() {
                   >
                     <div className="w-20 h-20 rounded-xl bg-zinc-100 shrink-0 overflow-hidden">
                       <img
-                        src={trip.listing?.images?.[0]?.url || trip.listing?.image?.url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60'}
+                        src={tripImage || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60'}
                         alt=""
                         className="w-full h-full object-cover"
                       />
@@ -327,18 +388,24 @@ export default function ProfilePage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
                         <h4 className="font-bold text-sm text-zinc-900 truncate">
-                          {trip.listing?.title || 'Past Stay'}
+                          {tripTitle || (isExperience ? 'Experience' : isPackage ? 'Tour Package' : 'Past Stay')}
                         </h4>
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            isCancelled ? 'bg-red-100 text-red-800' : 'bg-zinc-100 text-zinc-700'
+                            isCancelled
+                              ? 'bg-red-100 text-red-800'
+                              : isExperience
+                              ? 'bg-purple-100 text-purple-900'
+                              : isPackage
+                              ? 'bg-amber-100 text-amber-900'
+                              : 'bg-zinc-100 text-zinc-700'
                           }`}
                         >
-                          {isCancelled ? 'Cancelled' : 'Completed'}
+                          {isCancelled ? 'Cancelled' : isExperience ? 'Experience' : isPackage ? 'Tour Package' : 'Completed'}
                         </span>
                       </div>
                       <p className="text-xs text-zinc-500 mt-1">
-                        {checkInDate} &ndash; {checkOutDate}
+                        {isExperience ? `Date: ${checkInDate}` : `${checkInDate} – ${checkOutDate}`}
                       </p>
                       {isCancelled && trip.cancellation?.refundPercentage !== undefined && (
                         <p className="text-xs font-semibold text-emerald-600 mt-0.5">
@@ -362,14 +429,25 @@ export default function ProfilePage() {
               <Home className="w-10 h-10 text-zinc-300 mx-auto mb-2" />
               <h3 className="font-bold text-base text-zinc-800">You haven't listed any spaces yet</h3>
               <p className="text-xs text-zinc-500 max-w-sm mx-auto mt-1 mb-4">
-                Earn extra income by hosting travelers from all over the world.
+                {user.role === 'admin'
+                  ? 'Publish and manage verified property listings across Vistaro.'
+                  : 'You do not manage any property listings.'}
               </p>
-              <Link
-                to="/listings/new"
-                className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
-              >
-                Create First Listing
-              </Link>
+              {user.role === 'admin' ? (
+                <Link
+                  to="/listings/new"
+                  className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
+                >
+                  Create First Listing
+                </Link>
+              ) : (
+                <Link
+                  to="/"
+                  className="inline-block bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
+                >
+                  Explore Stays
+                </Link>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

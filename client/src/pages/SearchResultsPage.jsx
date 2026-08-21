@@ -93,7 +93,7 @@ export default function SearchResultsPage() {
       filters.selectedAmenities.forEach((a) => newParams.append('amenities', a));
     }
 
-    newParams.set('page', '1');
+    newParams.delete('page');
     setSearchParams(newParams);
   };
 
@@ -101,14 +101,18 @@ export default function SearchResultsPage() {
     const newParams = new URLSearchParams(searchParams);
     if (newSort) newParams.set('sort', newSort);
     else newParams.delete('sort');
-    newParams.set('page', '1');
+    newParams.delete('page');
     setSearchParams(newParams);
     setIsSortOpen(false);
   };
 
   const handlePageChange = (newPage) => {
     const newParams = new URLSearchParams(searchParams);
-    newParams.set('page', newPage.toString());
+    if (newPage === 1) {
+      newParams.delete('page');
+    } else {
+      newParams.set('page', newPage.toString());
+    }
     setSearchParams(newParams);
   };
 
@@ -218,8 +222,27 @@ export default function SearchResultsPage() {
 
       {/* Error state */}
       {error && !loading && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center text-sm text-[#dc3545]">
-          Search error: {error}
+        <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
+          <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc3545] flex items-center justify-center mx-auto">
+            <Search className="w-6 h-6" />
+          </div>
+          <h3 className="font-bold text-base text-zinc-900">Search Request Failed</h3>
+          <p className="text-xs text-zinc-600 max-w-sm mx-auto">{error}</p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+            >
+              Retry Search
+            </button>
+            <Link
+              to="/"
+              className="bg-white border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
+            >
+              View All Stays
+            </Link>
+          </div>
         </div>
       )}
 

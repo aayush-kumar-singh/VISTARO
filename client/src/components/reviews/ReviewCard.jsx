@@ -9,6 +9,9 @@ export default function ReviewCard({
   review,
   listingId,
   listingOwnerId,
+  packageId,
+  experienceId,
+  creatorId,
   onReviewDeleted,
   onReplyUpdated,
 }) {
@@ -24,18 +27,24 @@ export default function ReviewCard({
   const authorName = typeof review.author === 'object' ? review.author?.username : 'Guest';
 
   const isReviewAuthor = user && authorId === user._id;
-  const isHost = user && listingOwnerId === user._id;
+  const isHost = user && ((listingOwnerId && listingOwnerId === user._id) || (creatorId && creatorId === user._id) || user.role === 'admin');
 
   const handleDeleteReview = async () => {
     if (!window.confirm('Are you sure you want to delete this review?')) return;
 
     try {
       setIsDeleting(true);
-      await reviewsApi.deleteReview(listingId, review._id);
+      if (experienceId) {
+        await reviewsApi.deleteExperienceReview(experienceId, review._id);
+      } else if (packageId) {
+        await reviewsApi.deletePackageReview(packageId, review._id);
+      } else {
+        await reviewsApi.deleteReview(listingId, review._id);
+      }
       showSuccess('Review deleted successfully.');
       if (onReviewDeleted) onReviewDeleted(review._id);
     } catch (err) {
-      showError(err.message);
+      showError(err.response?.data?.error || err.message || 'Failed to delete review.');
       setIsDeleting(false);
     }
   };
@@ -46,15 +55,26 @@ export default function ReviewCard({
 
     try {
       setIsSubmittingReply(true);
-      const data = await reviewsApi.addReply(listingId, review._id, {
-        reply: { comment: replyText.trim() },
-      });
-      showSuccess('Host reply posted.');
+      let data;
+      if (experienceId) {
+        data = await reviewsApi.addExperienceReply(experienceId, review._id, {
+          reply: { comment: replyText.trim() },
+        });
+      } else if (packageId) {
+        data = await reviewsApi.addPackageReply(packageId, review._id, {
+          reply: { comment: replyText.trim() },
+        });
+      } else {
+        data = await reviewsApi.addReply(listingId, review._id, {
+          reply: { comment: replyText.trim() },
+        });
+      }
+      showSuccess(experienceId || packageId ? 'Host reply posted.' : 'Host reply posted.');
       setIsReplying(false);
       setReplyText('');
       if (onReplyUpdated) onReplyUpdated(review._id, data.ownerReply);
     } catch (err) {
-      showError(err.message);
+      showError(err.response?.data?.error || err.message || 'Failed to post reply.');
     } finally {
       setIsSubmittingReply(false);
     }
@@ -64,11 +84,17 @@ export default function ReviewCard({
     if (!window.confirm('Remove your response?')) return;
 
     try {
-      await reviewsApi.deleteReply(listingId, review._id);
-      showSuccess('Host response removed.');
+      if (experienceId) {
+        await reviewsApi.deleteExperienceReply(experienceId, review._id);
+      } else if (packageId) {
+        await reviewsApi.deletePackageReply(packageId, review._id);
+      } else {
+        await reviewsApi.deleteReply(listingId, review._id);
+      }
+      showSuccess('Response removed.');
       if (onReplyUpdated) onReplyUpdated(review._id, null);
     } catch (err) {
-      showError(err.message);
+      showError(err.response?.data?.error || err.message || 'Failed to remove reply.');
     }
   };
 

@@ -28,6 +28,10 @@ const searchRouter = require("./routes/searchRoutes.js");
 const wishlistRouter = require("./routes/wishlistRoutes.js");
 const dashboardRouter = require("./routes/dashboardRoutes.js");
 const inboxRouter = require("./routes/inboxRoutes.js");
+const adminRouter = require("./routes/adminRoutes.js");
+const destinationRouter = require("./routes/destinationRoutes.js");
+const tourPackageRouter = require("./routes/tourPackageRoutes.js");
+const experienceRouter = require("./routes/experienceRoutes.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -210,6 +214,10 @@ app.use("/api/search", searchRouter);
 app.use("/api/wishlist", wishlistRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/inbox", inboxRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/destinations", destinationRouter);
+app.use("/api/tour-packages", tourPackageRouter);
+app.use("/api/experiences", experienceRouter);
 
 // Currency info endpoint
 app.get("/api/currencies", (req, res) => {

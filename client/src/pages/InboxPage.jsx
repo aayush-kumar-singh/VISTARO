@@ -13,12 +13,15 @@ import {
   ArrowLeft,
   ChevronRight,
   Clock,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
 } from 'lucide-react';
 
 export default function InboxPage() {
   const { user, setUnreadCount } = useAuth();
   const { socket } = useSocket();
-  const { showError } = useToast();
+  const { showSuccess, showError } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [conversations, setConversations] = useState([]);
@@ -28,6 +31,7 @@ export default function InboxPage() {
   const [loading, setLoading] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState('');
 
   const messagesEndRef = useRef(null);
   const selectedConvId = searchParams.get('conv') || '';
@@ -42,38 +46,61 @@ export default function InboxPage() {
       try {
         setLoading(true);
         const data = await inboxApi.getConversations();
-        setConversations(data.conversations || []);
+        const convList = data.conversations || [];
+        setConversations(convList);
 
         if (selectedConvId) {
-          const found = data.conversations.find((c) => c._id === selectedConvId);
-          if (found) setActiveConversation(found);
-        } else if (data.conversations.length > 0) {
-          setActiveConversation(data.conversations[0]);
-          setSearchParams({ conv: data.conversations[0]._id });
+          const found = convList.find((c) => c._id === selectedConvId);
+          if (found) {
+            setActiveConversation(found);
+          } else {
+            // Fetch directly if not in list yet
+            try {
+              const single = await inboxApi.getConversation(selectedConvId);
+              if (single.conversation) {
+                setActiveConversation(single.conversation);
+                setConversations((prev) => [single.conversation, ...prev]);
+              }
+            } catch (e) {
+              // Ignore if not found
+            }
+          }
+        } else if (convList.length > 0) {
+          setActiveConversation(convList[0]);
         }
       } catch (err) {
-        showError(err.message);
+        showError(err.message || 'Failed to load conversations.');
       } finally {
         setLoading(false);
       }
     }
     fetchConversations();
-  }, [user]);
+  }, [user, selectedConvId]);
 
   // 2. Fetch messages when active conversation changes & join room
   useEffect(() => {
-    if (!activeConversation) return;
+    if (!activeConversation?._id) return;
 
+    let isMounted = true;
     async function fetchMessages() {
       try {
         setLoadingMessages(true);
+        setSendError('');
         const data = await inboxApi.getConversation(activeConversation._id);
-        setMessages(data.messages || []);
-        setActiveConversation(data.conversation);
+        if (isMounted) {
+          setMessages(Array.isArray(data.messages) ? data.messages : []);
+          if (data.conversation) {
+            setActiveConversation(data.conversation);
+          }
+        }
       } catch (err) {
-        showError(err.message);
+        if (isMounted) {
+          showError(err.message || 'Failed to load messages.');
+        }
       } finally {
-        setLoadingMessages(false);
+        if (isMounted) {
+          setLoadingMessages(false);
+        }
       }
     }
 
@@ -83,6 +110,10 @@ export default function InboxPage() {
     if (socket) {
       socket.emit('join_conversation', activeConversation._id);
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [activeConversation?._id, socket]);
 
   // 3. Listen for incoming socket messages
@@ -90,14 +121,20 @@ export default function InboxPage() {
     if (!socket) return;
 
     const handleNewMessage = (msg) => {
-      if (activeConversation && msg.conversation === activeConversation._id) {
-        setMessages((prev) => [...prev, msg]);
+      if (!msg) return;
+      const msgConvId = msg.conversation || msg.conversationId;
+
+      if (activeConversation && msgConvId === activeConversation._id) {
+        setMessages((prev) => {
+          const exists = prev.some((m) => m && m._id === msg._id);
+          return exists ? prev : [...prev, msg];
+        });
       }
 
       // Update last message in conversation list
       setConversations((prev) =>
         prev.map((c) =>
-          c._id === msg.conversation
+          c._id === msgConvId
             ? { ...c, lastMessage: msg.body, lastMessageAt: msg.createdAt }
             : c
         )
@@ -111,29 +148,55 @@ export default function InboxPage() {
     };
   }, [socket, activeConversation]);
 
-  // 4. Scroll to bottom
+  // 4. Scroll to bottom smoothly
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, loadingMessages]);
 
   const handleSelectConversation = (conv) => {
+    setSendError('');
     setActiveConversation(conv);
-    setSearchParams({ conv: conv._id });
+    if (searchParams.has('conv')) {
+      setSearchParams({}, { replace: true });
+    }
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !activeConversation) return;
+    if (!newMessage.trim() || !activeConversation?._id || isSending) return;
 
     const text = newMessage.trim();
-    setNewMessage('');
+    setSendError('');
+    setIsSending(true);
 
     try {
-      setIsSending(true);
       const data = await inboxApi.sendMessage(activeConversation._id, text);
-      setMessages((prev) => [...prev, data.messageDoc]);
+      const sentDoc = data.messageDoc || data.message;
+
+      if (sentDoc) {
+        setMessages((prev) => {
+          const exists = prev.some((m) => m && m._id === sentDoc._id);
+          return exists ? prev : [...prev, sentDoc];
+        });
+
+        // Update conversation in sidebar
+        setConversations((prev) =>
+          prev.map((c) =>
+            c._id === activeConversation._id
+              ? { ...c, lastMessage: sentDoc.body, lastMessageAt: sentDoc.createdAt }
+              : c
+          )
+        );
+
+        setNewMessage('');
+        showSuccess('Message delivered.');
+      } else {
+        throw new Error('Unexpected response format from server.');
+      }
     } catch (err) {
-      showError(err.message);
+      const errMsg = err.response?.data?.error || err.message || 'Failed to send message.';
+      setSendError(errMsg);
+      showError(errMsg);
     } finally {
       setIsSending(false);
     }
@@ -183,7 +246,7 @@ export default function InboxPage() {
             </div>
           ) : (
             conversations.map((conv) => {
-              const otherUser = conv.participants?.find((p) => (p._id || p) !== user._id);
+              const otherUser = conv.participants?.find((p) => (p?._id || p) !== user._id);
               const otherName = typeof otherUser === 'object' ? otherUser?.username : 'Host';
               const isSelected = activeConversation?._id === conv._id;
 
@@ -196,13 +259,13 @@ export default function InboxPage() {
                     isSelected ? 'bg-zinc-100/80' : 'hover:bg-zinc-50'
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-full bg-[#222222] text-white flex items-center justify-center font-bold text-sm shrink-0">
-                    {otherName.charAt(0).toUpperCase()}
+                  <div className="w-10 h-10 rounded-full bg-[#222222] text-white flex items-center justify-center font-bold text-sm shrink-0 uppercase">
+                    {(otherName || 'H').charAt(0)}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <h4 className="font-bold text-xs sm:text-sm text-zinc-900 truncate">{otherName}</h4>
+                      <h4 className="font-bold text-xs sm:text-sm text-zinc-900 truncate">@{otherName || 'Host'}</h4>
                       {conv.lastMessageAt && (
                         <span className="text-[10px] text-zinc-400">
                           {new Date(conv.lastMessageAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
@@ -238,30 +301,30 @@ export default function InboxPage() {
           <>
             {/* Chat Thread Header */}
             {(() => {
-              const otherUser = activeConversation.participants?.find((p) => (p._id || p) !== user._id);
+              const otherUser = activeConversation.participants?.find((p) => (p?._id || p) !== user._id);
               const otherName = typeof otherUser === 'object' ? otherUser?.username : 'Host';
 
               return (
-                <div className="p-4 bg-white border-b border-zinc-200 flex items-center justify-between">
+                <div className="p-4 bg-white border-b border-zinc-200 flex items-center justify-between shadow-2xs">
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setActiveConversation(null)}
-                      className="md:hidden p-1 rounded-full hover:bg-zinc-100"
+                      className="md:hidden p-1 rounded-full hover:bg-zinc-100 cursor-pointer"
                       aria-label="Back to conversations"
                     >
                       <ArrowLeft className="w-5 h-5 text-zinc-700" />
                     </button>
-                    <div className="w-9 h-9 rounded-full bg-[#222222] text-white flex items-center justify-center font-bold text-xs">
-                      {otherName.charAt(0).toUpperCase()}
+                    <div className="w-9 h-9 rounded-full bg-[#222222] text-white flex items-center justify-center font-bold text-xs uppercase">
+                      {(otherName || 'H').charAt(0)}
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm text-zinc-900">@{otherName}</h3>
+                      <h3 className="font-bold text-sm text-zinc-900">@{otherName || 'Host'}</h3>
                       {activeConversation.listing && (
                         <Link
-                          to={`/listings/${activeConversation.listing._id}`}
+                          to={`/listings/${activeConversation.listing._id || activeConversation.listing}`}
                           className="text-[11px] text-[#dc3545] font-semibold hover:underline flex items-center gap-1 truncate max-w-xs"
                         >
-                          <Building className="w-3 h-3" /> {activeConversation.listing.title}
+                          <Building className="w-3 h-3" /> {activeConversation.listing.title || 'View Stay'}
                         </Link>
                       )}
                     </div>
@@ -275,37 +338,57 @@ export default function InboxPage() {
               {loadingMessages ? (
                 <LoadingSpinner text="Loading thread..." />
               ) : messages.length === 0 ? (
-                <div className="text-center py-12 text-xs text-zinc-400">
-                  Send your first message below to say hello!
+                <div className="text-center py-12 text-xs text-zinc-400 space-y-2">
+                  <MessageSquare className="w-8 h-8 text-zinc-300 mx-auto" />
+                  <p>Send your first message below to start chatting with the host!</p>
                 </div>
               ) : (
-                messages.map((msg) => {
-                  const senderId = typeof msg.sender === 'object' ? msg.sender?._id : msg.sender;
-                  const isMe = senderId === user._id;
+                messages
+                  .filter(Boolean)
+                  .map((msg) => {
+                    const senderId = typeof msg.sender === 'object' ? msg.sender?._id : msg.sender;
+                    const isMe = senderId === user._id;
 
-                  return (
-                    <div
-                      key={msg._id}
-                      className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
-                    >
+                    return (
                       <div
-                        className={`max-w-xs sm:max-w-md rounded-2xl px-4 py-2.5 text-xs sm:text-sm shadow-xs ${
-                          isMe
-                            ? 'bg-[#222222] text-white rounded-br-xs'
-                            : 'bg-white text-zinc-800 border border-zinc-200 rounded-bl-xs'
-                        }`}
+                        key={msg._id || Math.random()}
+                        className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} animate-fade-in`}
                       >
-                        {msg.body}
+                        <div
+                          className={`max-w-xs sm:max-w-md rounded-2xl px-4 py-2.5 text-xs sm:text-sm shadow-xs ${
+                            isMe
+                              ? 'bg-[#222222] text-white rounded-br-xs'
+                              : 'bg-white text-zinc-800 border border-zinc-200 rounded-bl-xs'
+                          }`}
+                        >
+                          {msg.body}
+                        </div>
+                        <span className="text-[10px] text-zinc-400 mt-1 px-1">
+                          {msg.createdAt
+                            ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                            : 'Just now'}
+                        </span>
                       </div>
-                      <span className="text-[10px] text-zinc-400 mt-1 px-1">
-                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
-                  );
-                })
+                    );
+                  })
               )}
               <div ref={messagesEndRef} />
             </div>
+
+            {/* Error Banner if sending fails */}
+            {sendError && (
+              <div className="mx-4 mb-2 p-3 rounded-2xl bg-red-50 border border-red-200 flex items-center gap-2 text-xs text-[#dc3545] animate-fade-in">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span className="flex-1 font-medium">{sendError}</span>
+                <button
+                  type="button"
+                  onClick={() => setSendError('')}
+                  className="font-bold hover:underline"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
 
             {/* Message Input Box */}
             <form
@@ -316,17 +399,25 @@ export default function InboxPage() {
                 type="text"
                 placeholder="Type your message..."
                 value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                className="flex-1 bg-zinc-100 border border-transparent rounded-full px-4 py-2.5 text-xs sm:text-sm focus:outline-hidden focus:bg-white focus:border-[#dc3545] transition-colors"
+                onChange={(e) => {
+                  setNewMessage(e.target.value);
+                  if (sendError) setSendError('');
+                }}
+                disabled={isSending}
+                className="flex-1 bg-zinc-100 border border-transparent rounded-full px-4 py-2.5 text-xs sm:text-sm focus:outline-hidden focus:bg-white focus:border-[#dc3545] transition-colors disabled:opacity-50"
                 required
               />
               <button
                 type="submit"
                 disabled={isSending || !newMessage.trim()}
-                className="bg-[#dc3545] hover:bg-[#b02a37] text-white p-2.5 rounded-full transition-colors disabled:opacity-40 cursor-pointer shadow-xs"
+                className="bg-[#dc3545] hover:bg-[#b02a37] text-white p-2.5 rounded-full transition-colors disabled:opacity-40 cursor-pointer shadow-xs flex items-center justify-center shrink-0"
                 aria-label="Send message"
               >
-                <Send className="w-4 h-4" />
+                {isSending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
               </button>
             </form>
           </>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Heart, Sparkles, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, Sparkles } from 'lucide-react';
 import { useToast } from '../../context/ToastContext.jsx';
 
 export default function Footer() {
@@ -9,10 +10,6 @@ export default function Footer() {
   const handleSocialClick = (appName) => {
     setModalApp(appName);
     showToast(`${appName} community coming soon!`, 'info');
-  };
-
-  const handleLinkClick = (linkName) => {
-    showToast(`${linkName} page will be available soon.`, 'info');
   };
 
   return (
@@ -62,39 +59,28 @@ export default function Footer() {
           <span>for explorers worldwide.</span>
         </div>
 
-        {/* Links */}
+        {/* Functional Footer Links */}
         <div className="flex justify-center items-center gap-6 text-xs text-zinc-500 font-medium">
-          <button
-            type="button"
-            onClick={() => handleLinkClick('Privacy')}
-            className="hover:underline hover:text-zinc-800 bg-transparent border-none p-0 cursor-pointer text-xs text-zinc-500"
+          <Link
+            to="/privacy"
+            className="hover:underline hover:text-zinc-900 transition-colors"
           >
             Privacy
-          </button>
+          </Link>
           <span>&middot;</span>
-          <button
-            type="button"
-            onClick={() => handleLinkClick('Terms')}
-            className="hover:underline hover:text-zinc-800 bg-transparent border-none p-0 cursor-pointer text-xs text-zinc-500"
+          <Link
+            to="/terms"
+            className="hover:underline hover:text-zinc-900 transition-colors"
           >
             Terms
-          </button>
+          </Link>
           <span>&middot;</span>
-          <button
-            type="button"
-            onClick={() => handleLinkClick('Sitemap')}
-            className="hover:underline hover:text-zinc-800 bg-transparent border-none p-0 cursor-pointer text-xs text-zinc-500"
-          >
-            Sitemap
-          </button>
-          <span>&middot;</span>
-          <button
-            type="button"
-            onClick={() => handleLinkClick('Company details')}
-            className="hover:underline hover:text-zinc-800 bg-transparent border-none p-0 cursor-pointer text-xs text-zinc-500"
+          <Link
+            to="/company"
+            className="hover:underline hover:text-zinc-900 transition-colors"
           >
             Company details
-          </button>
+          </Link>
         </div>
 
       </div>

@@ -26,6 +26,12 @@ import {
   MapPin,
   ChevronRight,
   ShieldAlert,
+  X,
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  ArrowRight,
 } from 'lucide-react';
 
 export default function ListingDetailPage() {
@@ -40,6 +46,12 @@ export default function ListingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [contactMessage, setContactMessage] = useState('');
+  const [isSendingContact, setIsSendingContact] = useState(false);
+  const [contactSuccess, setContactSuccess] = useState(false);
+  const [contactError, setContactError] = useState('');
+  const [conversationId, setConversationId] = useState(null);
 
   useEffect(() => {
     async function fetchListing() {
@@ -119,16 +131,37 @@ export default function ListingDetailPage() {
     }
   };
 
-  const handleContactHost = async () => {
+  const handleContactHost = () => {
     if (!user) {
       navigate('/login');
       return;
     }
+    setIsContactModalOpen(true);
+    setContactSuccess(false);
+    setContactError('');
+    setContactMessage('');
+  };
+
+  const handleSendContactMessage = async (e) => {
+    e.preventDefault();
+    if (!contactMessage.trim() || isSendingContact) return;
+
     try {
-      const data = await inboxApi.startConversation(listing._id);
-      navigate(`/inbox?conv=${data.conversation._id}`);
+      setIsSendingContact(true);
+      setContactError('');
+      const convData = await inboxApi.startConversation(listing._id);
+      const convId = convData.conversation?._id;
+      setConversationId(convId);
+
+      await inboxApi.sendMessage(convId, contactMessage.trim());
+      setContactSuccess(true);
+      showSuccess('Message delivered to host!');
     } catch (err) {
-      showError(err.message);
+      const errMsg = err.response?.data?.error || err.message || 'Failed to send message to host.';
+      setContactError(errMsg);
+      showError(errMsg);
+    } finally {
+      setIsSendingContact(false);
     }
   };
 
@@ -386,6 +419,165 @@ export default function ListingDetailPage() {
             {similarListings.map((sim) => (
               <ListingCard key={sim._id} listing={sim} />
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Contact Host Modal */}
+      {isContactModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-zinc-200 space-y-5 relative">
+            
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setIsContactModalOpen(false)}
+              className="absolute right-5 top-5 p-1.5 rounded-full text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {contactSuccess ? (
+              /* Success State */
+              <div className="text-center py-6 space-y-4 animate-fade-in">
+                <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-xs">
+                  <CheckCircle2 className="w-9 h-9" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-xl font-extrabold text-zinc-900">Message Delivered!</h3>
+                  <p className="text-xs sm:text-sm text-zinc-600 max-w-xs mx-auto">
+                    Your message was sent to <b>@{listing.owner?.username || 'the host'}</b>. You can continue the conversation in your messages inbox.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center gap-3 pt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsContactModalOpen(false);
+                      if (conversationId) navigate(`/inbox?conv=${conversationId}`);
+                      else navigate('/inbox');
+                    }}
+                    className="w-full bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-3 px-6 rounded-full transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Open Messages Inbox</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsContactModalOpen(false)}
+                    className="w-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
+                  >
+                    Back to Stay
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Message Form State */
+              <form onSubmit={handleSendContactMessage} className="space-y-4">
+                
+                {/* Header info */}
+                <div className="flex items-center gap-3.5 pb-4 border-b border-zinc-100">
+                  <div className="w-12 h-12 rounded-full bg-[#222222] text-white flex items-center justify-center font-bold text-base uppercase shrink-0">
+                    {(listing.owner?.username || 'H').charAt(0)}
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-base text-zinc-900">
+                      Contact @{listing.owner?.username || 'Host'}
+                    </h3>
+                    <p className="text-xs text-zinc-500 truncate max-w-xs">
+                      Inquiring about <span className="font-semibold text-zinc-700">{listing.title}</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Prompt Suggestions */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                    Quick Suggestions
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      'Is early check-in possible?',
+                      'Can we store our luggage before check-in?',
+                      'Is dedicated parking included?',
+                      'Is Wi-Fi fast enough for video calls?',
+                    ].map((prompt, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setContactMessage(prompt)}
+                        className="text-[11px] font-medium bg-zinc-50 hover:bg-red-50 hover:text-[#dc3545] border border-zinc-200 hover:border-red-200 rounded-full px-3 py-1 transition-all cursor-pointer text-zinc-600 text-left"
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Message Textarea */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                    Your Message
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={contactMessage}
+                    onChange={(e) => {
+                      setContactMessage(e.target.value);
+                      if (contactError) setContactError('');
+                    }}
+                    placeholder={`Hello @${listing.owner?.username || 'Host'}, I have a question about this stay...`}
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl p-3.5 text-xs sm:text-sm focus:outline-hidden focus:bg-white focus:border-[#dc3545] transition-colors resize-none"
+                    required
+                    maxLength={1000}
+                    disabled={isSendingContact}
+                  />
+                  <div className="flex items-center justify-between text-[10px] text-zinc-400 px-1">
+                    <span>Be polite and respectful.</span>
+                    <span>{contactMessage.length} / 1000</span>
+                  </div>
+                </div>
+
+                {/* Error Banner */}
+                {contactError && (
+                  <div className="p-3 rounded-2xl bg-red-50 border border-red-200 flex items-center gap-2 text-xs text-[#dc3545] animate-fade-in">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span className="flex-1 font-medium">{contactError}</span>
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsContactModalOpen(false)}
+                    disabled={isSendingContact}
+                    className="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-bold py-3 px-5 rounded-full transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSendingContact || !contactMessage.trim()}
+                    className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-3 px-6 rounded-full transition-all shadow-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {isSendingContact ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Sending Message...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Send Inquiry</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+              </form>
+            )}
+
           </div>
         </div>
       )}

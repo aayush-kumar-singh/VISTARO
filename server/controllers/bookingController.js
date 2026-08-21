@@ -1,7 +1,12 @@
 const Booking = require("../models/Booking.js");
 const Listing = require("../models/Listing.js");
+const TourPackage = require("../models/TourPackage.js");
+const Experience = require("../models/Experience.js");
 const { sendBookingConfirmation, sendCancellationConfirmation } = require("../utils/sendEmail.js");
 
+// --------------------------------------------------
+// POST /api/listings/:id/bookings — Stay Booking
+// --------------------------------------------------
 module.exports.createBooking = async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
@@ -74,7 +79,9 @@ module.exports.createBooking = async (req, res) => {
     const totalPrice = basePrice + gstPrice;
 
     const newBooking = new Booking({
+        bookingType: "stay",
         listing: id,
+        tourPackage: null,
         user: req.user._id,
         checkIn: startDate,
         checkOut: endDate,
@@ -103,10 +110,207 @@ module.exports.createBooking = async (req, res) => {
     });
 };
 
+// --------------------------------------------------
+// POST /api/tour-packages/:id/bookings — Package Booking
+// --------------------------------------------------
+module.exports.createPackageBooking = async (req, res) => {
+    const { id } = req.params;
+    const packageId = id || req.body.packageId || req.body.tourPackageId;
+
+    const tourPackage = await TourPackage.findById(packageId);
+    if (!tourPackage || !tourPackage.isActive) {
+        return res.status(404).json({
+            success: false,
+            error: "Tour package not found or is currently inactive.",
+        });
+    }
+
+    const bookingData = req.body.booking || req.body;
+    const { startDate, checkIn, departureDate, travelers, guests } = bookingData;
+    const rawDate = startDate || departureDate || checkIn;
+
+    if (!rawDate) {
+        return res.status(400).json({
+            success: false,
+            error: "Departure start date is required.",
+        });
+    }
+
+    const parsedStartDate = new Date(rawDate);
+    if (isNaN(parsedStartDate.getTime())) {
+        return res.status(400).json({
+            success: false,
+            error: "Invalid departure start date provided.",
+        });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (parsedStartDate < today) {
+        return res.status(400).json({
+            success: false,
+            error: "Departure date cannot be in the past.",
+        });
+    }
+
+    const travelersCount = parseInt(travelers || guests, 10) || 1;
+    if (travelersCount < 1) {
+        return res.status(400).json({
+            success: false,
+            error: "At least 1 traveler is required.",
+        });
+    }
+
+    // Validate maxGroupSize
+    const maxCapacity = tourPackage.maxGroupSize || 12;
+    if (travelersCount > maxCapacity) {
+        return res.status(400).json({
+            success: false,
+            error: `Traveler count (${travelersCount}) exceeds maximum capacity of ${maxCapacity} explorers for this package.`,
+        });
+    }
+
+    // Server-side price recalculation (never trust client prices)
+    const days = tourPackage.duration?.days || 1;
+    const nights = tourPackage.duration?.nights ?? Math.max(0, days - 1);
+    const parsedEndDate = new Date(parsedStartDate.getTime() + days * 24 * 60 * 60 * 1000);
+
+    const basePerPerson = tourPackage.price?.basePrice ?? tourPackage.basePrice ?? 0;
+    const subtotal = travelersCount * basePerPerson;
+    const gstPrice = Math.round(subtotal * 0.18);
+    const totalPrice = subtotal + gstPrice;
+
+    const newBooking = new Booking({
+        bookingType: "package",
+        tourPackage: tourPackage._id,
+        listing: null,
+        user: req.user._id,
+        checkIn: parsedStartDate,
+        checkOut: parsedEndDate,
+        nights,
+        guests: travelersCount,
+        totalPrice,
+        policySnapshot: "flexible",
+        status: "confirmed",
+    });
+
+    await newBooking.save();
+    await newBooking.populate("tourPackage");
+
+    res.status(201).json({
+        success: true,
+        message: `Expedition booking confirmed for ${travelersCount} traveler(s)! A confirmation receipt has been issued to ${req.user.email}.`,
+        booking: newBooking,
+    });
+};
+
+// --------------------------------------------------
+// POST /api/experiences/:id/bookings — Experience Booking
+// --------------------------------------------------
+module.exports.createExperienceBooking = async (req, res) => {
+    const { id } = req.params;
+    const experienceId = id || req.body.experienceId;
+
+    const experience = await Experience.findById(experienceId);
+    if (!experience || !experience.isActive) {
+        return res.status(404).json({
+            success: false,
+            error: "Experience not found or is currently inactive.",
+        });
+    }
+
+    const bookingData = req.body.booking || req.body;
+    const { activityDate, startDate, checkIn, date, travelers, guests } = bookingData;
+    const rawDate = activityDate || date || startDate || checkIn;
+
+    if (!rawDate) {
+        return res.status(400).json({
+            success: false,
+            error: "Activity date is required.",
+        });
+    }
+
+    const parsedStartDate = new Date(rawDate);
+    if (isNaN(parsedStartDate.getTime())) {
+        return res.status(400).json({
+            success: false,
+            error: "Invalid activity date provided.",
+        });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (parsedStartDate < today) {
+        return res.status(400).json({
+            success: false,
+            error: "Activity date cannot be in the past.",
+        });
+    }
+
+    const travelersCount = parseInt(travelers || guests, 10) || 1;
+    if (travelersCount < 1) {
+        return res.status(400).json({
+            success: false,
+            error: "At least 1 participant is required.",
+        });
+    }
+
+    // Validate maxGroupSize
+    const maxCapacity = experience.maxGroupSize || 10;
+    if (travelersCount > maxCapacity) {
+        return res.status(400).json({
+            success: false,
+            error: `Participant count (${travelersCount}) exceeds maximum group size of ${maxCapacity} guests for this experience.`,
+        });
+    }
+
+    // Server-side price recalculation (never trust client prices)
+    const basePerPerson = experience.price?.basePrice ?? experience.basePrice ?? 0;
+    const subtotal = travelersCount * basePerPerson;
+    const gstPrice = Math.round(subtotal * 0.18);
+    const totalPrice = subtotal + gstPrice;
+
+    // End date is calculated from duration in hours (or same day)
+    const durationHours = experience.durationHours || 2;
+    const parsedEndDate = new Date(parsedStartDate.getTime() + durationHours * 60 * 60 * 1000);
+
+    const newBooking = new Booking({
+        bookingType: "experience",
+        experience: experience._id,
+        listing: null,
+        tourPackage: null,
+        user: req.user._id,
+        checkIn: parsedStartDate,
+        checkOut: parsedEndDate,
+        nights: 1,
+        guests: travelersCount,
+        totalPrice,
+        policySnapshot: "flexible",
+        status: "confirmed",
+    });
+
+    await newBooking.save();
+    await newBooking.populate("experience");
+
+    res.status(201).json({
+        success: true,
+        message: `Experience booking confirmed for ${travelersCount} guest(s)! A confirmation receipt has been issued to ${req.user.email}.`,
+        booking: newBooking,
+    });
+};
+
+// --------------------------------------------------
+// DELETE /api/bookings/:bookingId — Cancellation
+// --------------------------------------------------
 module.exports.cancelBooking = async (req, res) => {
     const { bookingId } = req.params;
 
-    const booking = await Booking.findById(bookingId).populate("listing").populate("user");
+    const booking = await Booking.findById(bookingId)
+        .populate("listing")
+        .populate("tourPackage")
+        .populate("experience")
+        .populate("user");
+
     if (!booking) {
         return res.status(404).json({
             success: false,
@@ -114,11 +318,14 @@ module.exports.cancelBooking = async (req, res) => {
         });
     }
 
-    // Authorization: Either the guest or the listing owner can cancel
-    const isGuest = booking.user._id.equals(req.user._id);
-    const isHost = booking.listing && booking.listing.owner && booking.listing.owner.equals(req.user._id);
+    // Authorization: Either the guest, the listing/experience owner, or admin can cancel
+    const isGuest = booking.user && booking.user._id.equals(req.user._id);
+    const isHost =
+        (booking.listing && booking.listing.owner && booking.listing.owner.equals(req.user._id)) ||
+        (booking.experience && booking.experience.createdBy && booking.experience.createdBy.equals(req.user._id));
+    const isAdmin = req.user.role === "admin";
 
-    if (!isGuest && !isHost) {
+    if (!isGuest && !isHost && !isAdmin) {
         return res.status(403).json({
             success: false,
             error: "You do not have permission to cancel this booking.",
