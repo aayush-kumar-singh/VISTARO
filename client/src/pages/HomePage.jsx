@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { listingsApi } from '../api/listingsApi.js';
-import HeroBanner from '../components/listings/HeroBanner.jsx';
 import ListingCard from '../components/listings/ListingCard.jsx';
 import CategoryBar from '../components/listings/CategoryBar.jsx';
 import FilterModal from '../components/listings/FilterModal.jsx';
@@ -104,28 +103,17 @@ export default function HomePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const exploreRef = useRef(null);
-
-  const scrollToExplore = () => {
-    exploreRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div className="w-full">
-      {/* 1. Hero Banner for Public Browsing */}
-      <HeroBanner onExploreClick={scrollToExplore} />
-
-      <div ref={exploreRef}>
-        {/* Category Strip & Filters */}
-        <CategoryBar
-          selectedCategory={selectedCategory}
-          onSelectCategory={handleCategorySelect}
-          onOpenFilterModal={() => setFilterModalOpen(true)}
-          activeFilterCount={activeFilterCount}
-          sortOption={sortOption}
-          onSortChange={handleSortChange}
-        />
-      </div>
+    <div className="w-full text-vistaro-primary transition-colors duration-200">
+      {/* Category Strip & Filters */}
+      <CategoryBar
+        selectedCategory={selectedCategory}
+        onSelectCategory={handleCategorySelect}
+        onOpenFilterModal={() => setFilterModalOpen(true)}
+        activeFilterCount={activeFilterCount}
+        sortOption={sortOption}
+        onSortChange={handleSortChange}
+      />
 
       {/* Filter Modal */}
       <FilterModal
@@ -140,16 +128,16 @@ export default function HomePage() {
 
       {/* Error state */}
       {error && !loading && (
-        <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
-          <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc3545] flex items-center justify-center mx-auto">
+        <div className="bg-vistaro-surface border border-vistaro-error/30 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
+          <div className="w-12 h-12 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto">
             <Compass className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-base text-zinc-900">Unable to load stays</h3>
-          <p className="text-xs text-zinc-600 max-w-sm mx-auto">{error}</p>
+          <h3 className="font-bold text-base text-vistaro-primary">Unable to load stays</h3>
+          <p className="text-xs text-vistaro-secondary max-w-sm mx-auto">{error}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="inline-flex items-center gap-2 bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
           >
             Retry Loading
           </button>
@@ -158,15 +146,15 @@ export default function HomePage() {
 
       {/* Listings Grid */}
       {!loading && !error && listings.length === 0 && (
-        <div className="text-center py-16 px-4 bg-zinc-50 rounded-3xl border border-zinc-200">
-          <Compass className="w-12 h-12 text-zinc-400 mx-auto mb-3" />
-          <h3 className="font-bold text-lg text-zinc-800">No properties found</h3>
-          <p className="text-sm text-zinc-500 max-w-md mx-auto mt-1 mb-4">
+        <div className="text-center py-16 px-4 bg-vistaro-surface rounded-3xl border border-vistaro-border">
+          <Compass className="w-12 h-12 text-vistaro-muted mx-auto mb-3" />
+          <h3 className="font-bold text-lg text-vistaro-primary">No properties found</h3>
+          <p className="text-sm text-vistaro-muted max-w-md mx-auto mt-1 mb-4">
             We couldn't find any stays matching your current filters. Try changing or clearing filters.
           </p>
           <button
             onClick={() => setSearchParams({})}
-            className="bg-[#222222] hover:bg-black text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors cursor-pointer"
+            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors cursor-pointer shadow-xs"
           >
             Clear all filters
           </button>
@@ -189,10 +177,10 @@ export default function HomePage() {
                 type="button"
                 disabled={pagination.currentPage <= 1}
                 onClick={() => handlePageChange(pagination.currentPage - 1)}
-                className="p-2 rounded-full border border-zinc-300 hover:bg-zinc-100 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                className="p-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                 aria-label="Previous page"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-4 h-4 text-vistaro-primary" />
               </button>
 
               <div className="flex items-center gap-1.5 px-2">
@@ -206,8 +194,8 @@ export default function HomePage() {
                       onClick={() => handlePageChange(pageNum)}
                       className={`w-8 h-8 rounded-full text-xs font-bold transition-colors cursor-pointer ${
                         isCurrent
-                          ? 'bg-[#222222] text-white'
-                          : 'text-zinc-600 hover:bg-zinc-100'
+                          ? 'bg-vistaro-accent text-white'
+                          : 'text-vistaro-primary hover:bg-vistaro-secondary'
                       }`}
                     >
                       {pageNum}
@@ -220,20 +208,20 @@ export default function HomePage() {
                 type="button"
                 disabled={pagination.currentPage >= pagination.totalPages}
                 onClick={() => handlePageChange(pagination.currentPage + 1)}
-                className="p-2 rounded-full border border-zinc-300 hover:bg-zinc-100 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                className="p-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                 aria-label="Next page"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 text-vistaro-primary" />
               </button>
             </div>
           )}
 
           {/* Recently Viewed Stays Section */}
           {recentlyViewed.length > 0 && (
-            <div className="mt-16 pt-10 border-t border-zinc-200">
+            <div className="mt-16 pt-10 border-t border-vistaro-border">
               <div className="flex items-center gap-2 mb-6">
-                <Clock className="w-5 h-5 text-[#dc3545]" />
-                <h3 className="font-bold text-lg text-zinc-900">Recently Viewed Stays</h3>
+                <Clock className="w-5 h-5 text-vistaro-accent" />
+                <h3 className="font-bold text-lg text-vistaro-primary">Recently Viewed Stays</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">

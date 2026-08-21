@@ -4,11 +4,7 @@ import { useCurrency } from '../../context/CurrencyContext.jsx';
 import {
   Clock,
   MapPin,
-  Users,
-  Compass,
   ArrowRight,
-  ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 
 export default function TourPackageCard({ pkg }) {
@@ -27,16 +23,16 @@ export default function TourPackageCard({ pkg }) {
   const basePrice = pkg.price?.basePrice ?? pkg.basePrice ?? 0;
 
   const difficultyColors = {
-    Easy: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    Moderate: 'bg-blue-50 text-blue-700 border-blue-200',
-    Challenging: 'bg-amber-50 text-amber-800 border-amber-200',
+    Easy: 'bg-vistaro-surface text-vistaro-success border-vistaro-success/40',
+    Moderate: 'bg-vistaro-surface text-vistaro-accent border-vistaro-accent/40',
+    Challenging: 'bg-vistaro-surface text-vistaro-rating border-vistaro-rating/40',
   };
 
   return (
-    <div className="group bg-white rounded-3xl overflow-hidden border border-zinc-200 hover:border-zinc-300 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative">
-      
+    <div className="group bg-vistaro-surface rounded-3xl overflow-hidden border border-vistaro-border hover:border-vistaro-muted hover:shadow-xl transition-all duration-300 flex flex-col h-full relative">
+
       {/* 1. Card Cover Image & Badges */}
-      <div className="relative aspect-4/3 overflow-hidden bg-zinc-100">
+      <div className="relative aspect-4/3 overflow-hidden bg-vistaro-secondary">
         <img
           src={coverUrl}
           alt={pkg.title}
@@ -48,15 +44,14 @@ export default function TourPackageCard({ pkg }) {
 
         {/* Top Badges */}
         <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-          <span className="inline-flex items-center gap-1 bg-white/95 backdrop-blur-md text-zinc-900 text-[11px] font-extrabold px-3 py-1 rounded-full shadow-md">
-            <MapPin className="w-3 h-3 text-[#dc3545]" />
+          <span className="inline-flex items-center gap-1 bg-vistaro-surface/95 backdrop-blur-md text-vistaro-primary border border-vistaro-border text-[11px] font-extrabold px-3 py-1 rounded-full shadow-md">
+            <MapPin className="w-3 h-3 text-vistaro-accent" />
             {destinationName}
           </span>
 
           <span
-            className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border backdrop-blur-md bg-white/90 ${
-              difficultyColors[pkg.difficultyLevel] || difficultyColors.Moderate
-            }`}
+            className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border backdrop-blur-md ${difficultyColors[pkg.difficultyLevel] || difficultyColors.Moderate
+              }`}
           >
             {pkg.difficultyLevel || 'Moderate'}
           </span>
@@ -64,7 +59,7 @@ export default function TourPackageCard({ pkg }) {
 
         {/* Bottom Duration Badge */}
         <div className="absolute bottom-3 left-3.5 flex items-center gap-1.5 text-white text-xs font-semibold drop-shadow-sm">
-          <Clock className="w-3.5 h-3.5 text-amber-400" />
+          <Clock className="w-3.5 h-3.5 text-vistaro-rating" />
           <span>
             {days} Days {nights > 0 ? `· ${nights} Nights` : ''}
           </span>
@@ -74,11 +69,11 @@ export default function TourPackageCard({ pkg }) {
       {/* 2. Card Content */}
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div className="space-y-2">
-          <h3 className="font-bold text-base sm:text-lg text-zinc-900 line-clamp-1 group-hover:text-[#dc3545] transition-colors">
+          <h3 className="font-bold text-base sm:text-lg text-vistaro-primary line-clamp-1 group-hover:text-vistaro-accent transition-colors">
             {pkg.title}
           </h3>
 
-          <p className="text-xs text-zinc-500 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-vistaro-secondary line-clamp-2 leading-relaxed">
             {pkg.shortDescription || pkg.longDescription || 'An unforgettable curated expedition across iconic landscapes.'}
           </p>
 
@@ -88,13 +83,13 @@ export default function TourPackageCard({ pkg }) {
               {pkg.inclusions.slice(0, 3).map((inc, i) => (
                 <span
                   key={i}
-                  className="bg-zinc-100 text-zinc-600 text-[10px] font-medium px-2 py-0.5 rounded-md"
+                  className="bg-vistaro-secondary text-vistaro-secondary border border-vistaro-border text-[10px] font-medium px-2 py-0.5 rounded-md"
                 >
                   ✓ {inc}
                 </span>
               ))}
               {pkg.inclusions.length > 3 && (
-                <span className="text-[10px] text-zinc-400 font-semibold self-center">
+                <span className="text-[10px] text-vistaro-muted font-semibold self-center">
                   +{pkg.inclusions.length - 3} more
                 </span>
               )}
@@ -103,20 +98,20 @@ export default function TourPackageCard({ pkg }) {
         </div>
 
         {/* 3. Footer: Price & CTA */}
-        <div className="pt-3 border-t border-zinc-100 flex items-center justify-between">
+        <div className="pt-3 border-t border-vistaro-border flex items-center justify-between">
           <div>
-            <div className="text-[10px] uppercase tracking-wider font-bold text-zinc-400">
+            <div className="text-[10px] uppercase tracking-wider font-bold text-vistaro-muted">
               Starting from
             </div>
-            <div className="text-base font-extrabold text-zinc-900">
+            <div className="text-base font-extrabold text-vistaro-primary">
               {formatPrice(basePrice)}
-              <span className="text-[11px] font-normal text-zinc-500"> / person</span>
+              <span className="text-[11px] font-normal text-vistaro-muted"> / person</span>
             </div>
           </div>
 
           <Link
             to={`/tours/${pkg.slug}`}
-            className="inline-flex items-center gap-1.5 bg-[#222222] hover:bg-[#dc3545] text-white text-xs font-bold py-2.5 px-4 rounded-full transition-all duration-300 shadow-xs hover:shadow-md group-hover:translate-x-0.5"
+            className="inline-flex items-center gap-1.5 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-4 rounded-full transition-all duration-300 shadow-xs hover:shadow-md group-hover:translate-x-0.5 cursor-pointer"
           >
             <span>View Tour</span>
             <ArrowRight className="w-3.5 h-3.5" />

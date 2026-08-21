@@ -16,12 +16,10 @@ import {
   MapPin,
   Sparkles,
   Compass,
-  Search,
   Home,
   CheckCircle2,
   Tag,
   Users,
-  Layers,
   ChevronRight,
   ExternalLink
 } from 'lucide-react';
@@ -44,7 +42,7 @@ export default function DestinationDetailPage() {
         setLoading(true);
         setError(null);
         const data = await destinationsApi.getDestinationBySlug(slug);
-        
+
         if (!data || !data.destination) {
           setError('Destination not found.');
           return;
@@ -110,27 +108,27 @@ export default function DestinationDetailPage() {
     return <LoadingSpinner fullScreen={false} text="Curating destination guide..." />;
   }
 
-  // 404 / Error State (Clean error boundary without crashing)
+  // 404 / Error State
   if (error || !destination) {
     return (
-      <div className="max-w-xl mx-auto my-16 p-8 sm:p-12 bg-white border border-zinc-200 rounded-3xl text-center space-y-4 shadow-sm">
-        <div className="w-16 h-16 rounded-full bg-red-50 text-[#dc3545] flex items-center justify-center mx-auto shadow-inner border border-red-100">
+      <div className="max-w-xl mx-auto my-16 p-8 sm:p-12 bg-vistaro-surface border border-vistaro-border rounded-3xl text-center space-y-4 shadow-sm text-vistaro-primary">
+        <div className="w-16 h-16 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto shadow-inner border border-vistaro-border">
           <Compass className="w-8 h-8" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900">Destination Not Found</h2>
-        <p className="text-sm text-zinc-600 max-w-md mx-auto leading-relaxed">
+        <h2 className="text-2xl font-bold text-vistaro-primary">Destination Not Found</h2>
+        <p className="text-sm text-vistaro-secondary max-w-md mx-auto leading-relaxed">
           {error || `We couldn't locate a destination for "${slug}". It may have been deactivated or renamed.`}
         </p>
         <div className="pt-2 flex items-center justify-center gap-3">
           <Link
             to="/destinations"
-            className="inline-flex items-center gap-2 bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs sm:text-sm font-bold py-2.5 px-6 rounded-full transition-all shadow-xs"
+            className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-2.5 px-6 rounded-full transition-all shadow-xs"
           >
             <ArrowLeft className="w-4 h-4" /> Browse All Destinations
           </Link>
           <Link
             to="/"
-            className="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs sm:text-sm font-semibold py-2.5 px-5 rounded-full transition-colors"
+            className="bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-xs sm:text-sm font-semibold py-2.5 px-5 rounded-full transition-colors"
           >
             Home
           </Link>
@@ -171,24 +169,24 @@ export default function DestinationDetailPage() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-12 pb-20">
+    <div className="w-full max-w-7xl mx-auto space-y-12 pb-20 text-vistaro-primary transition-colors duration-200">
       {/* 1. Breadcrumbs Navigation */}
-      <nav className="flex items-center gap-2 text-xs text-zinc-500 pt-2">
-        <Link to="/" className="hover:text-zinc-900 transition-colors">
+      <nav className="flex items-center gap-2 text-xs text-vistaro-muted pt-2">
+        <Link to="/" className="hover:text-vistaro-primary transition-colors">
           Home
         </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
-        <Link to="/destinations" className="hover:text-zinc-900 transition-colors">
+        <ChevronRight className="w-3.5 h-3.5 text-vistaro-muted" />
+        <Link to="/destinations" className="hover:text-vistaro-primary transition-colors">
           Destinations
         </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
-        <span className="font-semibold text-zinc-900 truncate max-w-[200px]">
+        <ChevronRight className="w-3.5 h-3.5 text-vistaro-muted" />
+        <span className="font-semibold text-vistaro-primary truncate max-w-[200px]">
           {destination.name}
         </span>
       </nav>
 
       {/* 2. Hero Header Showcase */}
-      <div className="relative rounded-3xl overflow-hidden shadow-xl border border-zinc-900 bg-zinc-950 text-white min-h-[380px] sm:min-h-[460px] flex items-end">
+      <div className="relative rounded-3xl overflow-hidden shadow-xl border border-vistaro-border bg-vistaro-surface text-white min-h-[380px] sm:min-h-[460px] flex items-end">
         <img
           src={destination.heroImage?.url || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80'}
           alt={destination.name}
@@ -198,7 +196,7 @@ export default function DestinationDetailPage() {
 
         <div className="relative z-10 p-8 sm:p-12 space-y-5 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold text-white">
-            <MapPin className="w-3.5 h-3.5 text-[#dc3545]" />
+            <MapPin className="w-3.5 h-3.5 text-vistaro-accent" />
             {locationLabel}
           </div>
 
@@ -206,7 +204,7 @@ export default function DestinationDetailPage() {
             {destination.name}
           </h1>
 
-          <p className="text-base sm:text-xl text-zinc-200 leading-relaxed font-light drop-shadow-xs">
+          <p className="text-base sm:text-xl text-white/90 leading-relaxed font-light drop-shadow-xs">
             {destination.shortTagline || destination.tagline}
           </p>
 
@@ -214,7 +212,7 @@ export default function DestinationDetailPage() {
             <a
               href="#stays-section"
               onClick={scrollToStays}
-              className="inline-flex items-center gap-2 bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-all shadow-md cursor-pointer"
+              className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-all shadow-md cursor-pointer"
             >
               <Home className="w-4 h-4" /> Explore Stays in {destination.name}
             </a>
@@ -233,10 +231,10 @@ export default function DestinationDetailPage() {
       {galleryImages.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-bold text-zinc-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary">
               Photographic Preview
             </h2>
-            <span className="text-xs font-medium text-zinc-500">
+            <span className="text-xs font-medium text-vistaro-muted">
               {galleryImages.length} Curated {galleryImages.length === 1 ? 'Photo' : 'Photos'}
             </span>
           </div>
@@ -247,18 +245,18 @@ export default function DestinationDetailPage() {
       {/* 4. Editorial Narrative & Explorer Insights (2-Column Grid) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Left Column: Full Editorial Description */}
-        <div className="lg:col-span-2 bg-white border border-zinc-200/90 rounded-3xl p-8 sm:p-10 space-y-6 shadow-xs">
-          <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-100">
-            <div className="w-9 h-9 rounded-full bg-red-50 text-[#dc3545] flex items-center justify-center">
+        <div className="lg:col-span-2 bg-vistaro-surface border border-vistaro-border rounded-3xl p-8 sm:p-10 space-y-6 shadow-xs">
+          <div className="flex items-center gap-2.5 pb-4 border-b border-vistaro-border">
+            <div className="w-9 h-9 rounded-full bg-vistaro-secondary text-vistaro-accent flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-zinc-900">The Vistaro Guide to {destination.name}</h2>
-              <p className="text-xs text-zinc-500">Curated editorial profile & regional character</p>
+              <h2 className="text-2xl font-bold text-vistaro-primary">The Vistaro Guide to {destination.name}</h2>
+              <p className="text-xs text-vistaro-muted">Curated editorial profile & regional character</p>
             </div>
           </div>
 
-          <div className="prose prose-zinc max-w-none text-zinc-700 leading-relaxed text-sm sm:text-base whitespace-pre-line space-y-4">
+          <div className="text-vistaro-secondary leading-relaxed text-sm sm:text-base whitespace-pre-line space-y-4">
             {destination.longDescription || destination.description || destination.shortTagline}
           </div>
         </div>
@@ -267,10 +265,10 @@ export default function DestinationDetailPage() {
         <div className="space-y-6">
           {/* Best For Card */}
           {destination.bestFor && destination.bestFor.length > 0 && (
-            <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 space-y-3.5 shadow-xs">
+            <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 space-y-3.5 shadow-xs">
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#dc3545]" />
-                <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
+                <Users className="w-4 h-4 text-vistaro-accent" />
+                <h3 className="text-sm font-bold text-vistaro-primary uppercase tracking-wider">
                   Recommended For
                 </h3>
               </div>
@@ -278,9 +276,9 @@ export default function DestinationDetailPage() {
                 {destination.bestFor.map((item, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-red-50/80 text-[#dc3545] text-xs font-semibold border border-red-100"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-vistaro-secondary text-vistaro-accent text-xs font-semibold border border-vistaro-border"
                   >
-                    <CheckCircle2 className="w-3 h-3 text-[#dc3545]" />
+                    <CheckCircle2 className="w-3 h-3 text-vistaro-accent" />
                     {item}
                   </span>
                 ))}
@@ -290,10 +288,10 @@ export default function DestinationDetailPage() {
 
           {/* Identity & Vibe Tags */}
           {destination.identityTags && destination.identityTags.length > 0 && (
-            <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 space-y-3.5 shadow-xs">
+            <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 space-y-3.5 shadow-xs">
               <div className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-zinc-500" />
-                <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
+                <Tag className="w-4 h-4 text-vistaro-muted" />
+                <h3 className="text-sm font-bold text-vistaro-primary uppercase tracking-wider">
                   Regional Vibe
                 </h3>
               </div>
@@ -301,7 +299,7 @@ export default function DestinationDetailPage() {
                 {destination.identityTags.map((item, idx) => (
                   <span
                     key={idx}
-                    className="inline-block px-3 py-1.5 rounded-xl bg-zinc-100 text-zinc-700 text-xs font-medium border border-zinc-200/60"
+                    className="inline-block px-3 py-1.5 rounded-xl bg-vistaro-secondary text-vistaro-secondary text-xs font-medium border border-vistaro-border"
                   >
                     #{item}
                   </span>
@@ -311,22 +309,22 @@ export default function DestinationDetailPage() {
           )}
 
           {/* Geography Summary Card */}
-          <div className="bg-gradient-to-br from-zinc-50 to-zinc-100/60 border border-zinc-200/90 rounded-3xl p-6 space-y-3 shadow-xs">
-            <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
+          <div className="bg-vistaro-secondary border border-vistaro-border rounded-3xl p-6 space-y-3 shadow-xs">
+            <h3 className="text-sm font-bold text-vistaro-primary uppercase tracking-wider">
               Quick Facts
             </h3>
-            <div className="space-y-2 text-xs text-zinc-600">
-              <div className="flex justify-between py-1 border-b border-zinc-200/60">
-                <span className="text-zinc-500">Region</span>
-                <span className="font-semibold text-zinc-800">{destination.state || 'N/A'}</span>
+            <div className="space-y-2 text-xs text-vistaro-secondary">
+              <div className="flex justify-between py-1 border-b border-vistaro-border">
+                <span className="text-vistaro-muted">Region</span>
+                <span className="font-semibold text-vistaro-primary">{destination.state || 'N/A'}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-zinc-200/60">
-                <span className="text-zinc-500">Country</span>
-                <span className="font-semibold text-zinc-800">{destination.country || 'India'}</span>
+              <div className="flex justify-between py-1 border-b border-vistaro-border">
+                <span className="text-vistaro-muted">Country</span>
+                <span className="font-semibold text-vistaro-primary">{destination.country || 'India'}</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-zinc-500">Coordinates</span>
-                <span className="font-semibold text-zinc-800">
+                <span className="text-vistaro-muted">Coordinates</span>
+                <span className="font-semibold text-vistaro-primary">
                   {destination.coordinates?.lat?.toFixed(4)}° N, {destination.coordinates?.lng?.toFixed(4)}° E
                 </span>
               </div>
@@ -339,10 +337,10 @@ export default function DestinationDetailPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-zinc-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary">
               Regional Geography & Map
             </h2>
-            <p className="text-xs text-zinc-500 mt-0.5">
+            <p className="text-xs text-vistaro-muted mt-0.5">
               Centered around {destination.name}, {locationLabel}
             </p>
           </div>
@@ -357,20 +355,20 @@ export default function DestinationDetailPage() {
       </div>
 
       {/* 6. Tour Packages in Destination Section */}
-      <div id="packages-section" className="space-y-6 pt-4 border-t border-zinc-200">
+      <div id="packages-section" className="space-y-6 pt-4 border-t border-vistaro-border">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 flex items-center gap-2">
-              <Compass className="w-6 h-6 text-amber-600" /> Curated Tour Packages in {destination.name}
+            <h2 className="text-2xl sm:text-3xl font-bold text-vistaro-primary flex items-center gap-2">
+              <Compass className="w-6 h-6 text-vistaro-rating" /> Curated Tour Packages in {destination.name}
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+            <p className="text-xs sm:text-sm text-vistaro-muted mt-1">
               Multi-day guided itineraries, adventure expeditions, and cultural escapes crafted for {destination.name}.
             </p>
           </div>
 
           <Link
             to={`/tours?destination=${destination.slug}`}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#dc3545] hover:text-[#b02a37] transition-colors self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-vistaro-accent hover:text-vistaro-accent-hover transition-colors self-start sm:self-auto"
           >
             <span>View All Packages</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -378,23 +376,23 @@ export default function DestinationDetailPage() {
         </div>
 
         {packagesLoading && (
-          <div className="py-12 text-center text-zinc-400">
+          <div className="py-12 text-center text-vistaro-muted">
             <LoadingSpinner fullScreen={false} text={`Loading curated tour packages for ${destination.name}...`} />
           </div>
         )}
 
         {!packagesLoading && tourPackages.length === 0 && (
-          <div className="text-center py-10 px-6 bg-amber-50/50 rounded-3xl border border-amber-200/60 space-y-2">
-            <Compass className="w-8 h-8 text-amber-600 mx-auto" />
-            <h3 className="text-sm font-bold text-zinc-800">
+          <div className="text-center py-10 px-6 bg-vistaro-surface rounded-3xl border border-vistaro-border space-y-2">
+            <Compass className="w-8 h-8 text-vistaro-rating mx-auto" />
+            <h3 className="text-sm font-bold text-vistaro-primary">
               New itineraries for {destination.name} are being prepared
             </h3>
-            <p className="text-xs text-zinc-500 max-w-md mx-auto">
+            <p className="text-xs text-vistaro-secondary max-w-md mx-auto">
               Our travel specialists are finalizing new seasonal tour packages for {destination.name}.
             </p>
             <Link
               to="/tours"
-              className="inline-block text-[#dc3545] hover:underline text-xs font-bold pt-1"
+              className="inline-block text-vistaro-accent hover:underline text-xs font-bold pt-1"
             >
               Explore all platform tour packages &rarr;
             </Link>
@@ -410,21 +408,21 @@ export default function DestinationDetailPage() {
         )}
       </div>
 
-      {/* 7. Host-Led Experiences in Destination Section (Phase 3) */}
-      <div id="experiences-section" className="space-y-6 pt-4 border-t border-zinc-200">
+      {/* 7. Host-Led Experiences in Destination Section */}
+      <div id="experiences-section" className="space-y-6 pt-4 border-t border-vistaro-border">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-purple-600" /> Host-Led Experiences in {destination.name}
+            <h2 className="text-2xl sm:text-3xl font-bold text-vistaro-primary flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-vistaro-accent" /> Host-Led Experiences in {destination.name}
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+            <p className="text-xs sm:text-sm text-vistaro-muted mt-1">
               Immersive culinary walks, nature safaris, and artisan workshops led by local specialists in {destination.name}.
             </p>
           </div>
 
           <Link
             to={`/experiences?destination=${destination.slug}`}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-700 hover:text-purple-900 transition-colors self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-vistaro-accent hover:text-vistaro-accent-hover transition-colors self-start sm:self-auto"
           >
             <span>View All Experiences</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -432,23 +430,23 @@ export default function DestinationDetailPage() {
         </div>
 
         {experiencesLoading && (
-          <div className="py-12 text-center text-zinc-400">
+          <div className="py-12 text-center text-vistaro-muted">
             <LoadingSpinner fullScreen={false} text={`Loading curated experiences for ${destination.name}...`} />
           </div>
         )}
 
         {!experiencesLoading && experiences.length === 0 && (
-          <div className="text-center py-10 px-6 bg-purple-50/50 rounded-3xl border border-purple-200/60 space-y-2">
-            <Sparkles className="w-8 h-8 text-purple-600 mx-auto" />
-            <h3 className="text-sm font-bold text-zinc-800">
+          <div className="text-center py-10 px-6 bg-vistaro-surface rounded-3xl border border-vistaro-border space-y-2">
+            <Sparkles className="w-8 h-8 text-vistaro-accent mx-auto" />
+            <h3 className="text-sm font-bold text-vistaro-primary">
               New experiences for {destination.name} are coming soon
             </h3>
-            <p className="text-xs text-zinc-500 max-w-md mx-auto">
+            <p className="text-xs text-vistaro-secondary max-w-md mx-auto">
               Our local hosts are currently crafting authentic immersion activities in {destination.name}.
             </p>
             <Link
               to="/experiences"
-              className="inline-block text-purple-700 hover:underline text-xs font-bold pt-1"
+              className="inline-block text-vistaro-accent hover:underline text-xs font-bold pt-1"
             >
               Explore all platform experiences &rarr;
             </Link>
@@ -465,20 +463,20 @@ export default function DestinationDetailPage() {
       </div>
 
       {/* 8. Stays in Destination Section */}
-      <div id="stays-section" className="space-y-6 pt-4 border-t border-zinc-200">
+      <div id="stays-section" className="space-y-6 pt-4 border-t border-vistaro-border">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 flex items-center gap-2">
-              <Home className="w-6 h-6 text-[#dc3545]" /> Stays in {destination.name}
+            <h2 className="text-2xl sm:text-3xl font-bold text-vistaro-primary flex items-center gap-2">
+              <Home className="w-6 h-6 text-vistaro-accent" /> Stays in {destination.name}
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+            <p className="text-xs sm:text-sm text-vistaro-muted mt-1">
               Hand-picked luxury villas, boutique homestays, and unique chalets located in and around {destination.name}.
             </p>
           </div>
 
           <Link
             to={`/search?q=${encodeURIComponent(destination.name)}`}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#dc3545] hover:text-[#b02a37] transition-colors self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-vistaro-accent hover:text-vistaro-accent-hover transition-colors self-start sm:self-auto"
           >
             <span>View All Search Results</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -486,23 +484,23 @@ export default function DestinationDetailPage() {
         </div>
 
         {staysLoading && (
-          <div className="py-12 text-center text-zinc-400">
+          <div className="py-12 text-center text-vistaro-muted">
             <LoadingSpinner fullScreen={false} text={`Searching available stays in ${destination.name}...`} />
           </div>
         )}
 
         {!staysLoading && stays.length === 0 && (
-          <div className="text-center py-12 px-6 bg-zinc-50 rounded-3xl border border-zinc-200 space-y-3">
-            <Home className="w-10 h-10 text-zinc-400 mx-auto" />
-            <h3 className="text-base font-bold text-zinc-800">
+          <div className="text-center py-12 px-6 bg-vistaro-surface rounded-3xl border border-vistaro-border space-y-3">
+            <Home className="w-10 h-10 text-vistaro-muted mx-auto" />
+            <h3 className="text-base font-bold text-vistaro-primary">
               No directly matching properties listed in {destination.name} yet
             </h3>
-            <p className="text-xs text-zinc-500 max-w-md mx-auto">
+            <p className="text-xs text-vistaro-secondary max-w-md mx-auto">
               We are currently onboarding exclusive private stays in {destination.name}. Explore all active Vistaro stays across other regions.
             </p>
             <Link
               to="/"
-              className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors mt-2"
+              className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors mt-2"
             >
               Explore All Vistaro Stays
             </Link>

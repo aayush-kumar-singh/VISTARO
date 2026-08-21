@@ -17,11 +17,11 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
   return (
     <div className="relative w-full mb-6">
       {/* 1. Desktop & Tablet Grid Layout (>= 768px) */}
-      <div className="hidden md:block rounded-3xl overflow-hidden shadow-xs">
+      <div className="hidden md:block rounded-3xl overflow-hidden shadow-xs border border-vistaro-border">
         {displayImages.length === 1 ? (
           <div
             onClick={() => openLightbox(0)}
-            className="w-full h-[360px] md:h-[400px] cursor-pointer overflow-hidden group bg-zinc-100"
+            className="w-full h-[360px] md:h-[400px] cursor-pointer overflow-hidden group bg-vistaro-secondary"
           >
             <img
               src={displayImages[0].url}
@@ -34,7 +34,7 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
             {/* Primary large image (takes 2x2) */}
             <div
               onClick={() => openLightbox(0)}
-              className="col-span-2 row-span-2 relative cursor-pointer overflow-hidden group"
+              className="col-span-2 row-span-2 relative cursor-pointer overflow-hidden group bg-vistaro-secondary"
             >
               <img
                 src={displayImages[0].url}
@@ -52,7 +52,7 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
                 <div
                   key={idx}
                   onClick={() => openLightbox(actualIdx)}
-                  className="relative cursor-pointer overflow-hidden group h-[216px]"
+                  className="relative cursor-pointer overflow-hidden group h-[216px] bg-vistaro-secondary"
                 >
                   <img
                     src={img.url}
@@ -60,7 +60,7 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
                     className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                   />
                   {isLast && displayImages.length > 5 && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white font-bold text-lg backdrop-blur-xs">
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-lg backdrop-blur-xs">
                       +{displayImages.length - 5} more
                     </div>
                   )}
@@ -75,16 +75,16 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
           <button
             type="button"
             onClick={() => openLightbox(0)}
-            className="absolute bottom-4 right-4 z-10 bg-white/95 backdrop-blur-xs hover:bg-white text-[#222222] font-semibold text-xs py-2 px-3.5 rounded-xl shadow-md border border-zinc-200 flex items-center gap-1.5 transition-all cursor-pointer"
+            className="absolute bottom-4 right-4 z-10 bg-vistaro-surface/95 backdrop-blur-xs hover:bg-vistaro-surface text-vistaro-primary font-semibold text-xs py-2 px-3.5 rounded-xl shadow-md border border-vistaro-border flex items-center gap-1.5 transition-all cursor-pointer"
           >
-            <Grid className="w-3.5 h-3.5 text-zinc-700" />
+            <Grid className="w-3.5 h-3.5 text-vistaro-secondary" />
             <span>Show all {displayImages.length} photos</span>
           </button>
         )}
       </div>
 
       {/* 2. Mobile Carousel (< 768px) */}
-      <div className="md:hidden relative aspect-4/3 rounded-2xl overflow-hidden shadow-xs bg-zinc-100">
+      <div className="md:hidden relative aspect-4/3 rounded-2xl overflow-hidden shadow-xs bg-vistaro-secondary border border-vistaro-border">
         <img
           src={displayImages[mobileSlide]?.url}
           alt={title}
@@ -96,27 +96,26 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
           <>
             <button
               onClick={() => setMobileSlide((prev) => (prev > 0 ? prev - 1 : displayImages.length - 1))}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 text-zinc-900 shadow-sm"
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-vistaro-surface/80 hover:bg-vistaro-surface text-vistaro-primary shadow-sm border border-vistaro-border cursor-pointer"
               aria-label="Previous photo"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => setMobileSlide((prev) => (prev < displayImages.length - 1 ? prev + 1 : 0))}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 text-zinc-900 shadow-sm"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-vistaro-surface/80 hover:bg-vistaro-surface text-vistaro-primary shadow-sm border border-vistaro-border cursor-pointer"
               aria-label="Next photo"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
 
             {/* Dots */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/40 px-3 py-1 rounded-full backdrop-blur-xs">
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/50 px-3 py-1 rounded-full backdrop-blur-xs">
               {displayImages.map((_, idx) => (
                 <div
                   key={idx}
-                  className={`w-1.5 h-1.5 rounded-full transition-all ${
-                    mobileSlide === idx ? 'bg-white scale-125' : 'bg-white/50'
-                  }`}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${mobileSlide === idx ? 'bg-white scale-125' : 'bg-white/50'
+                    }`}
                 />
               ))}
             </div>

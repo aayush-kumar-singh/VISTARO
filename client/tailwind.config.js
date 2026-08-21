@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -14,23 +15,41 @@ export default {
     },
     extend: {
       colors: {
+        vistaro: {
+          main: 'var(--vistaro-bg-main)',
+          secondary: 'var(--vistaro-bg-secondary)',
+          'bg-secondary': 'var(--vistaro-bg-secondary)',
+          surface: 'var(--vistaro-surface)',
+          border: 'var(--vistaro-border)',
+          primary: 'var(--vistaro-text-primary)',
+          'secondary-text': 'var(--vistaro-text-secondary)',
+          muted: 'var(--vistaro-text-muted)',
+          accent: {
+            DEFAULT: 'var(--vistaro-accent)',
+            hover: 'var(--vistaro-accent-hover)',
+          },
+          'accent-hover': 'var(--vistaro-accent-hover)',
+          rating: 'var(--vistaro-rating)',
+          success: 'var(--vistaro-success)',
+          error: 'var(--vistaro-error)',
+        },
         primary: {
-          DEFAULT: '#dc3545',
-          hover: '#b02a37',
+          DEFAULT: 'var(--vistaro-accent)',
+          hover: 'var(--vistaro-accent-hover)',
           light: '#fef2f2',
           border: '#fecaca',
         },
         ink: {
-          DEFAULT: '#222222',
-          muted: '#717171',
-          light: '#a1a1aa',
+          DEFAULT: 'var(--vistaro-text-primary)',
+          muted: 'var(--vistaro-text-secondary)',
+          light: 'var(--vistaro-text-muted)',
         },
         surface: {
-          DEFAULT: '#FFFFFF',
-          hover: '#F7F7F7',
-          muted: '#F3F4F6',
+          DEFAULT: 'var(--vistaro-surface)',
+          hover: 'var(--vistaro-bg-secondary)',
+          muted: 'var(--vistaro-bg-secondary)',
         },
-        border: '#DDDDDD',
+        border: 'var(--vistaro-border)',
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],

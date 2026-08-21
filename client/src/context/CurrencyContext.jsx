@@ -3,7 +3,7 @@ import { listingsApi } from '../api/listingsApi.js';
 
 const CurrencyContext = createContext(null);
 
-const DEFAULT_RATES = {
+export const DEFAULT_RATES = {
   INR: { code: "INR", symbol: "₹", name: "Indian Rupee", rate: 1.0, locale: "en-IN" },
   USD: { code: "USD", symbol: "$", name: "US Dollar", rate: 0.012, locale: "en-US" },
   EUR: { code: "EUR", symbol: "€", name: "Euro", rate: 0.011, locale: "de-DE" },
@@ -20,7 +20,7 @@ export function CurrencyProvider({ children }) {
   useEffect(() => {
     listingsApi.getCurrencies()
       .then((data) => {
-        if (data.currencies) {
+        if (data.currencies && typeof data.currencies === 'object' && Object.keys(data.currencies).length > 0) {
           setExchangeRates(data.currencies);
         }
       })
@@ -29,26 +29,27 @@ export function CurrencyProvider({ children }) {
       });
   }, []);
 
-  const setCurrency = (code) => {
-    if (exchangeRates[code]) {
+  const setCurrency = useCallback((code) => {
+    if (code && (exchangeRates[code] || DEFAULT_RATES[code])) {
       setCurrencyState(code);
       localStorage.setItem('vistaro_currency', code);
     }
-  };
+  }, [exchangeRates]);
 
   const formatPrice = useCallback((amountInINR) => {
     const num = Number(amountInINR) || 0;
-    const config = exchangeRates[currency] || exchangeRates.INR || DEFAULT_RATES.INR;
-    const converted = num * config.rate;
+    const config = exchangeRates[currency] || DEFAULT_RATES[currency] || DEFAULT_RATES.INR;
+    const rate = config?.rate ?? 1.0;
+    const converted = num * rate;
 
     try {
-      return new Intl.NumberFormat(config.locale, {
+      return new Intl.NumberFormat(config.locale || 'en-IN', {
         style: "currency",
-        currency: config.code,
+        currency: config.code || 'INR',
         maximumFractionDigits: 0,
       }).format(converted);
     } catch (e) {
-      return `${config.symbol} ${Math.round(converted).toLocaleString()}`;
+      return `${config.symbol || '₹'} ${Math.round(converted).toLocaleString()}`;
     }
   }, [currency, exchangeRates]);
 

@@ -16,18 +16,18 @@ export default function ToastContainer() {
         return (
           <div
             key={toast.id}
-            className="pointer-events-auto bg-[#18181b] text-white shadow-2xl rounded-2xl overflow-hidden border border-zinc-700/60 animate-fade-in flex flex-col"
+            className="pointer-events-auto bg-vistaro-surface text-vistaro-primary shadow-2xl rounded-2xl overflow-hidden border border-vistaro-border animate-fade-in flex flex-col"
           >
             <div className="flex items-center justify-between p-3.5 gap-3">
               <div className="flex items-center gap-2.5">
-                {isSuccess && <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />}
-                {isError && <AlertCircle className="w-5 h-5 text-[#dc3545] shrink-0" />}
-                {!isSuccess && !isError && <Info className="w-5 h-5 text-blue-400 shrink-0" />}
-                <p className="text-sm font-medium text-zinc-100 leading-snug">{toast.message}</p>
+                {isSuccess && <CheckCircle2 className="w-5 h-5 text-vistaro-success shrink-0" />}
+                {isError && <AlertCircle className="w-5 h-5 text-vistaro-error shrink-0" />}
+                {!isSuccess && !isError && <Info className="w-5 h-5 text-vistaro-accent shrink-0" />}
+                <p className="text-sm font-medium text-vistaro-primary leading-snug">{toast.message}</p>
               </div>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-zinc-400 hover:text-white transition-colors p-1"
+                className="text-vistaro-muted hover:text-vistaro-primary transition-colors p-1 cursor-pointer"
                 aria-label="Close toast"
               >
                 <X className="w-4 h-4" />
@@ -35,9 +35,8 @@ export default function ToastContainer() {
             </div>
             {/* Progress bar */}
             <div
-              className={`h-1 toast-progress-bar ${
-                isSuccess ? 'bg-emerald-500' : isError ? 'bg-[#dc3545]' : 'bg-blue-500'
-              }`}
+              className={`h-1 toast-progress-bar ${isSuccess ? 'bg-vistaro-success' : isError ? 'bg-vistaro-error' : 'bg-vistaro-accent'
+                }`}
               style={{ animationDuration: `${toast.duration}ms` }}
             />
           </div>

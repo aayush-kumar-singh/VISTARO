@@ -18,15 +18,10 @@ import {
   ArrowLeft,
   CheckCircle2,
   ShieldCheck,
-  Calendar,
   ArrowRight,
-  Info,
-  Share2,
-  Heart,
   ExternalLink,
   Star,
   MessageSquare,
-  Lock,
   Plus,
   Minus,
   Check,
@@ -107,28 +102,28 @@ export default function ExperienceDetailPage() {
   // 404 / Error State
   if (error || !experience) {
     return (
-      <div className="w-full max-w-2xl mx-auto py-16 px-6 text-center space-y-6 animate-fade-in">
-        <div className="w-16 h-16 rounded-full bg-red-50 text-[#dc3545] flex items-center justify-center mx-auto shadow-inner">
+      <div className="w-full max-w-2xl mx-auto py-16 px-6 text-center space-y-6 animate-fade-in text-vistaro-primary">
+        <div className="w-16 h-16 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto shadow-inner border border-vistaro-border">
           <Sparkles className="w-8 h-8" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-vistaro-primary">
             Experience Not Found
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-600 max-w-md mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-vistaro-secondary max-w-md mx-auto leading-relaxed">
             The host-led experience you are looking for might have been moved, deactivated, or does not exist.
           </p>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Link
             to="/experiences"
-            className="bg-[#222222] hover:bg-black text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-colors shadow-xs"
+            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-colors shadow-xs"
           >
             Browse All Experiences
           </Link>
           <Link
             to="/destinations"
-            className="bg-white border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-colors"
+            className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-colors"
           >
             Explore Destinations
           </Link>
@@ -157,46 +152,30 @@ export default function ExperienceDetailPage() {
     ...rawGallery.filter((img) => img?.url && img.url !== coverImageObj.url),
   ];
 
-  const categoryColors = {
-    Adventure: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    Cultural: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    'Food & Drink': 'bg-amber-50 text-amber-800 border-amber-200',
-    Nature: 'bg-teal-50 text-teal-700 border-teal-200',
-    Wellness: 'bg-purple-50 text-purple-700 border-purple-200',
-    Photography: 'bg-rose-50 text-rose-700 border-rose-200',
-    Workshop: 'bg-blue-50 text-blue-700 border-blue-200',
-  };
-
-  const difficultyColors = {
-    Easy: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    Moderate: 'bg-blue-50 text-blue-700 border-blue-200',
-    Challenging: 'bg-amber-50 text-amber-800 border-amber-200',
-  };
-
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-20 animate-fade-in text-[#222222]">
-      
+    <div className="w-full max-w-7xl mx-auto space-y-8 pb-20 animate-fade-in text-vistaro-primary transition-colors duration-200">
+
       {/* 1. Top Breadcrumbs & Back Nav */}
       <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-500">
-          <Link to="/" className="hover:text-zinc-900 transition-colors">Vistaro</Link>
+        <div className="flex items-center gap-2 text-xs font-semibold text-vistaro-muted">
+          <Link to="/" className="hover:text-vistaro-primary transition-colors">Vistaro</Link>
           <span>/</span>
-          <Link to="/experiences" className="hover:text-zinc-900 transition-colors">Experiences</Link>
+          <Link to="/experiences" className="hover:text-vistaro-primary transition-colors">Experiences</Link>
           <span>/</span>
           {destinationSlug ? (
-            <Link to={`/destinations/${destinationSlug}`} className="hover:text-zinc-900 transition-colors">
+            <Link to={`/destinations/${destinationSlug}`} className="hover:text-vistaro-primary transition-colors">
               {destinationName}
             </Link>
           ) : (
             <span>{destinationName}</span>
           )}
           <span>/</span>
-          <span className="text-zinc-900 truncate max-w-[200px] sm:max-w-xs">{experience.title}</span>
+          <span className="text-vistaro-primary truncate max-w-[200px] sm:max-w-xs">{experience.title}</span>
         </div>
 
         <Link
           to="/experiences"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-600 hover:text-zinc-900 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-vistaro-secondary hover:text-vistaro-primary transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to All Experiences</span>
@@ -207,17 +186,13 @@ export default function ExperienceDetailPage() {
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <span
-            className={`text-xs font-extrabold px-3 py-1 rounded-full border shadow-2xs ${
-              categoryColors[category] || categoryColors.Adventure
-            }`}
+            className="text-xs font-extrabold px-3 py-1 rounded-full border shadow-2xs bg-vistaro-surface text-vistaro-accent border-vistaro-accent/40"
           >
             {category}
           </span>
 
           <span
-            className={`text-xs font-bold px-3 py-1 rounded-full border shadow-2xs ${
-              difficultyColors[difficulty] || difficultyColors.Easy
-            }`}
+            className="text-xs font-bold px-3 py-1 rounded-full border shadow-2xs bg-vistaro-surface text-vistaro-secondary border-vistaro-border"
           >
             {difficulty}
           </span>
@@ -225,7 +200,7 @@ export default function ExperienceDetailPage() {
           {destinationSlug && (
             <Link
               to={`/destinations/${destinationSlug}`}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#dc3545] bg-red-50 hover:bg-red-100 border border-red-200/60 px-3 py-1 rounded-full transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-vistaro-accent bg-vistaro-secondary hover:bg-vistaro-surface border border-vistaro-border px-3 py-1 rounded-full transition-colors shadow-2xs"
             >
               <MapPin className="w-3.5 h-3.5" />
               <span>{destinationName}, {destinationState}</span>
@@ -234,23 +209,23 @@ export default function ExperienceDetailPage() {
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 leading-tight">
+        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-vistaro-primary leading-tight">
           {experience.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500 pt-1">
-          <div className="flex items-center gap-1.5 text-zinc-800 font-medium">
-            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-            <span>Hosted by <b className="text-zinc-900">@{experience.createdBy?.username || 'Vistaro Host'}</b></span>
+        <div className="flex flex-wrap items-center gap-4 text-xs text-vistaro-muted pt-1">
+          <div className="flex items-center gap-1.5 text-vistaro-secondary font-medium">
+            <Sparkles className="w-3.5 h-3.5 text-vistaro-accent" />
+            <span>Hosted by <b className="text-vistaro-primary">@{experience.createdBy?.username || 'Vistaro Host'}</b></span>
           </div>
-          <span className="w-1 h-1 rounded-full bg-zinc-300" />
+          <span className="w-1 h-1 rounded-full bg-vistaro-border" />
           <div className="flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-zinc-400" />
+            <Clock className="w-3.5 h-3.5 text-vistaro-muted" />
             <span>{duration} {duration === 1 ? 'Hour' : 'Hours'} total duration</span>
           </div>
-          <span className="w-1 h-1 rounded-full bg-zinc-300" />
+          <span className="w-1 h-1 rounded-full bg-vistaro-border" />
           <div className="flex items-center gap-1">
-            <Users className="w-3.5 h-3.5 text-zinc-400" />
+            <Users className="w-3.5 h-3.5 text-vistaro-muted" />
             <span>Small group up to {maxGroupSize} guests</span>
           </div>
         </div>
@@ -261,78 +236,78 @@ export default function ExperienceDetailPage() {
 
       {/* 4. Main 2-Column Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start pt-4">
-        
-        {/* LEFT COLUMN: Editorial Details, Inclusions, Meeting Point, Reviews Placeholder */}
+
+        {/* LEFT COLUMN */}
         <div className="lg:col-span-2 space-y-8">
-          
+
           {/* Quick Facts Summary Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-zinc-50 border border-zinc-200/90 rounded-3xl p-5 shadow-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-vistaro-surface border border-vistaro-border rounded-3xl p-5 shadow-xs">
             <div className="space-y-1">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Duration</div>
-              <div className="text-sm font-extrabold text-zinc-900 flex items-center gap-1">
-                <Clock className="w-4 h-4 text-purple-600" />
+              <div className="text-[10px] font-bold uppercase tracking-wider text-vistaro-muted">Duration</div>
+              <div className="text-sm font-extrabold text-vistaro-primary flex items-center gap-1">
+                <Clock className="w-4 h-4 text-vistaro-rating" />
                 <span>{duration} Hours</span>
               </div>
             </div>
 
             <div className="space-y-1">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Group Size</div>
-              <div className="text-sm font-extrabold text-zinc-900 flex items-center gap-1">
-                <Users className="w-4 h-4 text-blue-600" />
+              <div className="text-[10px] font-bold uppercase tracking-wider text-vistaro-muted">Group Size</div>
+              <div className="text-sm font-extrabold text-vistaro-primary flex items-center gap-1">
+                <Users className="w-4 h-4 text-vistaro-accent" />
                 <span>Max {maxGroupSize}</span>
               </div>
             </div>
 
             <div className="space-y-1">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Difficulty</div>
-              <div className="text-sm font-extrabold text-zinc-900 flex items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <div className="text-[10px] font-bold uppercase tracking-wider text-vistaro-muted">Difficulty</div>
+              <div className="text-sm font-extrabold text-vistaro-primary flex items-center gap-1">
+                <ShieldCheck className="w-4 h-4 text-vistaro-success" />
                 <span>{difficulty}</span>
               </div>
             </div>
 
             <div className="space-y-1">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Activity Type</div>
-              <div className="text-sm font-extrabold text-zinc-900 flex items-center gap-1">
-                <Sparkles className="w-4 h-4 text-amber-500" />
+              <div className="text-[10px] font-bold uppercase tracking-wider text-vistaro-muted">Activity Type</div>
+              <div className="text-sm font-extrabold text-vistaro-primary flex items-center gap-1">
+                <Sparkles className="w-4 h-4 text-vistaro-accent" />
                 <span>{category}</span>
               </div>
             </div>
           </div>
 
           {/* About This Experience */}
-          <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
-            <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-100">
-              <div className="w-9 h-9 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
+          <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
+            <div className="flex items-center gap-2.5 pb-4 border-b border-vistaro-border">
+              <div className="w-9 h-9 rounded-full bg-vistaro-secondary text-vistaro-accent flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-zinc-900">About This Experience</h2>
-                <p className="text-xs text-zinc-500">Overview, activity highlights, and host narrative</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary">About This Experience</h2>
+                <p className="text-xs text-vistaro-muted">Overview, activity highlights, and host narrative</p>
               </div>
             </div>
 
             {experience.shortDescription && (
-              <p className="text-sm sm:text-base font-semibold text-zinc-800 leading-relaxed italic border-l-4 border-purple-500 pl-4 py-1">
+              <p className="text-sm sm:text-base font-semibold text-vistaro-primary leading-relaxed italic border-l-4 border-vistaro-accent pl-4 py-1">
                 "{experience.shortDescription}"
               </p>
             )}
 
-            <div className="prose prose-zinc max-w-none text-zinc-700 leading-relaxed text-sm sm:text-base whitespace-pre-line space-y-4">
+            <div className="text-vistaro-secondary leading-relaxed text-sm sm:text-base whitespace-pre-line space-y-4">
               {experience.longDescription || experience.description || experience.shortDescription}
             </div>
           </div>
 
           {/* What's Included */}
           {Array.isArray(experience.whatsIncluded) && experience.whatsIncluded.length > 0 && (
-            <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
-              <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-100">
-                <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
+              <div className="flex items-center gap-2.5 pb-4 border-b border-vistaro-border">
+                <div className="w-9 h-9 rounded-full bg-vistaro-secondary text-vistaro-success flex items-center justify-center">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-zinc-900">What's Included</h2>
-                  <p className="text-xs text-zinc-500">Equipment, refreshments, and guidance provided by your host</p>
+                  <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary">What's Included</h2>
+                  <p className="text-xs text-vistaro-muted">Equipment, refreshments, and guidance provided by your host</p>
                 </div>
               </div>
 
@@ -340,10 +315,10 @@ export default function ExperienceDetailPage() {
                 {experience.whatsIncluded.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-3 p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/60"
+                    className="flex items-start gap-3 p-3.5 rounded-2xl bg-vistaro-secondary border border-vistaro-border"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span className="text-xs sm:text-sm font-medium text-zinc-800">{item}</span>
+                    <CheckCircle2 className="w-4 h-4 text-vistaro-success shrink-0 mt-0.5" />
+                    <span className="text-xs sm:text-sm font-medium text-vistaro-primary">{item}</span>
                   </div>
                 ))}
               </div>
@@ -351,25 +326,25 @@ export default function ExperienceDetailPage() {
           )}
 
           {/* Meeting Point & Regional Context */}
-          <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
-            <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-100">
-              <div className="w-9 h-9 rounded-full bg-red-50 text-[#dc3545] flex items-center justify-center">
+          <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
+            <div className="flex items-center gap-2.5 pb-4 border-b border-vistaro-border">
+              <div className="w-9 h-9 rounded-full bg-vistaro-secondary text-vistaro-accent flex items-center justify-center">
                 <MapPin className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-zinc-900">Meeting Point & Location</h2>
-                <p className="text-xs text-zinc-500">Where to gather before your activity begins</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary">Meeting Point & Location</h2>
+                <p className="text-xs text-vistaro-muted">Where to gather before your activity begins</p>
               </div>
             </div>
 
-            <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-200/70 space-y-2">
+            <div className="bg-vistaro-secondary rounded-2xl p-4 border border-vistaro-border space-y-2">
               <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-[#dc3545] shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-vistaro-accent shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <div className="font-bold text-zinc-900 text-sm">
+                  <div className="font-bold text-vistaro-primary text-sm">
                     {experience.meetingPoint || `${destinationName} Landmark`}
                   </div>
-                  <div className="text-xs text-zinc-500">
+                  <div className="text-xs text-vistaro-muted">
                     Located in {destinationName}, {destinationState}. Exact coordinate directions and host contact will be sent upon booking.
                   </div>
                 </div>
@@ -380,7 +355,7 @@ export default function ExperienceDetailPage() {
               <div className="pt-2">
                 <Link
                   to={`/destinations/${destinationSlug}`}
-                  className="inline-flex items-center gap-2 text-xs font-bold text-[#dc3545] hover:underline"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-vistaro-accent hover:underline"
                 >
                   <span>Explore the complete Vistaro guide to {destinationName}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -389,7 +364,7 @@ export default function ExperienceDetailPage() {
             )}
           </div>
 
-          {/* 7. Reviews Section (Phase 3 / Part 3.8) */}
+          {/* Reviews Section */}
           {(() => {
             const reviews = Array.isArray(experience.reviews) ? experience.reviews : [];
             const reviewCount = reviews.length;
@@ -399,24 +374,24 @@ export default function ExperienceDetailPage() {
                 : null;
 
             return (
-              <div id="reviews-section" className="space-y-6 pt-4 border-t border-zinc-200">
+              <div id="reviews-section" className="space-y-6 pt-4 border-t border-vistaro-border">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
                   <div>
-                    <h2 className="text-2xl font-bold text-zinc-900 flex items-center gap-2">
-                      <Star className="w-6 h-6 fill-amber-400 text-amber-500" />
+                    <h2 className="text-2xl font-bold text-vistaro-primary flex items-center gap-2">
+                      <Star className="w-6 h-6 fill-vistaro-rating text-vistaro-rating" />
                       <span>
                         {avgRating ? `${avgRating} · ${reviewCount} ${reviewCount === 1 ? 'Review' : 'Reviews'}` : 'Guest Reviews'}
                       </span>
                     </h2>
-                    <p className="text-xs text-zinc-500 mt-0.5">
+                    <p className="text-xs text-vistaro-muted mt-0.5">
                       Verified feedback from travelers who booked this experience
                     </p>
                   </div>
 
                   {avgRating && (
-                    <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3.5 py-1.5 rounded-full self-start sm:self-auto">
+                    <div className="flex items-center gap-1.5 bg-vistaro-surface border border-vistaro-border px-3.5 py-1.5 rounded-full self-start sm:self-auto">
                       <StarRating rating={Number(avgRating)} />
-                      <span className="text-xs font-bold text-amber-900">{avgRating} / 5</span>
+                      <span className="text-xs font-bold text-vistaro-rating">{avgRating} / 5</span>
                     </div>
                   )}
                 </div>
@@ -429,12 +404,12 @@ export default function ExperienceDetailPage() {
 
                 {/* Reviews List */}
                 {reviewCount === 0 ? (
-                  <div className="text-center py-10 px-4 bg-zinc-50 rounded-3xl border border-zinc-200/80 space-y-2">
-                    <MessageSquare className="w-8 h-8 text-zinc-400 mx-auto" />
-                    <h4 className="text-sm font-bold text-zinc-800">
+                  <div className="text-center py-10 px-4 bg-vistaro-surface rounded-3xl border border-vistaro-border space-y-2">
+                    <MessageSquare className="w-8 h-8 text-vistaro-muted mx-auto" />
+                    <h4 className="text-sm font-bold text-vistaro-primary">
                       No reviews yet
                     </h4>
-                    <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                    <p className="text-xs text-vistaro-muted max-w-sm mx-auto">
                       Be the first verified explorer to reserve and review this host-led immersion in {destinationName}!
                     </p>
                   </div>
@@ -458,60 +433,60 @@ export default function ExperienceDetailPage() {
 
         </div>
 
-        {/* RIGHT COLUMN: Sticky Booking Widget (Part 3.7) */}
+        {/* RIGHT COLUMN: Sticky Booking Widget */}
         <div className="lg:col-span-1 lg:sticky lg:top-24 space-y-5">
-          <div className="bg-white border border-zinc-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden">
-            
+          <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden">
+
             {/* Header: Starting Price */}
-            <div className="pb-4 border-b border-zinc-100 flex items-baseline justify-between">
+            <div className="pb-4 border-b border-vistaro-border flex items-baseline justify-between">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-vistaro-muted block">
                   Experience Rate
                 </span>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl sm:text-3xl font-extrabold text-zinc-900">
+                  <span className="text-2xl sm:text-3xl font-extrabold text-vistaro-primary">
                     {formatPrice(basePrice)}
                   </span>
-                  <span className="text-xs text-zinc-500 font-medium">/ person</span>
+                  <span className="text-xs text-vistaro-muted font-medium">/ person</span>
                 </div>
               </div>
 
-              <span className="text-[10px] font-extrabold bg-purple-50 text-purple-700 px-2.5 py-1 rounded-full border border-purple-200">
+              <span className="text-[10px] font-extrabold bg-vistaro-secondary text-vistaro-accent px-2.5 py-1 rounded-full border border-vistaro-border">
                 Host-Led
               </span>
             </div>
 
             {/* Quick Experience Specs */}
-            <div className="bg-zinc-50/70 border border-zinc-200/60 rounded-2xl p-3.5 space-y-2 text-xs">
+            <div className="bg-vistaro-secondary border border-vistaro-border rounded-2xl p-3.5 space-y-2 text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-zinc-500">Duration:</span>
-                <span className="font-bold text-zinc-900">{duration} Hours</span>
+                <span className="text-vistaro-muted">Duration:</span>
+                <span className="font-bold text-vistaro-primary">{duration} Hours</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-zinc-500">Activity Type:</span>
-                <span className="font-bold text-zinc-900">{category}</span>
+                <span className="text-vistaro-muted">Activity Type:</span>
+                <span className="font-bold text-vistaro-primary">{category}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-zinc-500">Max Capacity:</span>
-                <span className="font-bold text-zinc-900">{maxGroupSize} Guests</span>
+                <span className="text-vistaro-muted">Max Capacity:</span>
+                <span className="font-bold text-vistaro-primary">{maxGroupSize} Guests</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-zinc-500">Meeting Point:</span>
-                <span className="font-bold text-zinc-900 truncate max-w-[150px]">{experience.meetingPoint || destinationName}</span>
+                <span className="text-vistaro-muted">Meeting Point:</span>
+                <span className="font-bold text-vistaro-primary truncate max-w-[150px]">{experience.meetingPoint || destinationName}</span>
               </div>
             </div>
 
-            {/* INTERACTIVE BOOKING WIDGET (Part 3.7) */}
+            {/* INTERACTIVE BOOKING WIDGET */}
             {bookingSuccess ? (
-              <div className="bg-purple-50 border border-purple-200 rounded-2xl p-5 text-center space-y-3 animate-fade-in">
-                <div className="w-12 h-12 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center mx-auto">
+              <div className="bg-vistaro-secondary border border-vistaro-border rounded-2xl p-5 text-center space-y-3 animate-fade-in">
+                <div className="w-12 h-12 rounded-full bg-vistaro-surface text-vistaro-success border border-vistaro-border flex items-center justify-center mx-auto">
                   <Check className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-extrabold text-base text-zinc-900">
+                  <h4 className="font-extrabold text-base text-vistaro-primary">
                     Experience Reserved!
                   </h4>
-                  <p className="text-xs text-zinc-600 mt-1">
+                  <p className="text-xs text-vistaro-secondary mt-1">
                     Your immersion for {bookingSuccess.guests} guest{bookingSuccess.guests > 1 ? 's' : ''} on{' '}
                     <b>{new Date(bookingSuccess.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</b> is confirmed.
                   </p>
@@ -520,14 +495,14 @@ export default function ExperienceDetailPage() {
                 <div className="pt-2 flex flex-col gap-2">
                   <Link
                     to="/profile"
-                    className="w-full bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold py-2.5 rounded-full transition-colors shadow-xs"
+                    className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 rounded-full transition-colors shadow-xs"
                   >
                     View in My Trips
                   </Link>
                   <button
                     type="button"
                     onClick={() => setBookingSuccess(null)}
-                    className="text-xs text-zinc-500 hover:underline cursor-pointer"
+                    className="text-xs text-vistaro-muted hover:underline cursor-pointer"
                   >
                     Book another session
                   </button>
@@ -568,11 +543,11 @@ export default function ExperienceDetailPage() {
                     setBookingLoading(false);
                   }
                 }}
-                className="space-y-4 pt-4 border-t border-zinc-100 text-xs"
+                className="space-y-4 pt-4 border-t border-vistaro-border text-xs"
               >
                 {/* 1. Activity Date */}
                 <div className="space-y-1">
-                  <label className="block font-bold text-zinc-700 uppercase tracking-wider text-[11px]">
+                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider text-[11px]">
                     Activity Date
                   </label>
                   <div className="relative">
@@ -581,7 +556,7 @@ export default function ExperienceDetailPage() {
                       min={tomorrowStr}
                       value={activityDate}
                       onChange={(e) => setActivityDate(e.target.value)}
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-zinc-800 focus:outline-hidden focus:border-purple-600 cursor-pointer"
+                      className="w-full bg-vistaro-secondary border border-vistaro-border rounded-xl px-3.5 py-2.5 text-xs font-medium text-vistaro-primary focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
                       required
                     />
                   </div>
@@ -589,13 +564,13 @@ export default function ExperienceDetailPage() {
 
                 {/* 2. Time Slot Selection */}
                 <div className="space-y-1">
-                  <label className="block font-bold text-zinc-700 uppercase tracking-wider text-[11px]">
+                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider text-[11px]">
                     Time Slot
                   </label>
                   <select
                     value={timeSlot}
                     onChange={(e) => setTimeSlot(e.target.value)}
-                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2 text-xs font-medium text-zinc-800 focus:outline-hidden focus:border-purple-600 cursor-pointer"
+                    className="w-full bg-vistaro-secondary border border-vistaro-border rounded-xl px-3 py-2 text-xs font-medium text-vistaro-primary focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
                   >
                     <option value="Morning (09:00 AM)">Morning Session (09:00 AM)</option>
                     <option value="Afternoon (02:00 PM)">Afternoon Session (02:00 PM)</option>
@@ -605,22 +580,22 @@ export default function ExperienceDetailPage() {
 
                 {/* 3. Guests / Participants Counter */}
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-zinc-700 uppercase tracking-wider">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-vistaro-primary uppercase tracking-wider">
                     <span>Participants</span>
-                    <span className="text-zinc-400 font-normal capitalize">Max {maxGroupSize}</span>
+                    <span className="text-vistaro-muted font-normal capitalize">Max {maxGroupSize}</span>
                   </div>
 
-                  <div className="flex items-center justify-between bg-zinc-50 border border-zinc-200 rounded-xl p-2">
+                  <div className="flex items-center justify-between bg-vistaro-secondary border border-vistaro-border rounded-xl p-2">
                     <button
                       type="button"
                       onClick={() => setTravelers((prev) => Math.max(1, prev - 1))}
                       disabled={travelers <= 1}
-                      className="w-8 h-8 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 disabled:opacity-40 cursor-pointer"
+                      className="w-8 h-8 rounded-lg bg-vistaro-surface border border-vistaro-border flex items-center justify-center text-vistaro-primary hover:bg-vistaro-secondary disabled:opacity-40 cursor-pointer"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
 
-                    <div className="font-extrabold text-sm text-zinc-900">
+                    <div className="font-extrabold text-sm text-vistaro-primary">
                       {travelers} Guest{travelers !== 1 ? 's' : ''}
                     </div>
 
@@ -628,7 +603,7 @@ export default function ExperienceDetailPage() {
                       type="button"
                       onClick={() => setTravelers((prev) => Math.min(maxGroupSize, prev + 1))}
                       disabled={travelers >= maxGroupSize}
-                      className="w-8 h-8 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 disabled:opacity-40 cursor-pointer"
+                      className="w-8 h-8 rounded-lg bg-vistaro-surface border border-vistaro-border flex items-center justify-center text-vistaro-primary hover:bg-vistaro-secondary disabled:opacity-40 cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>
@@ -642,22 +617,22 @@ export default function ExperienceDetailPage() {
                   const total = subtotal + gst;
 
                   return (
-                    <div className="space-y-2 pt-3 border-t border-zinc-100 text-xs">
-                      <div className="flex items-center justify-between text-zinc-600">
+                    <div className="space-y-2 pt-3 border-t border-vistaro-border text-xs">
+                      <div className="flex items-center justify-between text-vistaro-secondary">
                         <span>
                           {formatPrice(basePrice)} &times; {travelers} guest{travelers !== 1 ? 's' : ''}
                         </span>
-                        <span className="font-semibold text-zinc-900">{formatPrice(subtotal)}</span>
+                        <span className="font-semibold text-vistaro-primary">{formatPrice(subtotal)}</span>
                       </div>
 
-                      <div className="flex items-center justify-between text-zinc-600">
+                      <div className="flex items-center justify-between text-vistaro-secondary">
                         <span>Applicable GST (18%)</span>
-                        <span className="font-semibold text-zinc-900">{formatPrice(gst)}</span>
+                        <span className="font-semibold text-vistaro-primary">{formatPrice(gst)}</span>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-zinc-100 font-extrabold text-sm text-zinc-900">
+                      <div className="flex items-center justify-between pt-2 border-t border-vistaro-border font-extrabold text-sm text-vistaro-primary">
                         <span>Total (INR)</span>
-                        <span className="text-purple-700">{formatPrice(total)}</span>
+                        <span className="text-vistaro-accent">{formatPrice(total)}</span>
                       </div>
                     </div>
                   );
@@ -667,7 +642,7 @@ export default function ExperienceDetailPage() {
                 <button
                   type="submit"
                   disabled={bookingLoading}
-                  className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3.5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer disabled:opacity-50"
+                  className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white font-bold py-3.5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer disabled:opacity-50"
                 >
                   {bookingLoading ? (
                     <span>Confirming Reservation...</span>
@@ -679,24 +654,24 @@ export default function ExperienceDetailPage() {
                   )}
                 </button>
 
-                <p className="text-[10px] text-center text-zinc-400">
+                <p className="text-[10px] text-center text-vistaro-muted">
                   Instant confirmation · Direct host communication included
                 </p>
               </form>
             )}
 
             {/* Guarantee list */}
-            <div className="pt-4 border-t border-zinc-100 space-y-2 text-xs text-zinc-600">
+            <div className="pt-4 border-t border-vistaro-border space-y-2 text-xs text-vistaro-secondary">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-vistaro-success" />
                 <span>Free cancellation up to 24h before</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-vistaro-success" />
                 <span>Certified local specialist guide</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-vistaro-success" />
                 <span>All essential equipment included</span>
               </div>
             </div>

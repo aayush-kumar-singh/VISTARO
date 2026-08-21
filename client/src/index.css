@@ -2,34 +2,113 @@
 
 @layer base {
   :root {
-    --color-primary: #dc3545;
-    --color-primary-hover: #b02a37;
-    --color-ink: #222222;
-    --color-ink-muted: #717171;
-    --color-border: #DDDDDD;
+    /* Vistaro Dual-Mode Semantic Color Tokens (Light Mode Default) */
+    --vistaro-bg-main: #F5F1EA;
+    --vistaro-bg-secondary: #EDE6DA;
+    --vistaro-surface: #FFFFFF;
+    --vistaro-border: #E0D6C8;
+    --vistaro-text-primary: #12100F;
+    --vistaro-text-secondary: #6B615A;
+    --vistaro-text-muted: #9A9089;
+    --vistaro-accent: #E86A4D;
+    --vistaro-accent-hover: #C94F32;
+    --vistaro-rating: #C98A2E;
+    --vistaro-success: #2F9E6E;
+    --vistaro-error: #D9484D;
+
+    /* Legacy Compatibility Variables */
+    --color-primary: #E86A4D;
+    --color-primary-hover: #C94F32;
+    --color-ink: #12100F;
+    --color-ink-muted: #6B615A;
+    --color-border: #E0D6C8;
     --color-surface: #FFFFFF;
-    --color-surface-hover: #F7F7F7;
+    --color-surface-hover: #EDE6DA;
+  }
+
+  .dark {
+    /* Vistaro Dual-Mode Semantic Color Tokens (Dark Mode) */
+    --vistaro-bg-main: #12100F;
+    --vistaro-bg-secondary: #1B1815;
+    --vistaro-surface: #201C1A;
+    --vistaro-border: #3A3532;
+    --vistaro-text-primary: #F5F1EA;
+    --vistaro-text-secondary: #B7AFA6;
+    --vistaro-text-muted: #857A70;
+    --vistaro-accent: #E86A4D;
+    --vistaro-accent-hover: #C94F32;
+    --vistaro-rating: #E8B04B;
+    --vistaro-success: #3CAE7E;
+    --vistaro-error: #F0666B;
+
+    /* Legacy Compatibility Variables (Dark) */
+    --color-primary: #E86A4D;
+    --color-primary-hover: #C94F32;
+    --color-ink: #F5F1EA;
+    --color-ink-muted: #B7AFA6;
+    --color-border: #3A3532;
+    --color-surface: #201C1A;
+    --color-surface-hover: #1B1815;
   }
 
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    color: #222222;
-    background-color: #FFFFFF;
+    color: var(--vistaro-text-primary);
+    background-color: var(--vistaro-bg-main);
     margin: 0;
   }
 
   /* Prevent auto-zoom on iOS mobile */
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     font-size: 16px;
   }
 }
 
+@layer utilities {
+  .bg-vistaro-main { background-color: var(--vistaro-bg-main); }
+  .bg-vistaro-secondary { background-color: var(--vistaro-bg-secondary); }
+  .bg-vistaro-surface { background-color: var(--vistaro-surface); }
+  
+  .text-vistaro-primary { color: var(--vistaro-text-primary); }
+  .text-vistaro-secondary { color: var(--vistaro-text-secondary); }
+  .text-vistaro-muted { color: var(--vistaro-text-muted); }
+  
+  .bg-vistaro-accent { background-color: var(--vistaro-accent); }
+  .bg-vistaro-accent-hover { background-color: var(--vistaro-accent-hover); }
+  .hover\:bg-vistaro-accent-hover:hover { background-color: var(--vistaro-accent-hover); }
+  .text-vistaro-accent { color: var(--vistaro-accent); }
+  
+  .border-vistaro-border { border-color: var(--vistaro-border); }
+  
+  .text-vistaro-rating { color: var(--vistaro-rating); }
+  .fill-vistaro-rating { fill: var(--vistaro-rating); }
+  
+  .bg-vistaro-success { background-color: var(--vistaro-success); }
+  .text-vistaro-success { color: var(--vistaro-success); }
+  
+  .bg-vistaro-error { background-color: var(--vistaro-error); }
+  .text-vistaro-error { color: var(--vistaro-error); }
+}
+
 /* Custom utility styles & animations */
 @keyframes heartPop {
-  0% { transform: scale(1); }
-  35% { transform: scale(1.45); }
-  65% { transform: scale(0.88); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(1.45);
+  }
+
+  65% {
+    transform: scale(0.88);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .animate-heart-pop {
@@ -37,8 +116,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
@@ -49,6 +135,7 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -56,8 +143,13 @@
 
 /* Toast progress bar animation */
 @keyframes toastProgress {
-  from { width: 100%; }
-  to { width: 0%; }
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
 }
 
 .toast-progress-bar {

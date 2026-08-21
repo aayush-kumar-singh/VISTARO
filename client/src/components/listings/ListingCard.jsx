@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { useCurrency } from '../../context/CurrencyContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 import { wishlistApi } from '../../api/wishlistApi.js';
-import { Heart, Star, MapPin } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
 
 export default function ListingCard({ listing, onWishlistToggle }) {
   const { user, updateUser } = useAuth();
@@ -64,7 +64,7 @@ export default function ListingCard({ listing, onWishlistToggle }) {
   return (
     <div className="group relative flex flex-col h-full bg-transparent">
       {/* 1. Image Container (1:1 aspect ratio) */}
-      <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-zinc-100 mb-3 shadow-xs">
+      <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-vistaro-secondary mb-3 shadow-xs">
         <Link to={`/listings/${listing._id}`} className="block w-full h-full">
           <img
             src={imgError ? 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60' : primaryImage}
@@ -77,11 +77,11 @@ export default function ListingCard({ listing, onWishlistToggle }) {
 
         {/* Top-Left Badge */}
         {isGuestFavourite ? (
-          <div className="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-xs text-[#222222] text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+          <div className="absolute top-3 left-3 z-10 bg-vistaro-surface/95 backdrop-blur-xs text-vistaro-primary border border-vistaro-border text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
             Guest favourite
           </div>
         ) : isNew ? (
-          <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-[#dc3545] to-[#c0392b] text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shadow-sm tracking-wider">
+          <div className="absolute top-3 left-3 z-10 bg-vistaro-accent text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shadow-sm tracking-wider">
             New
           </div>
         ) : null}
@@ -90,17 +90,15 @@ export default function ListingCard({ listing, onWishlistToggle }) {
         <button
           type="button"
           onClick={handleHeartClick}
-          className={`absolute top-2 right-2 z-10 w-10 h-10 flex items-center justify-center bg-transparent border-none cursor-pointer focus:outline-hidden ${
-            isAnimating ? 'animate-heart-pop' : ''
-          }`}
+          className={`absolute top-2 right-2 z-10 w-10 h-10 flex items-center justify-center bg-transparent border-none cursor-pointer focus:outline-hidden ${isAnimating ? 'animate-heart-pop' : ''
+            }`}
           aria-label={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
         >
           <Heart
-            className={`w-6 h-6 transition-colors drop-shadow-md ${
-              isSaved
-                ? 'fill-[#dc3545] text-[#dc3545]'
-                : 'fill-black/30 text-white hover:text-[#dc3545]'
-            }`}
+            className={`w-6 h-6 transition-colors drop-shadow-md ${isSaved
+                ? 'fill-vistaro-accent text-vistaro-accent'
+                : 'fill-black/30 text-white hover:text-vistaro-accent'
+              }`}
           />
         </button>
       </div>
@@ -109,32 +107,32 @@ export default function ListingCard({ listing, onWishlistToggle }) {
       <Link to={`/listings/${listing._id}`} className="flex flex-col flex-1 text-inherit no-underline">
         {/* Title + Rating Row */}
         <div className="flex items-center justify-between gap-2 w-full mb-0.5">
-          <h3 className="font-semibold text-sm sm:text-base text-[#222222] truncate flex-1 leading-snug">
+          <h3 className="font-semibold text-sm sm:text-base text-vistaro-primary truncate flex-1 leading-snug">
             {listing.title}
           </h3>
 
-          <div className="flex items-center gap-1 shrink-0 text-xs sm:text-sm font-semibold text-[#222222]">
-            <Star className="w-3.5 h-3.5 fill-[#222222] text-[#222222]" />
+          <div className="flex items-center gap-1 shrink-0 text-xs sm:text-sm font-semibold text-vistaro-primary">
+            <Star className="w-3.5 h-3.5 fill-vistaro-rating text-vistaro-rating" />
             <span>{averageRating ? averageRating : 'New'}</span>
           </div>
         </div>
 
         {/* Location Subtitle */}
-        <p className="text-xs text-[#717171] truncate mb-1">
+        <p className="text-xs text-vistaro-secondary truncate mb-1">
           {listing.location}, {listing.country}
         </p>
 
         {/* Category tag */}
         {listing.category && (
-          <p className="text-xs text-zinc-400 truncate mb-1">
+          <p className="text-xs text-vistaro-muted truncate mb-1">
             {listing.category} stay
           </p>
         )}
 
         {/* Price Row */}
-        <p className="text-sm sm:text-base font-semibold text-[#222222] mt-auto pt-1">
+        <p className="text-sm sm:text-base font-semibold text-vistaro-primary mt-auto pt-1">
           <span>{formatPrice(listing.price)}</span>
-          <span className="font-normal text-xs text-[#717171]"> / night</span>
+          <span className="font-normal text-xs text-vistaro-muted"> / night</span>
         </p>
       </Link>
     </div>

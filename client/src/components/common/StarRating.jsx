@@ -30,11 +30,10 @@ export default function StarRating({ rating = 5, maxStars = 5, size = 'sm', inte
             className={`${interactive ? 'cursor-pointer hover:scale-110 transition-transform' : 'cursor-default'} p-0.5 border-none bg-transparent flex items-center justify-center`}
           >
             <Star
-              className={`${currentSize} ${
-                isFilled
-                  ? 'fill-[#222222] text-[#222222]'
-                  : 'fill-transparent text-zinc-300'
-              } transition-colors`}
+              className={`${currentSize} ${isFilled
+                  ? 'fill-vistaro-rating text-vistaro-rating'
+                  : 'fill-transparent text-vistaro-border'
+                } transition-colors`}
             />
           </button>
         );

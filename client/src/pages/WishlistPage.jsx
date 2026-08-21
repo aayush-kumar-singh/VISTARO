@@ -4,7 +4,7 @@ import { wishlistApi } from '../api/wishlistApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import ListingCard from '../components/listings/ListingCard.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
-import { Heart, Compass, ArrowLeft } from 'lucide-react';
+import { Heart, ArrowLeft } from 'lucide-react';
 
 export default function WishlistPage() {
   const { user } = useAuth();
@@ -36,13 +36,13 @@ export default function WishlistPage() {
 
   if (!user) {
     return (
-      <div className="max-w-md mx-auto my-16 p-8 bg-white border border-zinc-200 rounded-3xl text-center space-y-4 shadow-sm">
-        <Heart className="w-10 h-10 text-[#dc3545] mx-auto" />
-        <h2 className="text-xl font-bold text-zinc-900">Sign in to view your wishlist</h2>
-        <p className="text-sm text-zinc-500">You can create, view, or edit your saved wishlists once you've logged in.</p>
+      <div className="max-w-md mx-auto my-16 p-8 bg-vistaro-surface border border-vistaro-border rounded-3xl text-center space-y-4 shadow-sm text-vistaro-primary">
+        <Heart className="w-10 h-10 text-vistaro-accent mx-auto" />
+        <h2 className="text-xl font-bold text-vistaro-primary">Sign in to view your wishlist</h2>
+        <p className="text-sm text-vistaro-muted">You can create, view, or edit your saved wishlists once you've logged in.</p>
         <Link
           to="/login"
-          className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-sm font-bold py-3 px-6 rounded-full transition-colors"
+          className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-sm font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
         >
           Log In
         </Link>
@@ -57,20 +57,20 @@ export default function WishlistPage() {
   };
 
   return (
-    <div className="w-full space-y-6">
-      <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
+    <div className="w-full space-y-6 text-vistaro-primary transition-colors duration-200">
+      <div className="flex items-center justify-between pb-4 border-b border-vistaro-border">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900 flex items-center gap-2">
-            <Heart className="w-6 h-6 fill-[#dc3545] text-[#dc3545]" /> My Wishlist
+          <h1 className="text-2xl font-bold text-vistaro-primary flex items-center gap-2">
+            <Heart className="w-6 h-6 fill-vistaro-accent text-vistaro-accent" /> My Wishlist
           </h1>
-          <p className="text-xs text-zinc-500 mt-1">
+          <p className="text-xs text-vistaro-muted mt-1">
             {wishlist.length} saved {wishlist.length === 1 ? 'property' : 'properties'}
           </p>
         </div>
 
         <Link
           to="/"
-          className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full border border-zinc-300 hover:bg-zinc-100 text-zinc-700 transition-colors"
+          className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full border border-vistaro-border bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Explore Stays
         </Link>
@@ -79,23 +79,23 @@ export default function WishlistPage() {
       {loading && <LoadingSpinner fullScreen text="Loading saved stays..." />}
 
       {error && !loading && (
-        <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
-          <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc3545] flex items-center justify-center mx-auto">
+        <div className="bg-vistaro-surface border border-vistaro-error/30 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
+          <div className="w-12 h-12 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto border border-vistaro-border">
             <Heart className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-base text-zinc-900">Failed to Load Wishlist</h3>
-          <p className="text-xs text-zinc-600 max-w-sm mx-auto">{error}</p>
+          <h3 className="font-bold text-base text-vistaro-primary">Failed to Load Wishlist</h3>
+          <p className="text-xs text-vistaro-secondary max-w-sm mx-auto">{error}</p>
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
             >
               Retry
             </button>
             <Link
               to="/"
-              className="bg-white border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
+              className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
             >
               Explore Stays
             </Link>
@@ -104,15 +104,15 @@ export default function WishlistPage() {
       )}
 
       {!loading && !error && wishlist.length === 0 && (
-        <div className="text-center py-20 px-4 bg-zinc-50 rounded-3xl border border-zinc-200">
-          <Heart className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
-          <h3 className="font-bold text-lg text-zinc-800">Your wishlist is empty</h3>
-          <p className="text-sm text-zinc-500 max-w-md mx-auto mt-1 mb-6">
+        <div className="text-center py-20 px-4 bg-vistaro-surface rounded-3xl border border-vistaro-border">
+          <Heart className="w-12 h-12 text-vistaro-muted mx-auto mb-3" />
+          <h3 className="font-bold text-lg text-vistaro-primary">Your wishlist is empty</h3>
+          <p className="text-sm text-vistaro-muted max-w-md mx-auto mt-1 mb-6">
             As you search, tap the heart icon on any stay to save your favourite places here.
           </p>
           <Link
             to="/"
-            className="inline-block bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-3 px-6 rounded-full transition-colors shadow-sm"
+            className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-3 px-6 rounded-full transition-colors shadow-sm"
           >
             Start Exploring
           </Link>

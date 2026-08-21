@@ -29,7 +29,7 @@ export default function Lightbox({
       
       {/* Top Bar with Counter & Close */}
       <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-50 text-white">
-        <span className="text-xs font-semibold tracking-wider text-zinc-400">
+        <span className="text-xs font-semibold tracking-wider text-vistaro-muted">
           {currentIndex + 1} / {images.length}
         </span>
         <button
@@ -74,14 +74,14 @@ export default function Lightbox({
 
       {/* Thumbnail Bar */}
       {images.length > 1 && (
-        <div className="absolute bottom-4 flex items-center gap-2 overflow-x-auto max-w-md px-4 py-2 bg-black/40 rounded-full">
+        <div className="absolute bottom-4 flex items-center gap-2 overflow-x-auto max-w-md px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/10">
           {images.map((img, idx) => (
             <button
               key={idx}
               onClick={() => onNext(idx)}
-              className={`w-10 h-10 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
+              className={`w-10 h-10 rounded-lg overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
                 currentIndex === idx
-                  ? 'border-white scale-105 opacity-100'
+                  ? 'border-vistaro-accent scale-105 opacity-100'
                   : 'border-transparent opacity-50 hover:opacity-80'
               }`}
             >

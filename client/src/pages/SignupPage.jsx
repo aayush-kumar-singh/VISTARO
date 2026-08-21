@@ -29,18 +29,18 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center py-10 px-4">
-      <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-zinc-200 shadow-xl space-y-6 animate-fade-in">
-        
+    <div className="min-h-[70vh] flex items-center justify-center py-10 px-4 text-vistaro-primary transition-colors duration-200">
+      <div className="max-w-md w-full bg-vistaro-surface rounded-3xl p-8 border border-vistaro-border shadow-xl space-y-6 animate-fade-in">
+
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-red-50 text-[#dc3545] mx-auto flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-vistaro-secondary text-vistaro-accent border border-vistaro-border mx-auto flex items-center justify-center">
             <UserPlus className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#222222] tracking-tight">
+          <h1 className="text-2xl font-extrabold text-vistaro-primary tracking-tight">
             Create your account
           </h1>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-vistaro-muted">
             Join Vistaro to explore unique getaways and list your properties.
           </p>
         </div>
@@ -49,8 +49,9 @@ export default function SignupPage() {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 bg-white border border-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 font-bold text-xs sm:text-sm text-zinc-800 py-3 px-4 rounded-2xl transition-all shadow-xs cursor-pointer"
+          className="w-full flex items-center justify-center gap-3 bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary font-bold text-xs sm:text-sm text-vistaro-primary py-3 px-4 rounded-2xl transition-all shadow-xs cursor-pointer"
         >
+          {/* Google Color SVG (Official Brand Colors - DO NOT MODIFY) */}
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
@@ -74,8 +75,8 @@ export default function SignupPage() {
 
         {/* Divider */}
         <div className="relative flex items-center justify-center">
-          <div className="border-t border-zinc-200 w-full" />
-          <span className="bg-white px-3 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider absolute">
+          <div className="border-t border-vistaro-border w-full" />
+          <span className="bg-vistaro-surface px-3 text-[11px] font-semibold text-vistaro-muted uppercase tracking-wider absolute">
             or sign up with email
           </span>
         </div>
@@ -83,7 +84,7 @@ export default function SignupPage() {
         {/* Signup Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1">
               Username
             </label>
             <input
@@ -91,13 +92,13 @@ export default function SignupPage() {
               placeholder="Choose a username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:border-[#dc3545] transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1">
               Email Address
             </label>
             <input
@@ -105,13 +106,13 @@ export default function SignupPage() {
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:border-[#dc3545] transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1">
               Password
             </label>
             <input
@@ -119,7 +120,7 @@ export default function SignupPage() {
               placeholder="At least 6 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:border-[#dc3545] transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
               minLength={6}
             />
@@ -128,7 +129,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#dc3545] hover:bg-[#b02a37] text-white font-bold text-sm py-3.5 px-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white font-bold text-sm py-3.5 px-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
           >
             <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
             {!loading && <ArrowRight className="w-4 h-4" />}
@@ -136,9 +137,9 @@ export default function SignupPage() {
         </form>
 
         {/* Footer Link */}
-        <div className="text-center pt-2 text-xs text-zinc-500">
+        <div className="text-center pt-2 text-xs text-vistaro-muted">
           Already have an account?{' '}
-          <Link to="/login" className="font-bold text-[#dc3545] hover:underline">
+          <Link to="/login" className="font-bold text-vistaro-accent hover:underline">
             Log In
           </Link>
         </div>

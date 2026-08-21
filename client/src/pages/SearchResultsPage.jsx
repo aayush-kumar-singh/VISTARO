@@ -117,15 +117,15 @@ export default function SearchResultsPage() {
   };
 
   return (
-    <div className="w-full space-y-6">
-      
+    <div className="w-full space-y-6 text-vistaro-primary transition-colors duration-200">
+
       {/* Top Header & Filter Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-vistaro-border">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900">
+          <h1 className="text-2xl font-bold text-vistaro-primary">
             {query ? `Search results for "${query}"` : 'All Search Results'}
           </h1>
-          <p className="text-xs text-zinc-500 mt-1">
+          <p className="text-xs text-vistaro-muted mt-1">
             {pagination.totalResults} {pagination.totalResults === 1 ? 'stay' : 'stays'} available
           </p>
         </div>
@@ -136,12 +136,12 @@ export default function SearchResultsPage() {
           <button
             type="button"
             onClick={() => setFilterModalOpen(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-zinc-300 hover:bg-zinc-100 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             <span>Filters</span>
             {activeFilterCount > 0 && (
-              <span className="w-4 h-4 bg-[#dc3545] text-white rounded-full text-[10px] flex items-center justify-center font-bold">
+              <span className="w-4 h-4 bg-vistaro-accent text-white rounded-full text-[10px] flex items-center justify-center font-bold">
                 {activeFilterCount}
               </span>
             )}
@@ -152,7 +152,7 @@ export default function SearchResultsPage() {
             <button
               type="button"
               onClick={() => setIsSortOpen(!isSortOpen)}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-zinc-300 hover:bg-zinc-100 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
             >
               <ArrowUpDown className="w-3.5 h-3.5" />
               <span>Sort</span>
@@ -160,32 +160,32 @@ export default function SearchResultsPage() {
             </button>
 
             {isSortOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-zinc-200 py-2 z-50 animate-fade-in divide-y divide-zinc-100">
+              <div className="absolute right-0 mt-2 w-48 bg-vistaro-surface rounded-2xl shadow-xl border border-vistaro-border py-2 z-50 animate-fade-in divide-y divide-vistaro-border">
                 <button
                   type="button"
                   onClick={() => handleSortChange('')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-zinc-100 text-zinc-700"
+                  className="w-full text-left px-4 py-2 text-xs hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
                 >
                   Featured
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSortChange('price_asc')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-zinc-100 text-zinc-700"
+                  className="w-full text-left px-4 py-2 text-xs hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
                 >
                   Price: Low to High
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSortChange('price_desc')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-zinc-100 text-zinc-700"
+                  className="w-full text-left px-4 py-2 text-xs hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
                 >
                   Price: High to Low
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSortChange('newest')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-zinc-100 text-zinc-700"
+                  className="w-full text-left px-4 py-2 text-xs hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
                 >
                   Newest First
                 </button>
@@ -195,7 +195,7 @@ export default function SearchResultsPage() {
 
           <Link
             to="/"
-            className="flex items-center gap-1 text-xs font-semibold px-3.5 py-2 rounded-full border border-zinc-300 hover:bg-zinc-100 text-zinc-700"
+            className="flex items-center gap-1 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> All Listings
           </Link>
@@ -222,23 +222,23 @@ export default function SearchResultsPage() {
 
       {/* Error state */}
       {error && !loading && (
-        <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
-          <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc3545] flex items-center justify-center mx-auto">
+        <div className="bg-vistaro-surface border border-vistaro-error/30 rounded-3xl p-8 text-center space-y-3 max-w-md mx-auto my-8">
+          <div className="w-12 h-12 rounded-full bg-vistaro-secondary text-vistaro-error border border-vistaro-border flex items-center justify-center mx-auto">
             <Search className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-base text-zinc-900">Search Request Failed</h3>
-          <p className="text-xs text-zinc-600 max-w-sm mx-auto">{error}</p>
+          <h3 className="font-bold text-base text-vistaro-primary">Search Request Failed</h3>
+          <p className="text-xs text-vistaro-secondary max-w-sm mx-auto">{error}</p>
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="bg-[#dc3545] hover:bg-[#b02a37] text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
             >
               Retry Search
             </button>
             <Link
               to="/"
-              className="bg-white border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
+              className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
             >
               View All Stays
             </Link>
@@ -248,15 +248,15 @@ export default function SearchResultsPage() {
 
       {/* Empty Results */}
       {!loading && !error && results.length === 0 && (
-        <div className="text-center py-16 px-4 bg-zinc-50 rounded-3xl border border-zinc-200">
-          <Search className="w-12 h-12 text-zinc-400 mx-auto mb-3" />
-          <h3 className="font-bold text-lg text-zinc-800">No exact matches found</h3>
-          <p className="text-sm text-zinc-500 max-w-md mx-auto mt-1 mb-4">
+        <div className="text-center py-16 px-4 bg-vistaro-surface rounded-3xl border border-vistaro-border">
+          <Search className="w-12 h-12 text-vistaro-muted mx-auto mb-3" />
+          <h3 className="font-bold text-lg text-vistaro-primary">No exact matches found</h3>
+          <p className="text-sm text-vistaro-muted max-w-md mx-auto mt-1 mb-4">
             Try adjusting your search location, price bounds, or changing dates.
           </p>
           <Link
             to="/"
-            className="inline-block bg-[#222222] hover:bg-black text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
+            className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
           >
             Explore All Places
           </Link>
@@ -279,7 +279,7 @@ export default function SearchResultsPage() {
                 type="button"
                 disabled={pagination.currentPage <= 1}
                 onClick={() => handlePageChange(pagination.currentPage - 1)}
-                className="p-2 rounded-full border border-zinc-300 hover:bg-zinc-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -292,9 +292,8 @@ export default function SearchResultsPage() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`w-8 h-8 rounded-full text-xs font-bold transition-colors ${
-                        isCurrent ? 'bg-[#222222] text-white' : 'text-zinc-600 hover:bg-zinc-100'
-                      }`}
+                      className={`w-8 h-8 rounded-full text-xs font-bold transition-colors cursor-pointer ${isCurrent ? 'bg-vistaro-accent text-white' : 'text-vistaro-secondary hover:bg-vistaro-secondary'
+                        }`}
                     >
                       {pageNum}
                     </button>
@@ -306,7 +305,7 @@ export default function SearchResultsPage() {
                 type="button"
                 disabled={pagination.currentPage >= pagination.totalPages}
                 onClick={() => handlePageChange(pagination.currentPage + 1)}
-                className="p-2 rounded-full border border-zinc-300 hover:bg-zinc-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

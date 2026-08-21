@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 import { reviewsApi } from '../../api/reviewsApi.js';
 import StarRating from '../common/StarRating.jsx';
-import { Trash2, MessageSquareReply, CornerDownRight, Check, X } from 'lucide-react';
+import { Trash2, MessageSquareReply, CornerDownRight } from 'lucide-react';
 
 export default function ReviewCard({
   review,
@@ -100,22 +100,22 @@ export default function ReviewCard({
 
   const formattedDate = review.createdAt
     ? new Date(review.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : '';
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-zinc-200/80 shadow-xs flex flex-col gap-3">
+    <div className="bg-vistaro-surface rounded-2xl p-5 border border-vistaro-border shadow-xs flex flex-col gap-3 transition-colors duration-200">
       {/* Reviewer Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#222222] text-white flex items-center justify-center font-bold text-sm">
+          <div className="w-10 h-10 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-bold text-sm">
             {authorName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h4 className="font-semibold text-sm text-[#222222]">{authorName}</h4>
-            <p className="text-xs text-zinc-400">{formattedDate}</p>
+            <h4 className="font-semibold text-sm text-vistaro-primary">{authorName}</h4>
+            <p className="text-xs text-vistaro-muted">{formattedDate}</p>
           </div>
         </div>
 
@@ -124,7 +124,7 @@ export default function ReviewCard({
           <button
             onClick={handleDeleteReview}
             disabled={isDeleting}
-            className="p-1.5 text-zinc-400 hover:text-[#dc3545] rounded-full hover:bg-red-50 transition-colors cursor-pointer"
+            className="p-1.5 text-vistaro-muted hover:text-vistaro-error rounded-full hover:bg-vistaro-secondary transition-colors cursor-pointer"
             title="Delete your review"
             aria-label="Delete review"
           >
@@ -137,25 +137,25 @@ export default function ReviewCard({
       <StarRating rating={review.rating || 5} size="xs" />
 
       {/* Comment Body */}
-      <p className="text-sm text-zinc-700 leading-relaxed">{review.comment}</p>
+      <p className="text-sm text-vistaro-secondary leading-relaxed">{review.comment}</p>
 
       {/* Existing Host Response */}
       {review.ownerReply?.comment && (
-        <div className="mt-2 pl-3 border-l-2 border-[#dc3545] bg-zinc-50 p-3 rounded-r-xl space-y-1">
+        <div className="mt-2 pl-3 border-l-2 border-vistaro-accent bg-vistaro-secondary p-3 rounded-r-xl space-y-1">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-[#dc3545] flex items-center gap-1">
+            <span className="font-bold text-vistaro-accent flex items-center gap-1">
               <CornerDownRight className="w-3.5 h-3.5" /> Response from Host
             </span>
             {isHost && (
               <button
                 onClick={handleDeleteReply}
-                className="text-zinc-400 hover:text-[#dc3545] text-[11px] underline"
+                className="text-vistaro-muted hover:text-vistaro-error text-[11px] underline cursor-pointer"
               >
                 Delete reply
               </button>
             )}
           </div>
-          <p className="text-xs text-zinc-600 leading-normal">{review.ownerReply.comment}</p>
+          <p className="text-xs text-vistaro-secondary leading-normal">{review.ownerReply.comment}</p>
         </div>
       )}
 
@@ -164,7 +164,7 @@ export default function ReviewCard({
         <div className="mt-1">
           <button
             onClick={() => setIsReplying(true)}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-[#dc3545] hover:underline"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-vistaro-accent hover:underline cursor-pointer"
           >
             <MessageSquareReply className="w-3.5 h-3.5" /> Respond to review
           </button>
@@ -179,7 +179,7 @@ export default function ReviewCard({
             placeholder="Write a response as host..."
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            className="w-full bg-zinc-50 border border-zinc-300 rounded-xl p-2.5 text-xs focus:outline-hidden focus:border-[#dc3545]"
+            className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl p-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
             required
             autoFocus
           />
@@ -190,14 +190,14 @@ export default function ReviewCard({
                 setIsReplying(false);
                 setReplyText('');
               }}
-              className="text-xs text-zinc-500 hover:text-zinc-800 px-3 py-1.5"
+              className="text-xs text-vistaro-secondary hover:text-vistaro-primary px-3 py-1.5 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmittingReply}
-              className="bg-[#222222] hover:bg-black text-white text-xs font-semibold px-4 py-1.5 rounded-full transition-colors cursor-pointer"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-semibold px-4 py-1.5 rounded-full transition-colors cursor-pointer"
             >
               {isSubmittingReply ? 'Posting...' : 'Post Reply'}
             </button>

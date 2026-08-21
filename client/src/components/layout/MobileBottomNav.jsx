@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { Search, Heart, Briefcase, MessageSquare, User } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext.jsx';
+import { Search, Heart, Briefcase, MessageSquare, User, Sun, Moon } from 'lucide-react';
 
 export default function MobileBottomNav() {
   const { user, unreadCount } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
 
   const navItems = [
@@ -42,7 +44,7 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-16 bg-white/95 backdrop-blur-md border-t border-[#DDDDDD] shadow-lg flex items-center justify-around px-2">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-16 bg-vistaro-surface/95 backdrop-blur-md border-t border-vistaro-border shadow-lg flex items-center justify-around px-2 transition-colors duration-200">
       {navItems.map((item, idx) => {
         const Icon = item.icon;
         const active = item.isActive;
@@ -51,20 +53,34 @@ export default function MobileBottomNav() {
           <NavLink
             key={idx}
             to={item.to}
-            className={`flex flex-col items-center justify-center min-w-[56px] py-1 transition-all active:scale-90 relative ${
-              active ? 'text-[#dc3545] font-bold' : 'text-[#717171] hover:text-zinc-900 font-medium'
-            }`}
+            className={`flex flex-col items-center justify-center min-w-[48px] py-1 transition-all active:scale-90 relative ${active ? 'text-vistaro-accent font-bold' : 'text-vistaro-muted hover:text-vistaro-primary font-medium'
+              }`}
           >
             <div className="relative">
               <Icon className={`w-5 h-5 mb-0.5 ${active ? 'stroke-[2.4]' : 'stroke-[1.8]'}`} />
               {item.badge > 0 && (
-                <span className="absolute -top-1 -right-1.5 w-2 h-2 bg-[#dc3545] rounded-full ring-2 ring-white" />
+                <span className="absolute -top-1 -right-1.5 w-2 h-2 bg-vistaro-accent rounded-full ring-2 ring-vistaro-surface" />
               )}
             </div>
             <span className="text-[11px] tracking-tight">{item.label}</span>
           </NavLink>
         );
       })}
+
+      {/* Mobile Quick Theme Switcher */}
+      <button
+        type="button"
+        onClick={toggleTheme}
+        className="flex flex-col items-center justify-center min-w-[44px] py-1 text-vistaro-muted hover:text-vistaro-primary transition-all active:scale-90 cursor-pointer border-none bg-transparent"
+        aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      >
+        {isDark ? (
+          <Sun className="w-5 h-5 mb-0.5 text-vistaro-rating" />
+        ) : (
+          <Moon className="w-5 h-5 mb-0.5 text-vistaro-secondary" />
+        )}
+        <span className="text-[10px] tracking-tight">{isDark ? 'Light' : 'Dark'}</span>
+      </button>
     </nav>
   );
 }
