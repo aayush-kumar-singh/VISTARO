@@ -22,6 +22,8 @@ import {
   Sparkles,
   Shield,
   Compass,
+  Car,
+  Navigation,
   ToggleLeft,
   ToggleRight,
 } from 'lucide-react';
@@ -32,12 +34,13 @@ export default function AdminDashboardPage() {
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'listings' | 'packages' | 'experiences' | 'users' | 'bookings'
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'listings' | 'packages' | 'experiences' | 'transfers' | 'users' | 'bookings'
   const [stats, setStats] = useState(null);
   const [recentBookings, setRecentBookings] = useState([]);
   const [recentListings, setRecentListings] = useState([]);
   const [tourPackagesList, setTourPackagesList] = useState([]);
   const [experiencesList, setExperiencesList] = useState([]);
+  const [transfersList, setTransfersList] = useState([]);
   const [destinationsList, setDestinationsList] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,6 +50,7 @@ export default function AdminDashboardPage() {
   const [listingSearch, setListingSearch] = useState('');
   const [packageSearch, setPackageSearch] = useState('');
   const [experienceSearch, setExperienceSearch] = useState('');
+  const [transferSearch, setTransferSearch] = useState('');
   const [userSearch, setUserSearch] = useState('');
   const [error, setError] = useState(null);
 
@@ -66,6 +70,27 @@ export default function AdminDashboardPage() {
     difficultyLevel: 'Easy',
     whatsIncluded: '',
     meetingPoint: '',
+    isActive: true,
+  });
+
+  // Transfer Modal State (Phase 6 / Part 6.4)
+  const [transferModal, setTransferModal] = useState(null);
+  const [transferForm, setTransferForm] = useState({
+    title: '',
+    slug: '',
+    destination: '',
+    transferType: 'airport-pickup',
+    vehicleType: 'SUV',
+    capacity: 4,
+    basePrice: 1200,
+    priceUnit: 'per-trip',
+    description: '',
+    pickupLocation: '',
+    dropLocation: '',
+    estimatedDuration: '30 mins',
+    includedFeatures: 'Professional Chauffeur\nAir Conditioning\nToll & Parking Included\nLuggage Carrier',
+    coverImageUrl: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1200&q=80',
+    cancellationPolicy: 'flexible',
     isActive: true,
   });
 
@@ -95,12 +120,13 @@ export default function AdminDashboardPage() {
     try {
       setLoading(true);
       setError(null);
-      const [statsData, usersData, packagesData, destinationsData, experiencesData] = await Promise.all([
+      const [statsData, usersData, packagesData, destinationsData, experiencesData, transfersData] = await Promise.all([
         adminApi.getStats(),
         adminApi.getUsers(),
         adminApi.getTourPackages().catch(() => ({ success: false, tourPackages: [] })),
         destinationsApi.getDestinations().catch(() => ({ success: false, destinations: [] })),
         adminApi.getExperiences().catch(() => ({ success: false, experiences: [] })),
+        adminApi.getTransfers().catch(() => ({ success: false, transfers: [] })),
       ]);
 
       if (statsData.success) {
@@ -123,6 +149,10 @@ export default function AdminDashboardPage() {
 
       if (experiencesData.success) {
         setExperiencesList(experiencesData.experiences || []);
+      }
+
+      if (transfersData.success) {
+        setTransfersList(transfersData.transfers || []);
       }
     } catch (err) {
       setError(err.message || 'Failed to load administrative data.');
@@ -251,6 +281,134 @@ export default function AdminDashboardPage() {
       }
     } catch (err) {
       showError(err.response?.data?.error || err.message || 'Failed to update experience status.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Handle Transfer Modal Open (Create / Edit — Phase 6 / Part 6.4)
+  const openCreateTransferModal = () => {
+    setTransferForm({
+      title: '',
+      slug: '',
+      destination: destinationsList[0]?._id || '',
+      transferType: 'airport-pickup',
+      vehicleType: 'SUV',
+      capacity: 4,
+      basePrice: 1200,
+      priceUnit: 'per-trip',
+      description: '',
+      pickupLocation: '',
+      dropLocation: '',
+      estimatedDuration: '30 mins',
+      includedFeatures: 'Professional Chauffeur\nAir Conditioning\nToll & Parking Included\nLuggage Carrier',
+      coverImageUrl: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1200&q=80',
+      cancellationPolicy: 'flexible',
+      isActive: true,
+    });
+    setTransferModal({ mode: 'create' });
+  };
+
+  const openEditTransferModal = (transfer) => {
+    const includedStr = Array.isArray(transfer.includedFeatures)
+      ? transfer.includedFeatures.join('\n')
+      : transfer.includedFeatures || '';
+
+    setTransferForm({
+      title: transfer.title || '',
+      slug: transfer.slug || '',
+      destination: transfer.destination?._id || transfer.destination || '',
+      transferType: transfer.transferType || 'airport-pickup',
+      vehicleType: transfer.vehicleType || 'SUV',
+      capacity: transfer.capacity || 4,
+      basePrice: transfer.price?.basePrice ?? transfer.basePrice ?? 1200,
+      priceUnit: transfer.priceUnit || 'per-trip',
+      description: transfer.description || '',
+      pickupLocation: transfer.pickupLocation || '',
+      dropLocation: transfer.dropLocation || '',
+      estimatedDuration: transfer.estimatedDuration || '',
+      includedFeatures: includedStr,
+      coverImageUrl: transfer.coverImage?.url || transfer.image?.url || '',
+      cancellationPolicy: transfer.cancellationPolicy || 'flexible',
+      isActive: transfer.isActive !== false,
+    });
+    setTransferModal({ mode: 'edit', id: transfer._id });
+  };
+
+  const handleSaveTransfer = async (e) => {
+    e.preventDefault();
+
+    if (!transferForm.title.trim() || !transferForm.destination) {
+      showError('Please fill in title and destination.');
+      return;
+    }
+
+    try {
+      setActionLoading(true);
+
+      const payload = {
+        title: transferForm.title.trim(),
+        slug: transferForm.slug.trim().toLowerCase() || transferForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        destination: transferForm.destination,
+        transferType: transferForm.transferType,
+        vehicleType: transferForm.vehicleType,
+        capacity: Number(transferForm.capacity),
+        price: {
+          basePrice: Number(transferForm.basePrice),
+          currency: 'INR',
+        },
+        priceUnit: transferForm.priceUnit,
+        description: transferForm.description.trim(),
+        pickupLocation: transferForm.pickupLocation.trim(),
+        dropLocation: transferForm.dropLocation.trim(),
+        estimatedDuration: transferForm.estimatedDuration.trim(),
+        includedFeatures: transferForm.includedFeatures.split('\n').map(s => s.trim()).filter(Boolean),
+        coverImage: { url: transferForm.coverImageUrl.trim() || 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1200&q=80', filename: '' },
+        cancellationPolicy: transferForm.cancellationPolicy,
+        isActive: Boolean(transferForm.isActive),
+      };
+
+      if (transferModal.mode === 'create') {
+        const res = await adminApi.createTransfer(payload);
+        showSuccess(res.message || 'Transfer service created successfully!');
+        setTransfersList((prev) => [res.transfer, ...prev]);
+      } else {
+        const res = await adminApi.updateTransfer(transferModal.id, payload);
+        showSuccess(res.message || 'Transfer service updated successfully!');
+        setTransfersList((prev) =>
+          prev.map((item) => (item._id === transferModal.id ? res.transfer : item))
+        );
+      }
+
+      setTransferModal(null);
+    } catch (err) {
+      showError(err.response?.data?.error || err.message || 'Failed to save transfer service.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleToggleTransferActive = async (transfer) => {
+    const action = transfer.isActive ? 'deactivate' : 'activate';
+    if (!window.confirm(`Are you sure you want to ${action} "${transfer.title}"?`)) return;
+
+    try {
+      setActionLoading(true);
+      if (transfer.isActive) {
+        const res = await adminApi.deactivateTransfer(transfer._id);
+        showSuccess(res.message || 'Transfer service deactivated.');
+        setTransfersList((prev) =>
+          prev.map((t) => (t._id === transfer._id ? { ...t, isActive: false } : t))
+        );
+      } else {
+        const res = await adminApi.updateTransfer(transfer._id, { isActive: true });
+        showSuccess(res.message || 'Transfer service activated.');
+        setTransfersList((prev) =>
+          prev.map((t) => (t._id === transfer._id ? { ...t, isActive: true } : t))
+        );
+      }
+    } catch (err) {
+      showError(err.response?.data?.error || err.message || 'Failed to update transfer status.');
     } finally {
       setActionLoading(false);
     }
@@ -544,6 +702,17 @@ export default function AdminDashboardPage() {
     return title.includes(q) || destName.includes(q) || slug.includes(q) || cat.includes(q);
   });
 
+  // Filter transfers (Phase 6 / Part 6.4)
+  const filteredTransfers = transfersList.filter((t) => {
+    const q = transferSearch.toLowerCase();
+    const title = (t.title || '').toLowerCase();
+    const destName = (t.destination?.name || '').toLowerCase();
+    const slug = (t.slug || '').toLowerCase();
+    const type = (t.transferType || '').toLowerCase();
+    const vehicle = (t.vehicleType || '').toLowerCase();
+    return title.includes(q) || destName.includes(q) || slug.includes(q) || type.includes(q) || vehicle.includes(q);
+  });
+
   return (
     <div className="w-full space-y-8 animate-fade-in text-vistaro-primary transition-colors duration-200">
       
@@ -558,12 +727,20 @@ export default function AdminDashboardPage() {
             Vistaro Global Admin Console
           </h1>
           <p className="text-body-sm text-vistaro-secondary max-w-xl">
-            Manage properties, publish verified tour packages & host-led experiences, review platform revenue, and oversee user roles.
+            Manage properties, publish verified tour packages, host experiences & private transfers, review revenue, and oversee platform users.
           </p>
         </div>
 
         {/* Action Button: Quick CTAs */}
         <div className="relative z-10 shrink-0 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={openCreateTransferModal}
+            className="bg-vistaro-surface hover:bg-vistaro-main text-vistaro-primary text-cta py-3 px-5 rounded-full transition-all border border-vistaro-border flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Car className="w-4 h-4 text-emerald-500" />
+            <span>New Transfer</span>
+          </button>
           <button
             type="button"
             onClick={openCreateExperienceModal}
@@ -591,7 +768,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* 2. Key Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
         
         {/* Metric 1: Total Revenue */}
         <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-5 shadow-xs flex items-center gap-4">
@@ -599,12 +776,12 @@ export default function AdminDashboardPage() {
             <DollarSign className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-label text-vistaro-muted">Total Booking Volume</div>
-            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Total Volume</div>
+            <div className="text-price text-2xl text-vistaro-primary mt-0.5">
               {formatPrice(stats?.totalRevenue || 0)}
             </div>
             <div className="text-caption text-vistaro-success font-semibold flex items-center gap-1 mt-0.5">
-              <TrendingUp className="w-3 h-3" /> Gross Total
+              <TrendingUp className="w-3 h-3" /> Gross
             </div>
           </div>
         </div>
@@ -615,12 +792,12 @@ export default function AdminDashboardPage() {
             <Home className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-label text-vistaro-muted">Active Listings</div>
-            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Stays</div>
+            <div className="text-price text-2xl text-vistaro-primary mt-0.5">
               {stats?.totalListings || 0}
             </div>
             <div className="text-caption text-vistaro-muted font-medium mt-0.5">
-              Published stays
+              Villas & stays
             </div>
           </div>
         </div>
@@ -631,12 +808,12 @@ export default function AdminDashboardPage() {
             <Compass className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-label text-vistaro-muted">Tour Packages</div>
-            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Tours</div>
+            <div className="text-price text-2xl text-vistaro-primary mt-0.5">
               {tourPackagesList.length}
             </div>
             <div className="text-caption text-vistaro-muted font-medium mt-0.5">
-              Multi-day expeditions
+              Expeditions
             </div>
           </div>
         </div>
@@ -648,27 +825,43 @@ export default function AdminDashboardPage() {
           </div>
           <div>
             <div className="text-label text-vistaro-muted">Experiences</div>
-            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
+            <div className="text-price text-2xl text-vistaro-primary mt-0.5">
               {experiencesList.length}
             </div>
             <div className="text-caption text-vistaro-muted font-medium mt-0.5">
-              Host immersion sessions
+              Host immersions
             </div>
           </div>
         </div>
 
-        {/* Metric 5: Registered Users */}
+        {/* Metric 5: Transfers */}
+        <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-5 shadow-xs flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-vistaro-secondary text-emerald-500 flex items-center justify-center shrink-0 border border-vistaro-border">
+            <Car className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="text-label text-vistaro-muted">Transfers</div>
+            <div className="text-price text-2xl text-vistaro-primary mt-0.5">
+              {transfersList.length}
+            </div>
+            <div className="text-caption text-vistaro-muted font-medium mt-0.5">
+              Transit routes
+            </div>
+          </div>
+        </div>
+
+        {/* Metric 6: Registered Users */}
         <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-5 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-vistaro-secondary text-vistaro-accent flex items-center justify-center shrink-0 border border-vistaro-border">
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-label text-vistaro-muted">Registered Users</div>
-            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Users</div>
+            <div className="text-price text-2xl text-vistaro-primary mt-0.5">
               {stats?.totalUsers || 0}
             </div>
             <div className="text-caption text-vistaro-muted font-medium mt-0.5">
-              Platform members
+              Members
             </div>
           </div>
         </div>
@@ -724,6 +917,18 @@ export default function AdminDashboardPage() {
         </button>
         <button
           type="button"
+          onClick={() => setActiveTab('transfers')}
+          className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+            activeTab === 'transfers'
+              ? 'bg-vistaro-accent text-white shadow-xs'
+              : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
+          }`}
+        >
+          <Car className="w-3.5 h-3.5 text-emerald-500" />
+          <span>Transfers & Cabs ({transfersList.length})</span>
+        </button>
+        <button
+          type="button"
           onClick={() => setActiveTab('users')}
           className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer ${
             activeTab === 'users'
@@ -742,7 +947,7 @@ export default function AdminDashboardPage() {
               : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
           }`}
         >
-          Platform Bookings ({recentBookings.length})
+          Bookings Log ({recentBookings.length})
         </button>
       </div>
 
@@ -1220,7 +1425,145 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* TAB 3: USER MANAGEMENT */}
+      {/* TAB: TRANSFERS & CABS MANAGEMENT (Phase 6 / Part 6.4) */}
+      {activeTab === 'transfers' && (
+        <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-vistaro-border">
+            <div>
+              <h3 className="font-bold text-base text-vistaro-primary flex items-center gap-2">
+                <Car className="w-4 h-4 text-emerald-500" />
+                <span>Private Transfers & Transit Services</span>
+              </h3>
+              <p className="text-xs text-vistaro-muted">
+                Create, update, and manage airport pickups, intercity cabs, and local vehicle hires.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-vistaro-muted absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search transfers..."
+                  value={transferSearch}
+                  onChange={(e) => setTransferSearch(e.target.value)}
+                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-48 sm:w-64"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={openCreateTransferModal}
+                className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta text-xs py-2 px-4 rounded-full transition-all shadow-xs flex items-center gap-1.5 shrink-0 cursor-pointer"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>New Transfer</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
+                  <th className="pb-3 font-semibold">Service Title</th>
+                  <th className="pb-3 font-semibold">Destination</th>
+                  <th className="pb-3 font-semibold">Type</th>
+                  <th className="pb-3 font-semibold">Vehicle & Capacity</th>
+                  <th className="pb-3 font-semibold">Price Rate</th>
+                  <th className="pb-3 font-semibold">Status</th>
+                  <th className="pb-3 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-vistaro-border">
+                {filteredTransfers.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-8 text-center text-vistaro-muted">
+                      No transfer services found matching your query.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredTransfers.map((t) => (
+                    <tr key={t._id} className="hover:bg-vistaro-secondary/50 transition-colors">
+                      <td className="py-3">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={t.coverImage?.url || t.image?.url || 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80'}
+                            alt={t.title}
+                            className="w-12 h-9 rounded-lg object-cover border border-vistaro-border shrink-0"
+                          />
+                          <div className="max-w-xs truncate">
+                            <div className="font-bold text-vistaro-primary truncate">{t.title}</div>
+                            <div className="text-caption text-vistaro-muted font-mono truncate">/{t.slug}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3">
+                        <span className="bg-vistaro-secondary text-vistaro-accent border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-caption">
+                          {t.destination?.name || 'Curated'}
+                        </span>
+                      </td>
+                      <td className="py-3">
+                        <span className="capitalize text-caption px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                          {t.transferType ? t.transferType.replace(/-/g, ' ') : 'Transfer'}
+                        </span>
+                      </td>
+                      <td className="py-3 font-medium text-vistaro-secondary">
+                        {t.vehicleType || 'SUV'} ({t.capacity || 4} Pax)
+                      </td>
+                      <td className="py-3 text-price text-sm text-vistaro-primary">
+                        {formatPrice(t.price?.basePrice ?? t.basePrice ?? 0)}
+                        <span className="text-2xs text-vistaro-muted font-normal ml-1">/{t.priceUnit || 'trip'}</span>
+                      </td>
+                      <td className="py-3">
+                        <span
+                          className={`font-semibold px-2.5 py-0.5 rounded-full text-caption border border-vistaro-border ${
+                            t.isActive !== false
+                              ? 'bg-vistaro-surface text-vistaro-success'
+                              : 'bg-vistaro-surface text-vistaro-muted'
+                          }`}
+                        >
+                          {t.isActive !== false ? 'Active' : 'Inactive'}
+                        </span>
+                      </td>
+                      <td className="py-3 text-right">
+                        <div className="inline-flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => openEditTransferModal(t)}
+                            className="p-1.5 text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary rounded-lg transition-colors cursor-pointer"
+                            title="Edit transfer service"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleTransferActive(t)}
+                            className={`p-1.5 rounded-lg transition-colors cursor-pointer hover:bg-vistaro-secondary ${
+                              t.isActive !== false
+                                ? 'text-vistaro-success hover:text-vistaro-rating'
+                                : 'text-vistaro-muted hover:text-vistaro-success'
+                            }`}
+                            title={t.isActive !== false ? 'Deactivate transfer' : 'Activate transfer'}
+                          >
+                            {t.isActive !== false ? (
+                              <ToggleRight className="w-4 h-4 text-vistaro-success" />
+                            ) : (
+                              <ToggleLeft className="w-4 h-4 text-vistaro-muted" />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: USER MANAGEMENT */}
       {activeTab === 'users' && (
         <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-vistaro-border">
@@ -1963,6 +2306,262 @@ export default function AdminDashboardPage() {
                   className="px-6 py-2.5 rounded-full text-cta bg-vistaro-accent hover:bg-vistaro-accent-hover text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? 'Saving...' : experienceModal.mode === 'create' ? 'Publish Experience' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Transfer Create / Edit Modal (Phase 6 / Part 6.4) */}
+      {transferModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
+          <div className="bg-vistaro-surface rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-vistaro-border my-8 max-h-[90vh] overflow-y-auto text-vistaro-primary">
+            <div className="flex items-center justify-between pb-4 border-b border-vistaro-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-vistaro-secondary text-emerald-500 border border-vistaro-border flex items-center justify-center">
+                  <Car className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-display-h3 text-lg text-vistaro-primary">
+                    {transferModal.mode === 'create' ? 'Create Transfer Service' : 'Edit Transfer Service'}
+                  </h3>
+                  <p className="text-body-sm text-vistaro-muted">
+                    {transferModal.mode === 'create' ? 'Add a new private cab, airport pickup, or regional transit service' : 'Update route details, vehicle class, and rates'}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setTransferModal(null)}
+                className="p-2 text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary rounded-full transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveTransfer} className="space-y-4 text-xs">
+              
+              {/* Title & Slug */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Service Title *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Leh Airport to City Hotel Private SUV"
+                    value={transferForm.title}
+                    onChange={(e) => {
+                      const titleVal = e.target.value;
+                      setTransferForm((prev) => ({
+                        ...prev,
+                        title: titleVal,
+                        slug: transferModal.mode === 'create' ? titleVal.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : prev.slug,
+                      }));
+                    }}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">URL Slug *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. leh-airport-to-city-hotel-suv"
+                    value={transferForm.slug}
+                    onChange={(e) => setTransferForm({ ...transferForm, slug: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+              </div>
+
+              {/* Destination & Transfer Type */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Destination Region *</label>
+                  <select
+                    required
+                    value={transferForm.destination}
+                    onChange={(e) => setTransferForm({ ...transferForm, destination: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+                  >
+                    <option value="" disabled>Select a Destination</option>
+                    {destinationsList.map((d) => (
+                      <option key={d._id} value={d._id}>
+                        {d.name} ({d.state || d.country})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Transfer Type *</label>
+                  <select
+                    value={transferForm.transferType}
+                    onChange={(e) => setTransferForm({ ...transferForm, transferType: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+                  >
+                    <option value="airport-pickup">Airport Pickup</option>
+                    <option value="airport-drop">Airport Drop-off</option>
+                    <option value="intercity">Intercity Route / One-Way</option>
+                    <option value="local-day-hire">Local Day Hire (Full Day)</option>
+                    <option value="scenic-drive">Scenic Transit Experience</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Vehicle Type, Capacity, Base Price, Price Unit */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Vehicle Class *</label>
+                  <select
+                    value={transferForm.vehicleType}
+                    onChange={(e) => setTransferForm({ ...transferForm, vehicleType: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+                  >
+                    <option value="Sedan">Sedan (4 Pax)</option>
+                    <option value="SUV">SUV (6 Pax)</option>
+                    <option value="Luxury SUV">Luxury SUV</option>
+                    <option value="Tempo Traveller">Tempo Traveller (12 Pax)</option>
+                    <option value="Bike / Cruiser">Bike / Cruiser</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Capacity (Pax) *</label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={transferForm.capacity}
+                    onChange={(e) => setTransferForm({ ...transferForm, capacity: Number(e.target.value) })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Price (₹ INR) *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    required
+                    value={transferForm.basePrice}
+                    onChange={(e) => setTransferForm({ ...transferForm, basePrice: Number(e.target.value) })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Price Unit *</label>
+                  <select
+                    value={transferForm.priceUnit}
+                    onChange={(e) => setTransferForm({ ...transferForm, priceUnit: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+                  >
+                    <option value="per-trip">Per Trip</option>
+                    <option value="per-day">Per Day</option>
+                    <option value="per-hour">Per Hour</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Pickup & Drop Points & Duration */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Pickup Hub / Landmark</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Kushok Bakula Airport"
+                    value={transferForm.pickupLocation}
+                    onChange={(e) => setTransferForm({ ...transferForm, pickupLocation: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Drop-off Hub / Zone</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Leh City Hotels / Stays"
+                    value={transferForm.dropLocation}
+                    onChange={(e) => setTransferForm({ ...transferForm, dropLocation: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Estimated Duration</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 25-30 mins"
+                    value={transferForm.estimatedDuration}
+                    onChange={(e) => setTransferForm({ ...transferForm, estimatedDuration: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+              </div>
+
+              {/* Cover Image URL */}
+              <div>
+                <label className="block text-label text-vistaro-primary mb-1">Cover Image URL *</label>
+                <input
+                  type="url"
+                  required
+                  placeholder="https://images.unsplash.com/photo-..."
+                  value={transferForm.coverImageUrl}
+                  onChange={(e) => setTransferForm({ ...transferForm, coverImageUrl: e.target.value })}
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                />
+              </div>
+
+              {/* Inclusions (1 per line) */}
+              <div>
+                <label className="block text-label text-vistaro-primary mb-1">Included Amenities (1 per line)</label>
+                <textarea
+                  rows={3}
+                  placeholder="Professional Chauffeur&#10;Air Conditioning&#10;Toll & Parking Included&#10;Luggage Carrier"
+                  value={transferForm.includedFeatures}
+                  onChange={(e) => setTransferForm({ ...transferForm, includedFeatures: e.target.value })}
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-label text-vistaro-primary mb-1">Route & Service Description</label>
+                <textarea
+                  rows={2}
+                  placeholder="Detailed notes on vehicle comfort, driver vetting, and baggage guidance..."
+                  value={transferForm.description}
+                  onChange={(e) => setTransferForm({ ...transferForm, description: e.target.value })}
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                />
+              </div>
+
+              {/* Active Toggle */}
+              <div className="flex items-center gap-2 pt-2">
+                <input
+                  type="checkbox"
+                  id="transferIsActive"
+                  checked={transferForm.isActive}
+                  onChange={(e) => setTransferForm({ ...transferForm, isActive: e.target.checked })}
+                  className="w-4 h-4 text-vistaro-accent rounded-sm border-vistaro-border focus:ring-vistaro-accent cursor-pointer"
+                />
+                <label htmlFor="transferIsActive" className="text-body-sm font-semibold text-vistaro-primary cursor-pointer">
+                  Publish transfer service immediately (Active on public portal)
+                </label>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-vistaro-border">
+                <button
+                  type="button"
+                  onClick={() => setTransferModal(null)}
+                  disabled={actionLoading}
+                  className="px-5 py-2.5 rounded-full text-cta bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="px-6 py-2.5 rounded-full text-cta bg-vistaro-accent hover:bg-vistaro-accent-hover text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  {actionLoading ? 'Saving...' : transferModal.mode === 'create' ? 'Publish Transfer' : 'Save Changes'}
                 </button>
               </div>
             </form>

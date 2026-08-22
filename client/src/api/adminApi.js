@@ -90,4 +90,32 @@ export const adminApi = {
     const res = await client.delete(`/admin/experiences/${id}`);
     return res.data;
   },
+
+  // Transfers & Cabs Management (Phase 6 / Part 6.4)
+  getTransfers: async () => {
+    const res = await client.get('/admin/transfers');
+    return res.data;
+  },
+
+  createTransfer: async (data) => {
+    const isFormData = data instanceof FormData;
+    const res = await client.post('/admin/transfers', isFormData ? data : { transfer: data }, {
+      headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : { 'Content-Type': 'application/json' },
+    });
+    return res.data;
+  },
+
+  updateTransfer: async (id, data) => {
+    const isFormData = data instanceof FormData;
+    const res = await client.patch(`/admin/transfers/${id}`, isFormData ? data : { transfer: data }, {
+      headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : { 'Content-Type': 'application/json' },
+    });
+    return res.data;
+  },
+
+  deactivateTransfer: async (id) => {
+    const res = await client.delete(`/admin/transfers/${id}`);
+    return res.data;
+  },
 };
+

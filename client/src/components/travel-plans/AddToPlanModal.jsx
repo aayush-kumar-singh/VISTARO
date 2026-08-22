@@ -68,6 +68,7 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
     listing: 'Stay / Villa',
     tourPackage: 'Tour Package',
     experience: 'Host Experience',
+    transfer: 'Private Transfer / Cab',
   };
 
   const handleCreateNewPlan = async (e) => {

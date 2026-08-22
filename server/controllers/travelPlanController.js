@@ -4,6 +4,7 @@ const Destination = require("../models/Destination.js");
 const Listing = require("../models/Listing.js");
 const TourPackage = require("../models/TourPackage.js");
 const Experience = require("../models/Experience.js");
+const Transfer = require("../models/Transfer.js");
 
 // 1. Create a new Travel Plan (Owner is always req.user._id)
 module.exports.createPlan = async (req, res) => {
@@ -262,11 +263,11 @@ module.exports.addItemToPlan = async (req, res) => {
     const { itemType, itemId, notes } = req.body;
 
     // Validate itemType
-    const allowedTypes = ["listing", "tourPackage", "experience"];
+    const allowedTypes = ["listing", "tourPackage", "experience", "transfer"];
     if (!itemType || !allowedTypes.includes(itemType)) {
         return res.status(400).json({
             success: false,
-            error: "Invalid item type. Must be 'listing', 'tourPackage', or 'experience'.",
+            error: "Invalid item type. Must be 'listing', 'tourPackage', 'experience', or 'transfer'.",
         });
     }
 
@@ -295,6 +296,8 @@ module.exports.addItemToPlan = async (req, res) => {
         existingItem = await TourPackage.findById(itemId);
     } else if (itemType === "experience") {
         existingItem = await Experience.findById(itemId);
+    } else if (itemType === "transfer") {
+        existingItem = await Transfer.findById(itemId);
     }
 
     if (!existingItem) {

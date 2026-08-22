@@ -12,6 +12,7 @@ import {
   MapPin,
   Layers,
   Sparkles,
+  Car,
   Plus,
   Clock,
   Trash2,
@@ -192,12 +193,17 @@ export default function TravelPlanDetailPage() {
   const stayItems = items.filter((it) => it.itemType === 'listing');
   const tourItems = items.filter((it) => it.itemType === 'tourPackage');
   const expItems = items.filter((it) => it.itemType === 'experience');
+  const transferItems = items.filter((it) => it.itemType === 'transfer');
 
   const getItemLink = (item) => {
     if (!item.itemId) return '#';
     if (item.itemType === 'listing') return `/listings/${item.itemId._id || item.itemId}`;
     if (item.itemType === 'tourPackage') return `/tours/${item.itemId.slug || item.itemId._id || item.itemId}`;
     if (item.itemType === 'experience') return `/experiences/${item.itemId.slug || item.itemId._id || item.itemId}`;
+    if (item.itemType === 'transfer') {
+      const destSlug = item.itemId?.destination?.slug || (item.itemId?.destination && typeof item.itemId.destination === 'object' ? item.itemId.destination.slug : null);
+      return destSlug ? `/destinations/${destSlug}#transfers-section` : '/';
+    }
     return '#';
   };
 
@@ -222,6 +228,14 @@ export default function TravelPlanDetailPage() {
     }
     if (item.itemType === 'experience') {
       return `${obj.category || 'Experience'} • ${obj.duration || 2} Hours • up to ${obj.maxGroupSize || 10} guests`;
+    }
+    if (item.itemType === 'transfer') {
+      const vehicle = obj.vehicleType || 'Vehicle';
+      const cap = obj.capacity || 4;
+      const dur = obj.estimatedDuration ? ` • ${obj.estimatedDuration}` : '';
+      const baseP = obj.price?.basePrice ?? obj.basePrice ?? 0;
+      const rate = baseP ? ` • ${formatPrice(baseP)}/${obj.priceUnit === 'per-day' ? 'day' : 'trip'}` : '';
+      return `${vehicle} (${cap} Pax)${dur}${rate}`;
     }
     return null;
   };
@@ -604,6 +618,47 @@ export default function TravelPlanDetailPage() {
             ) : (
               <div className="p-6 bg-zinc-50/70 rounded-2xl border border-dashed border-[#171719]/15 text-center text-xs text-[#A7A7AC]">
                 No host experiences added yet. <Link to="/experiences" className="text-[#FF385C] font-bold hover:underline">Explore experiences</Link>
+              </div>
+            )}
+          </div>
+
+          {/* Group 4: Private Transfers & Cabs (Phase 6 / Part 6.5) */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                  <Car className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-[#171719] tracking-tight">Private Transfers & Cabs</h2>
+                  <p className="text-xs text-[#A7A7AC]">{transferItems.length} {transferItems.length === 1 ? 'transfer' : 'transfers'} reserved in plan</p>
+                </div>
+              </div>
+
+              {plan.destination?.slug && (
+                <Link
+                  to={`/destinations/${plan.destination.slug}#transfers-section`}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-[#FF385C] hover:underline"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Add Transfers
+                </Link>
+              )}
+            </div>
+
+            {transferItems.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {transferItems.map(renderItemCard)}
+              </div>
+            ) : (
+              <div className="p-6 bg-zinc-50/70 rounded-2xl border border-dashed border-[#171719]/15 text-center text-xs text-[#A7A7AC]">
+                No private transfers or chauffeured cabs attached yet.{' '}
+                {plan.destination?.slug ? (
+                  <Link to={`/destinations/${plan.destination.slug}#transfers-section`} className="text-[#FF385C] font-bold hover:underline">
+                    Explore transfers in {plan.destination.name}
+                  </Link>
+                ) : (
+                  <span>Attach a destination to browse local transfer options.</span>
+                )}
               </div>
             )}
           </div>

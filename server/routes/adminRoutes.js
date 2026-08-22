@@ -104,12 +104,34 @@ router.patch(
     wrapAsync(adminController.updateExperienceAdmin)
 );
 
-// DELETE /api/admin/experiences/:id — Soft-delete (Deactivate) Experience
-router.delete(
-    "/experiences/:id",
+// --------------------------------------------------
+// Transfer Management Endpoints (Admin Only - Phase 6 / Part 6.4)
+// --------------------------------------------------
+// GET /api/admin/transfers — List all transfers
+router.get("/transfers", wrapAsync(adminController.getAllTransfersAdmin));
+
+// POST /api/admin/transfers — Create Transfer
+router.post(
+    "/transfers",
+    handleImageUpload("images"),
+    wrapAsync(adminController.createTransferAdmin)
+);
+
+// PATCH /api/admin/transfers/:id — Update Transfer
+router.patch(
+    "/transfers/:id",
     validateObjectId("id"),
-    wrapAsync(adminController.deactivateExperienceAdmin)
+    handleImageUpload("images"),
+    wrapAsync(adminController.updateTransferAdmin)
+);
+
+// DELETE /api/admin/transfers/:id — Soft-delete (Deactivate) Transfer
+router.delete(
+    "/transfers/:id",
+    validateObjectId("id"),
+    wrapAsync(adminController.deactivateTransferAdmin)
 );
 
 module.exports = router;
+
 

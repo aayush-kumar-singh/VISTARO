@@ -7,6 +7,7 @@ require("./Destination.js");
 require("./Listing.js");
 require("./TourPackage.js");
 require("./Experience.js");
+require("./Transfer.js");
 
 // Ensure lowercase model name aliases exist for seamless dynamic refPath resolution
 if (!mongoose.models.tourPackage && mongoose.models.TourPackage) {
@@ -14,6 +15,9 @@ if (!mongoose.models.tourPackage && mongoose.models.TourPackage) {
 }
 if (!mongoose.models.experience && mongoose.models.Experience) {
     mongoose.model("experience", mongoose.models.Experience.schema);
+}
+if (!mongoose.models.transfer && mongoose.models.Transfer) {
+    mongoose.model("transfer", mongoose.models.Transfer.schema);
 }
 if (!mongoose.models.Listing && mongoose.models.listing) {
     mongoose.model("Listing", mongoose.models.listing.schema);
@@ -24,7 +28,7 @@ const planItemSchema = new Schema(
         itemType: {
             type: String,
             required: [true, "Item type is required"],
-            enum: ["listing", "tourPackage", "experience"],
+            enum: ["listing", "tourPackage", "experience", "transfer"],
         },
         itemId: {
             type: Schema.Types.ObjectId,

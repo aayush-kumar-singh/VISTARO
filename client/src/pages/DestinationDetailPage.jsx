@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import { destinationsApi } from '../api/destinationsApi.js';
+import { transfersApi } from '../api/transfersApi.js';
 import ImageGallery from '../components/listings/ImageGallery.jsx';
 import MapView from '../components/listings/MapView.jsx';
 import ListingCard from '../components/listings/ListingCard.jsx';
 import TourPackageCard from '../components/packages/TourPackageCard.jsx';
 import ExperienceCard from '../components/experiences/ExperienceCard.jsx';
+import TransferCard from '../components/transfers/TransferCard.jsx';
+import AddToPlanModal from '../components/travel-plans/AddToPlanModal.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 import {
   MapPin,
   Sparkles,
   Compass,
   Home,
+  Car,
   CheckCircle2,
   ChevronRight,
   ShieldAlert,
@@ -24,6 +29,8 @@ import {
 
 export default function DestinationDetailPage() {
   const { slug } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [destination, setDestination] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,6 +46,10 @@ export default function DestinationDetailPage() {
   const [stays, setStays] = useState([]);
   const [staysLoading, setStaysLoading] = useState(false);
 
+  const [transfers, setTransfers] = useState([]);
+  const [transfersLoading, setTransfersLoading] = useState(false);
+  const [selectedTransferForPlan, setSelectedTransferForPlan] = useState(null);
+
   useEffect(() => {
     async function fetchDestinationData() {
       try {
@@ -53,6 +64,7 @@ export default function DestinationDetailPage() {
         if (dest?._id || dest?.slug) {
           fetchConnectedPackages(dest.slug);
           fetchConnectedExperiences(dest.slug);
+          fetchConnectedTransfers(dest.slug);
           fetchConnectedStays(dest.name);
         }
       } catch (err) {
@@ -86,6 +98,18 @@ export default function DestinationDetailPage() {
       }
     }
 
+    async function fetchConnectedTransfers(destSlug) {
+      try {
+        setTransfersLoading(true);
+        const res = await transfersApi.getTransfers({ destination: destSlug });
+        setTransfers(res.transfers || []);
+      } catch (err) {
+        console.error('Failed to load transfers for destination:', err);
+      } finally {
+        setTransfersLoading(false);
+      }
+    }
+
     async function fetchConnectedStays(destName) {
       try {
         setStaysLoading(true);
@@ -101,6 +125,17 @@ export default function DestinationDetailPage() {
     fetchDestinationData();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [slug]);
+
+  const handleAddToPlan = (transfer) => {
+    if (!user) {
+      navigate('/auth/login', { state: { from: window.location.pathname } });
+      return;
+    }
+    setSelectedTransferForPlan({
+      ...transfer,
+      itemType: 'transfer',
+    });
+  };
 
   const scrollToStays = (e) => {
     e.preventDefault();
@@ -494,6 +529,59 @@ export default function DestinationDetailPage() {
           </div>
         )}
       </div>
+
+      {/* 9. Local Transfers & Cabs in Destination Section (Phase 6 / Part 6.5) */}
+      <div id="transfers-section" className="space-y-6 pt-4 border-t border-vistaro-border">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-display-h2 text-vistaro-primary flex items-center gap-2">
+              <Car className="w-6 h-6 text-emerald-500" /> Private Transfers & Cabs in {destination.name}
+            </h2>
+            <p className="text-body-sm text-vistaro-muted mt-1">
+              Pre-book verified airport pickups, local chauffeured day hires, and intercity transit for your {destination.name} itinerary.
+            </p>
+          </div>
+        </div>
+
+        {transfersLoading && (
+          <div className="py-12 text-center text-vistaro-muted">
+            <LoadingSpinner fullScreen={false} text={`Loading available transfers for ${destination.name}...`} />
+          </div>
+        )}
+
+        {!transfersLoading && transfers.length === 0 && (
+          <div className="text-center py-10 px-6 bg-vistaro-surface rounded-3xl border border-vistaro-border space-y-2">
+            <Car className="w-8 h-8 text-emerald-500 mx-auto" />
+            <h3 className="text-display-h3 text-vistaro-primary">
+              Transit routes for {destination.name} are being added
+            </h3>
+            <p className="text-body-sm text-vistaro-secondary max-w-md mx-auto">
+              Our fleet partners are configuring airport pickup and chauffeured transit options in {destination.name}.
+            </p>
+          </div>
+        )}
+
+        {!transfersLoading && transfers.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {transfers.map((transfer) => (
+              <TransferCard
+                key={transfer._id}
+                transfer={transfer}
+                onAddToPlan={handleAddToPlan}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Add to Travel Plan Modal */}
+      {selectedTransferForPlan && (
+        <AddToPlanModal
+          isOpen={!!selectedTransferForPlan}
+          onClose={() => setSelectedTransferForPlan(null)}
+          item={selectedTransferForPlan}
+        />
+      )}
     </div>
   );
 }

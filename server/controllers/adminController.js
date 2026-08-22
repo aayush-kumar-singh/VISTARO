@@ -5,6 +5,7 @@ const Review = require("../models/Review.js");
 const Destination = require("../models/Destination.js");
 const TourPackage = require("../models/TourPackage.js");
 const Experience = require("../models/Experience.js");
+const Transfer = require("../models/Transfer.js");
 const cloudinary = require("../config/cloudinary.js").cloudinary;
 
 // GET /api/admin/stats
@@ -16,6 +17,7 @@ module.exports.getStats = async (req, res) => {
     const totalDestinations = await Destination.countDocuments();
     const totalTourPackages = await TourPackage.countDocuments();
     const totalExperiences = await Experience.countDocuments();
+    const totalTransfers = await Transfer.countDocuments();
 
     // Calculate total confirmed booking volume
     const confirmedBookings = await Booking.find({ status: "confirmed" });
@@ -45,6 +47,7 @@ module.exports.getStats = async (req, res) => {
             totalDestinations,
             totalTourPackages,
             totalExperiences,
+            totalTransfers,
             totalRevenue,
         },
         recentBookings,
@@ -942,5 +945,310 @@ module.exports.deactivateExperienceAdmin = async (req, res) => {
         experience,
     });
 };
+
+// ==================================================
+// TRANSFER & TRANSPORT MANAGEMENT (Phase 6 / Part 6.4)
+// ==================================================
+
+// --------------------------------------------------
+// GET /api/admin/transfers — List all transfers (including inactive)
+// --------------------------------------------------
+module.exports.getAllTransfersAdmin = async (req, res) => {
+    const transfers = await Transfer.find()
+        .populate("destination", "name slug state country shortTagline heroImage")
+        .populate("createdBy", "username email")
+        .sort({ createdAt: -1 });
+
+    res.json({
+        success: true,
+        count: transfers.length,
+        transfers,
+    });
+};
+
+// --------------------------------------------------
+// POST /api/admin/transfers — Create Transfer Service
+// --------------------------------------------------
+module.exports.createTransferAdmin = async (req, res) => {
+    const data = req.body.transfer || req.body;
+    const {
+        title,
+        slug,
+        destination,
+        transferType,
+        vehicleType,
+        capacity,
+        price,
+        priceUnit,
+        description,
+        pickupLocation,
+        dropLocation,
+        estimatedDuration,
+        includedFeatures,
+        inclusions,
+        coverImage,
+        image,
+        cancellationPolicy,
+        isActive,
+    } = data;
+
+    const finalTitle = (title || "").trim();
+    let finalSlug = (slug || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9-]/g, "-")
+        .replace(/-+/g, "-");
+
+    if (!finalSlug && finalTitle) {
+        finalSlug = finalTitle
+            .toLowerCase()
+            .replace(/[^a-z0-9-]/g, "-")
+            .replace(/-+/g, "-");
+    }
+
+    const finalDestId = destination;
+
+    let finalCoverImage = coverImage || image;
+    if (typeof finalCoverImage === "string") {
+        finalCoverImage = { url: finalCoverImage, filename: "" };
+    }
+    if (!finalCoverImage || !finalCoverImage.url) {
+        finalCoverImage = {
+            url: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1200&q=80",
+            filename: "",
+        };
+    }
+
+    if (req.files && req.files.length > 0) {
+        finalCoverImage = {
+            url: req.files[0].path,
+            filename: req.files[0].filename,
+        };
+    }
+
+    // Validation
+    if (!finalTitle || !finalSlug || !finalDestId) {
+        return res.status(400).json({
+            success: false,
+            error: "Validation failed: 'title', 'slug', and 'destination' are required.",
+        });
+    }
+
+    const finalCapacity = Number(capacity || 4);
+    if (isNaN(finalCapacity) || finalCapacity < 1) {
+        return res.status(400).json({
+            success: false,
+            error: "Validation failed: 'capacity' must be at least 1 passenger.",
+        });
+    }
+
+    const finalBasePrice = Number(price?.basePrice ?? price ?? 0);
+    if (isNaN(finalBasePrice) || finalBasePrice < 0) {
+        return res.status(400).json({
+            success: false,
+            error: "Validation failed: 'price.basePrice' must be a non-negative number.",
+        });
+    }
+
+    // Verify Destination exists
+    const destinationDoc = await Destination.findById(finalDestId);
+    if (!destinationDoc) {
+        return res.status(400).json({
+            success: false,
+            error: "Selected destination does not exist. Please provide a valid destination ID.",
+        });
+    }
+
+    // Enforce unique slug
+    const existingSlug = await Transfer.findOne({ slug: finalSlug });
+    if (existingSlug) {
+        return res.status(409).json({
+            success: false,
+            error: `A transfer service with slug '${finalSlug}' already exists. Please choose a unique slug.`,
+        });
+    }
+
+    let parsedFeatures = includedFeatures || inclusions || [];
+    if (typeof parsedFeatures === "string") {
+        parsedFeatures = parsedFeatures.split("\n").map(s => s.trim()).filter(Boolean);
+    }
+
+    const validTransferTypes = [
+        "airport-pickup",
+        "airport-drop",
+        "intercity",
+        "local-day-hire",
+        "scenic-drive",
+    ];
+    const finalTransferType = validTransferTypes.includes(transferType) ? transferType : "airport-pickup";
+
+    const validVehicleTypes = [
+        "Sedan",
+        "SUV",
+        "Luxury SUV",
+        "Tempo Traveller",
+        "Bike / Cruiser",
+    ];
+    const finalVehicleType = validVehicleTypes.includes(vehicleType) ? vehicleType : "SUV";
+
+    const validPriceUnits = ["per-trip", "per-day", "per-hour"];
+    const finalPriceUnit = validPriceUnits.includes(priceUnit) ? priceUnit : "per-trip";
+
+    const newTransfer = new Transfer({
+        title: finalTitle,
+        slug: finalSlug,
+        destination: finalDestId,
+        transferType: finalTransferType,
+        vehicleType: finalVehicleType,
+        capacity: finalCapacity,
+        price: {
+            basePrice: finalBasePrice,
+            currency: (price?.currency || "INR").trim(),
+        },
+        priceUnit: finalPriceUnit,
+        description: (description || "").trim(),
+        pickupLocation: (pickupLocation || "").trim(),
+        dropLocation: (dropLocation || "").trim(),
+        estimatedDuration: (estimatedDuration || "").trim(),
+        includedFeatures: parsedFeatures,
+        coverImage: finalCoverImage,
+        cancellationPolicy: ["flexible", "moderate", "strict"].includes(cancellationPolicy)
+            ? cancellationPolicy
+            : "flexible",
+        isActive: typeof isActive === "boolean" ? isActive : true,
+        createdBy: req.user?._id || null,
+    });
+
+    const saved = await newTransfer.save();
+    await saved.populate("destination", "name slug state country shortTagline heroImage");
+
+    res.status(201).json({
+        success: true,
+        message: `Transfer service '${saved.title}' created successfully.`,
+        transfer: saved,
+    });
+};
+
+// --------------------------------------------------
+// PATCH /api/admin/transfers/:id — Update Transfer Service
+// --------------------------------------------------
+module.exports.updateTransferAdmin = async (req, res) => {
+    const { id } = req.params;
+    const data = req.body.transfer || req.body;
+
+    const transfer = await Transfer.findById(id);
+    if (!transfer) {
+        return res.status(404).json({
+            success: false,
+            error: "Transfer service not found.",
+        });
+    }
+
+    // Slug uniqueness check
+    if (data.slug) {
+        const newSlug = String(data.slug)
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9-]/g, "-")
+            .replace(/-+/g, "-");
+
+        if (newSlug !== transfer.slug) {
+            const conflict = await Transfer.findOne({
+                _id: { $ne: id },
+                slug: newSlug,
+            });
+            if (conflict) {
+                return res.status(409).json({
+                    success: false,
+                    error: `A transfer service with slug '${newSlug}' already exists.`,
+                });
+            }
+            transfer.slug = newSlug;
+        }
+    }
+
+    if (data.destination) {
+        const destDoc = await Destination.findById(data.destination);
+        if (!destDoc) {
+            return res.status(400).json({
+                success: false,
+                error: "Selected destination does not exist.",
+            });
+        }
+        transfer.destination = data.destination;
+    }
+
+    if (data.title !== undefined) transfer.title = String(data.title).trim();
+    if (data.transferType && ["airport-pickup", "airport-drop", "intercity", "local-day-hire", "scenic-drive"].includes(data.transferType)) {
+        transfer.transferType = data.transferType;
+    }
+    if (data.vehicleType && ["Sedan", "SUV", "Luxury SUV", "Tempo Traveller", "Bike / Cruiser"].includes(data.vehicleType)) {
+        transfer.vehicleType = data.vehicleType;
+    }
+    if (data.capacity !== undefined) {
+        const cap = Number(data.capacity);
+        if (!isNaN(cap) && cap >= 1) transfer.capacity = cap;
+    }
+    if (data.price) {
+        const bPrice = data.price.basePrice !== undefined ? Number(data.price.basePrice) : (typeof data.price === "number" ? data.price : transfer.price.basePrice);
+        const curr = data.price.currency || transfer.price.currency || "INR";
+        transfer.price = { basePrice: bPrice, currency: curr };
+    }
+    if (data.priceUnit && ["per-trip", "per-day", "per-hour"].includes(data.priceUnit)) {
+        transfer.priceUnit = data.priceUnit;
+    }
+    if (data.description !== undefined) transfer.description = String(data.description).trim();
+    if (data.pickupLocation !== undefined) transfer.pickupLocation = String(data.pickupLocation).trim();
+    if (data.dropLocation !== undefined) transfer.dropLocation = String(data.dropLocation).trim();
+    if (data.estimatedDuration !== undefined) transfer.estimatedDuration = String(data.estimatedDuration).trim();
+    if (data.includedFeatures !== undefined || data.inclusions !== undefined) {
+        const inc = data.includedFeatures !== undefined ? data.includedFeatures : data.inclusions;
+        transfer.includedFeatures = Array.isArray(inc)
+            ? inc
+            : String(inc).split("\n").map(s => s.trim()).filter(Boolean);
+    }
+    if (data.coverImage !== undefined || data.image !== undefined) {
+        const img = data.coverImage || data.image;
+        transfer.coverImage = typeof img === "string" ? { url: img, filename: "" } : img;
+    }
+    if (data.cancellationPolicy && ["flexible", "moderate", "strict"].includes(data.cancellationPolicy)) {
+        transfer.cancellationPolicy = data.cancellationPolicy;
+    }
+    if (typeof data.isActive === "boolean") transfer.isActive = data.isActive;
+
+    const updated = await transfer.save();
+    await updated.populate("destination", "name slug state country shortTagline heroImage");
+
+    res.json({
+        success: true,
+        message: `Transfer service '${updated.title}' updated successfully.`,
+        transfer: updated,
+    });
+};
+
+// --------------------------------------------------
+// DELETE /api/admin/transfers/:id — Soft-delete (Deactivate)
+// --------------------------------------------------
+module.exports.deactivateTransferAdmin = async (req, res) => {
+    const { id } = req.params;
+
+    const transfer = await Transfer.findById(id);
+    if (!transfer) {
+        return res.status(404).json({
+            success: false,
+            error: "Transfer service not found.",
+        });
+    }
+
+    transfer.isActive = false;
+    await transfer.save();
+
+    res.json({
+        success: true,
+        message: `Transfer service '${transfer.title}' has been deactivated (soft-deleted).`,
+        transfer,
+    });
+};
+
 
 
