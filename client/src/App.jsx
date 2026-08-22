@@ -25,6 +25,8 @@ import ExperienceDetailPage from './pages/ExperienceDetailPage.jsx';
 import WishlistPage from './pages/WishlistPage.jsx';
 import TravelPlansPage from './pages/TravelPlansPage.jsx';
 import TravelPlanDetailPage from './pages/TravelPlanDetailPage.jsx';
+import MyBookingsPage from './pages/MyBookingsPage.jsx';
+import BookingDetailPage from './pages/BookingDetailPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import HostDashboardPage from './pages/HostDashboardPage.jsx';
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
@@ -81,6 +83,38 @@ export default function App() {
                   />
 
                   {/* 3. Authenticated User Routes (Login Required) */}
+                  <Route
+                    path="my-bookings"
+                    element={
+                      <ProtectedRoute>
+                        <MyBookingsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="my-bookings/:id"
+                    element={
+                      <ProtectedRoute>
+                        <BookingDetailPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="bookings"
+                    element={
+                      <ProtectedRoute>
+                        <MyBookingsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="bookings/:id"
+                    element={
+                      <ProtectedRoute>
+                        <BookingDetailPage />
+                      </ProtectedRoute>
+                    }
+                  />
                   <Route
                     path="profile"
                     element={

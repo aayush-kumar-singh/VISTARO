@@ -220,6 +220,7 @@ app.use("/api/destinations", destinationRouter);
 app.use("/api/tour-packages", tourPackageRouter);
 app.use("/api/experiences", experienceRouter);
 app.use("/api/travel-plans", travelPlanRouter);
+app.use("/api/my-bookings", bookingRouter);
 
 // Currency info endpoint
 app.get("/api/currencies", (req, res) => {

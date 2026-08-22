@@ -241,6 +241,15 @@ export default function ProfilePage() {
       {/* TAB: Upcoming Trips */}
       {activeTab === 'upcoming' && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-display-h3 text-lg text-vistaro-primary">Upcoming Itineraries & Stays</h2>
+            <Link
+              to="/my-bookings"
+              className="text-cta text-xs text-vistaro-accent hover:underline flex items-center gap-1"
+            >
+              Open Unified Bookings Hub →
+            </Link>
+          </div>
           {upcomingTrips.length === 0 ? (
             <div className="text-center py-16 bg-vistaro-surface rounded-3xl border border-vistaro-border">
               <Plane className="w-10 h-10 text-vistaro-muted mx-auto mb-2" />

@@ -1,6 +1,16 @@
 import api from './client.js';
 
 export const bookingsApi = {
+  getMyBookings: async (params = {}) => {
+    const res = await api.get('/my-bookings', { params });
+    return res.data;
+  },
+
+  getBookingById: async (bookingId) => {
+    const res = await api.get(`/bookings/${bookingId}`);
+    return res.data;
+  },
+
   createBooking: async (listingId, bookingData) => {
     const res = await api.post(`/listings/${listingId}/bookings`, bookingData);
     return res.data;

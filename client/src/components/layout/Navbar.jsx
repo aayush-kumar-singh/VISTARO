@@ -20,6 +20,7 @@ import {
   Sun,
   Moon,
   Sparkles,
+  CalendarCheck,
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -289,11 +290,11 @@ export default function Navbar() {
 
                     <div className="py-1">
                       <Link
-                        to="/profile"
+                        to="/my-bookings"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-body-sm text-vistaro-primary hover:bg-vistaro-secondary"
+                        className="flex items-center gap-2 px-4 py-2 text-body-sm text-vistaro-primary hover:bg-vistaro-secondary font-medium"
                       >
-                        <UserIcon className="w-4 h-4 text-vistaro-muted" /> Profile & Trips
+                        <CalendarCheck className="w-4 h-4 text-vistaro-accent" /> My Bookings
                       </Link>
                       <Link
                         to="/travel-plans"
@@ -301,6 +302,13 @@ export default function Navbar() {
                         className="flex items-center gap-2 px-4 py-2 text-body-sm text-vistaro-primary hover:bg-vistaro-secondary"
                       >
                         <Compass className="w-4 h-4 text-vistaro-muted" /> Travel Plans
+                      </Link>
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2 text-body-sm text-vistaro-primary hover:bg-vistaro-secondary"
+                      >
+                        <UserIcon className="w-4 h-4 text-vistaro-muted" /> Profile & Trips
                       </Link>
                       <Link
                         to="/dashboard"
@@ -558,12 +566,12 @@ export default function Navbar() {
                 </div>
 
                 <Link
-                  to="/profile"
+                  to="/my-bookings"
                   onClick={() => setIsUserMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors font-medium"
                 >
-                  <UserIcon className="w-5 h-5 text-vistaro-muted" />
-                  <span>Profile & Trips</span>
+                  <CalendarCheck className="w-5 h-5 text-vistaro-accent" />
+                  <span>My Bookings</span>
                 </Link>
 
                 <Link
@@ -573,6 +581,15 @@ export default function Navbar() {
                 >
                   <Compass className="w-5 h-5 text-vistaro-muted" />
                   <span>My Travel Plans</span>
+                </Link>
+
+                <Link
+                  to="/profile"
+                  onClick={() => setIsUserMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
+                >
+                  <UserIcon className="w-5 h-5 text-vistaro-muted" />
+                  <span>Profile & Trips</span>
                 </Link>
 
                 <Link

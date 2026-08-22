@@ -6,7 +6,29 @@ const { validateBooking } = require("../middleware/validate.js");
 const { bookingLimiter } = require("../middleware/rateLimiter.js");
 const bookingController = require("../controllers/bookingController.js");
 
-// Create booking for a listing
+// 1. Normalized User Bookings List
+router.get(
+    "/my-bookings",
+    isLoggedIn,
+    wrapAsync(bookingController.getMyBookings)
+);
+
+// Fallback GET / on this router (useful when mounted directly at /api/my-bookings)
+router.get(
+    "/",
+    isLoggedIn,
+    wrapAsync(bookingController.getMyBookings)
+);
+
+// 2. Get single booking detail by bookingId
+router.get(
+    "/:bookingId",
+    validateObjectId("bookingId"),
+    isLoggedIn,
+    wrapAsync(bookingController.getBookingById)
+);
+
+// 3. Create booking for a listing (POST /)
 router.post(
     "/",
     bookingLimiter,
@@ -15,9 +37,16 @@ router.post(
     wrapAsync(bookingController.createBooking)
 );
 
-// Cancel booking by bookingId
+// 4. Cancel booking by bookingId (DELETE & POST aliases)
 router.delete(
     "/:bookingId",
+    validateObjectId("bookingId"),
+    isLoggedIn,
+    wrapAsync(bookingController.cancelBooking)
+);
+
+router.post(
+    "/:bookingId/cancel",
     validateObjectId("bookingId"),
     isLoggedIn,
     wrapAsync(bookingController.cancelBooking)
