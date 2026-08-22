@@ -94,27 +94,12 @@ export default function Navbar() {
             }}
             className="flex items-center gap-2 group cursor-pointer"
           >
-            {/* SVG Logo */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 44 44"
-              className="w-9 h-9 transform group-hover:scale-105 transition-transform"
-              aria-hidden="true"
-            >
-              <path
-                d="M22 4C15.373 4 10 9.373 10 16c0 9 12 24 12 24s12-15 12-24c0-6.627-5.373-12-12-12z"
-                fill="var(--vistaro-accent)"
-              />
-              <polyline
-                points="16,13 22,20 28,13"
-                fill="none"
-                stroke="white"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <circle cx="22" cy="16" r="3.5" fill="white" opacity="0.9" />
-            </svg>
+            {/* Official Brand Logo */}
+            <img
+              src="/BrandLogo.png"
+              alt="VISTARO Logo"
+              className="w-9 h-9 object-contain transform group-hover:scale-105 transition-transform"
+            />
             <span className="text-brand-logo text-vistaro-primary">
               Vis<span className="text-vistaro-accent">taro</span>
             </span>
@@ -454,9 +439,11 @@ export default function Navbar() {
                 onClick={() => setIsUserMenuOpen(false)}
                 className="flex items-center gap-2 text-brand-logo text-vistaro-primary"
               >
-                <div className="w-8 h-8 rounded-full bg-vistaro-accent flex items-center justify-center text-white font-medium text-sm">
-                  V
-                </div>
+                <img
+                  src="/BrandLogo.png"
+                  alt="VISTARO Logo"
+                  className="w-8 h-8 object-contain"
+                />
                 <span>Vis<span className="text-vistaro-accent">taro</span></span>
               </Link>
               <button

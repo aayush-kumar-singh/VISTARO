@@ -36,10 +36,12 @@ export default function Footer() {
               onClick={scrollToTop}
               className="inline-flex items-center gap-2.5 text-brand-logo text-vistaro-primary hover:opacity-90 transition-opacity"
             >
-              <div className="w-9 h-9 rounded-2xl bg-vistaro-accent flex items-center justify-center text-white font-medium text-sm shadow-xs">
-                V
-              </div>
-              <span className="font-serif font-bold text-xl tracking-tight">
+              <img
+                src="/BrandLogo.png"
+                alt="VISTARO Logo"
+                className="w-9 h-9 object-contain"
+              />
+              <span className="text-brand-logo text-vistaro-primary">
                 Vis<span className="text-vistaro-accent">taro</span>
               </span>
             </Link>
