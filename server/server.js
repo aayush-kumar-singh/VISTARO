@@ -32,6 +32,7 @@ const adminRouter = require("./routes/adminRoutes.js");
 const destinationRouter = require("./routes/destinationRoutes.js");
 const tourPackageRouter = require("./routes/tourPackageRoutes.js");
 const experienceRouter = require("./routes/experienceRoutes.js");
+const travelPlanRouter = require("./routes/travelPlanRoutes.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -218,6 +219,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/destinations", destinationRouter);
 app.use("/api/tour-packages", tourPackageRouter);
 app.use("/api/experiences", experienceRouter);
+app.use("/api/travel-plans", travelPlanRouter);
 
 // Currency info endpoint
 app.get("/api/currencies", (req, res) => {

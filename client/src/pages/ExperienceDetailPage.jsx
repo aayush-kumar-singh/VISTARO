@@ -10,11 +10,13 @@ import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 import ReviewCard from '../components/reviews/ReviewCard.jsx';
 import ReviewForm from '../components/reviews/ReviewForm.jsx';
 import StarRating from '../components/common/StarRating.jsx';
+import AddToPlanModal from '../components/travel-plans/AddToPlanModal.jsx';
 import {
   Clock,
   MapPin,
   Users,
   Sparkles,
+  Compass,
   ArrowLeft,
   CheckCircle2,
   ShieldCheck,
@@ -46,6 +48,7 @@ export default function ExperienceDetailPage() {
   const [travelers, setTravelers] = useState(2);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(null);
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
 
   const handleReviewAdded = (newReview) => {
     setExperience((prev) => ({
@@ -173,13 +176,31 @@ export default function ExperienceDetailPage() {
           <span className="text-vistaro-primary truncate max-w-[200px] sm:max-w-xs">{experience.title}</span>
         </div>
 
-        <Link
-          to="/experiences"
-          className="inline-flex items-center gap-1.5 text-cta text-vistaro-secondary hover:text-vistaro-primary transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to All Experiences</span>
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              if (!user) {
+                navigate('/login', { state: { from: location } });
+                return;
+              }
+              setIsPlanModalOpen(true);
+            }}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary text-cta transition-colors cursor-pointer"
+            title="Add to Travel Plan"
+          >
+            <Compass className="w-3.5 h-3.5 text-[#FF385C]" />
+            <span>Add to Plan</span>
+          </button>
+
+          <Link
+            to="/experiences"
+            className="inline-flex items-center gap-1.5 text-cta text-vistaro-secondary hover:text-vistaro-primary transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to All Experiences</span>
+          </Link>
+        </div>
       </div>
 
       {/* 2. Title & Key Badges Header */}
@@ -681,6 +702,12 @@ export default function ExperienceDetailPage() {
 
       </div>
 
+      {/* Add to Travel Plan Modal */}
+      <AddToPlanModal
+        isOpen={isPlanModalOpen}
+        onClose={() => setIsPlanModalOpen(false)}
+        item={experience ? { ...experience, itemType: 'experience' } : null}
+      />
     </div>
   );
 }

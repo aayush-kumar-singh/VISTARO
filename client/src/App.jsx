@@ -23,6 +23,8 @@ import TourPackageDetailPage from './pages/TourPackageDetailPage.jsx';
 import ExperiencesListPage from './pages/ExperiencesListPage.jsx';
 import ExperienceDetailPage from './pages/ExperienceDetailPage.jsx';
 import WishlistPage from './pages/WishlistPage.jsx';
+import TravelPlansPage from './pages/TravelPlansPage.jsx';
+import TravelPlanDetailPage from './pages/TravelPlanDetailPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import HostDashboardPage from './pages/HostDashboardPage.jsx';
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
@@ -100,6 +102,22 @@ export default function App() {
                     element={
                       <ProtectedRoute>
                         <WishlistPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="travel-plans"
+                    element={
+                      <ProtectedRoute>
+                        <TravelPlansPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="travel-plans/:id"
+                    element={
+                      <ProtectedRoute>
+                        <TravelPlanDetailPage />
                       </ProtectedRoute>
                     }
                   />

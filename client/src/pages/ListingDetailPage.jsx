@@ -12,12 +12,14 @@ import ReviewCard from '../components/reviews/ReviewCard.jsx';
 import ReviewForm from '../components/reviews/ReviewForm.jsx';
 import ListingCard from '../components/listings/ListingCard.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
+import AddToPlanModal from '../components/travel-plans/AddToPlanModal.jsx';
 import {
   Share2,
   Heart,
   Edit3,
   Trash2,
   MessageSquare,
+  Compass,
   Sparkles,
   Star,
   MapPin,
@@ -49,6 +51,7 @@ export default function ListingDetailPage() {
   const [contactSuccess, setContactSuccess] = useState(false);
   const [contactError, setContactError] = useState('');
   const [conversationId, setConversationId] = useState(null);
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchListing() {
@@ -276,6 +279,22 @@ export default function ListingDetailPage() {
             <Share2 className="w-3.5 h-3.5" /> Share
           </button>
 
+          {/* Add to Travel Plan */}
+          <button
+            onClick={() => {
+              if (!user) {
+                navigate('/login');
+                return;
+              }
+              setIsPlanModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 text-cta px-3.5 py-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
+            title="Add to Travel Plan"
+          >
+            <Compass className="w-3.5 h-3.5 text-[#FF385C]" />
+            <span>Add to Plan</span>
+          </button>
+
           {/* Wishlist */}
           <button
             onClick={handleWishlistToggle}
@@ -289,6 +308,13 @@ export default function ListingDetailPage() {
           </button>
         </div>
       </div>
+
+      {/* Add to Travel Plan Modal */}
+      <AddToPlanModal
+        isOpen={isPlanModalOpen}
+        onClose={() => setIsPlanModalOpen(false)}
+        item={listing ? { ...listing, itemType: 'listing' } : null}
+      />
 
       {/* 3. Photo Gallery with Lightbox */}
       <ImageGallery images={listing.images || []} title={listing.title} />
