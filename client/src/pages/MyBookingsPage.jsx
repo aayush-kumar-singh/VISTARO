@@ -168,7 +168,7 @@ export default function MyBookingsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in text-vistaro-primary">
+    <div className="w-full space-y-8 pb-16 animate-fade-in text-vistaro-primary">
       {/* 1. Header Banner */}
       <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>

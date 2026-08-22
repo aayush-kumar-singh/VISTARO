@@ -71,25 +71,23 @@ export default function ListingCard({ listing, onWishlistToggle }) {
             alt={listing.title}
             onError={() => setImgError(true)}
             loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
           />
         </Link>
 
         {/* Top-Left Badge */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 pointer-events-none">
-          {listing.isFeatured && (
-            <div className="inline-flex items-center gap-1 bg-amber-500/95 backdrop-blur-xs text-white text-caption font-bold px-2.5 py-0.5 rounded-full shadow-sm">
-              <Star className="w-3 h-3 fill-white" />
-              <span>Featured</span>
-            </div>
-          )}
+        <div className="absolute top-3 left-3 z-10 flex items-center gap-1 pointer-events-none">
           {listing.isTrending && (
-            <div className="inline-flex items-center gap-1 bg-rose-500/95 backdrop-blur-xs text-white text-caption font-bold px-2.5 py-0.5 rounded-full shadow-sm">
-              <Flame className="w-3 h-3 fill-white" />
-              <span>Trending</span>
+            <div
+              className="inline-flex items-center justify-center p-1.5 rounded-full bg-rose-500/95 backdrop-blur-xs text-white shadow-sm"
+              title="Trending"
+              aria-label="Trending"
+            >
+              <Flame className="w-3.5 h-3.5 fill-white" />
             </div>
           )}
-          {!listing.isFeatured && !listing.isTrending && (
+          {!listing.isTrending && (
             isGuestFavourite ? (
               <div className="bg-vistaro-surface/95 backdrop-blur-xs text-vistaro-primary border border-vistaro-border text-caption px-2.5 py-1 rounded-full shadow-sm">
                 Guest favourite

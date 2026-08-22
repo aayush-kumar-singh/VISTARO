@@ -8,7 +8,7 @@ export default function TermsPage() {
   }, []);
 
   return (
-    <div className="w-full max-w-[1000px] mx-auto py-6 space-y-8 animate-fade-in text-vistaro-primary transition-colors duration-200">
+    <div className="w-full py-6 space-y-8 pb-16 animate-fade-in text-vistaro-primary transition-colors duration-200">
 
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-nav-link text-vistaro-muted">

@@ -16,6 +16,11 @@ export const adminApi = {
     return res.data;
   },
 
+  handleHostRequest: async (userId, action) => {
+    const res = await client.patch(`/admin/users/${userId}/host-request`, { action });
+    return res.data;
+  },
+
   deleteUser: async (userId) => {
     const res = await client.delete(`/admin/users/${userId}`);
     return res.data;

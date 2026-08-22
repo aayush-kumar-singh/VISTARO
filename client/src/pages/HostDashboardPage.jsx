@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCurrency } from '../context/CurrencyContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
+import HostAccessGate from '../components/auth/HostAccessGate.jsx';
 import {
   Home,
   Coins,
@@ -38,21 +39,17 @@ export default function HostDashboardPage() {
   };
 
   useEffect(() => {
-    if (user) loadDashboard();
+    if (user && (user.role === 'host' || user.role === 'admin')) {
+      loadDashboard();
+    } else {
+      setLoading(false);
+    }
   }, [user]);
 
-  if (!user) {
+  if (!user || (user.role !== 'host' && user.role !== 'admin')) {
     return (
-      <div className="max-w-md mx-auto my-16 p-8 bg-vistaro-surface border border-vistaro-border rounded-3xl text-center space-y-4 shadow-sm text-vistaro-primary">
-        <LayoutDashboard className="w-10 h-10 text-vistaro-accent mx-auto" />
-        <h2 className="text-display-h2 text-vistaro-primary">Host Dashboard</h2>
-        <p className="text-body text-vistaro-muted">Sign in to view your properties, track earnings, and manage reservations.</p>
-        <Link
-          to="/login"
-          className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-colors cursor-pointer"
-        >
-          Log In
-        </Link>
+      <div className="max-w-3xl mx-auto py-4 text-vistaro-primary">
+        <HostAccessGate title="Host Privileges Required for Dashboard" />
       </div>
     );
   }

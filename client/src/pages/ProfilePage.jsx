@@ -430,11 +430,13 @@ export default function ProfilePage() {
               <Home className="w-10 h-10 text-vistaro-muted mx-auto mb-2" />
               <h3 className="text-display-h3 text-base text-vistaro-primary">You haven't listed any spaces yet</h3>
               <p className="text-body-sm text-vistaro-muted max-w-sm mx-auto mt-1 mb-4">
-                {user.role === 'admin'
+                {user.role === 'admin' || user.role === 'host'
                   ? 'Publish and manage verified property listings across Vistaro.'
-                  : 'You do not manage any property listings.'}
+                  : user.hostRequestStatus === 'pending'
+                  ? 'Your host application is currently under administrator review.'
+                  : 'Request host privileges to list and manage your properties on Vistaro.'}
               </p>
-              {user.role === 'admin' ? (
+              {user.role === 'admin' || user.role === 'host' ? (
                 <Link
                   to="/listings/new"
                   className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-colors"
@@ -443,10 +445,10 @@ export default function ProfilePage() {
                 </Link>
               ) : (
                 <Link
-                  to="/"
-                  className="inline-block bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary text-cta py-2.5 px-6 rounded-full transition-colors"
+                  to="/listings/new"
+                  className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-colors"
                 >
-                  Explore Stays
+                  {user.hostRequestStatus === 'pending' ? 'View Application Status' : 'Request Host Access'}
                 </Link>
               )}
             </div>

@@ -313,7 +313,7 @@ export default function TravelPlanDetailPage() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-16 text-[#171719]">
+    <div className="w-full space-y-8 pb-16 text-vistaro-primary">
       
       {/* 1. Navigation & Breadcrumb */}
       <div className="flex items-center justify-between">

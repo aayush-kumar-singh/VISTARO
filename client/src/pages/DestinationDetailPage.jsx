@@ -183,7 +183,7 @@ export default function DestinationDetailPage() {
     : (destination.country || 'India');
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-12 pb-20 text-vistaro-primary transition-colors duration-200">
+    <div className="w-full space-y-12 pb-20 text-vistaro-primary transition-colors duration-200">
       {/* 1. Breadcrumbs Navigation */}
       <nav className="flex items-center gap-2 text-body-sm text-vistaro-muted pt-2">
         <Link to="/" className="hover:text-vistaro-primary transition-colors">

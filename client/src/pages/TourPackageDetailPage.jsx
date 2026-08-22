@@ -48,6 +48,7 @@ export default function TourPackageDetailPage() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   const handleReviewAdded = (newReview) => {
     setTourPackage((prev) => ({
@@ -176,7 +177,7 @@ export default function TourPackageDetailPage() {
       : null;
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-16 animate-fade-in text-vistaro-primary transition-colors duration-200">
+    <div className="w-full space-y-8 pb-16 animate-fade-in text-vistaro-primary transition-colors duration-200">
 
       {/* 1. Breadcrumbs & Back Nav */}
       <div className="flex flex-wrap items-center justify-between gap-4 text-body-sm">
@@ -555,7 +556,7 @@ export default function TourPackageDetailPage() {
             {/* Review Cards List */}
             {reviews.length > 0 ? (
               <div className="space-y-4">
-                {reviews.map((rev) => (
+                {(showAllReviews ? reviews : reviews.slice(0, 5)).map((rev) => (
                   <ReviewCard
                     key={rev._id}
                     review={rev}
@@ -565,6 +566,18 @@ export default function TourPackageDetailPage() {
                     onReplyUpdated={handleReplyUpdated}
                   />
                 ))}
+
+                {reviews.length > 5 && (
+                  <div className="pt-2 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowAllReviews(!showAllReviews)}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary text-body-sm font-semibold transition-colors duration-200 cursor-pointer shadow-xs"
+                    >
+                      {showAllReviews ? 'Show less' : `Show more (${reviews.length - 5} more)`}
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-8 text-center space-y-2">

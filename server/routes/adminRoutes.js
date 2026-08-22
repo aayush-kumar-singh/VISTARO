@@ -21,6 +21,13 @@ router.patch(
     wrapAsync(adminController.updateUserRole)
 );
 
+// PATCH /api/admin/users/:id/host-request — Approve or reject host access request
+router.patch(
+    "/users/:id/host-request",
+    validateObjectId("id"),
+    wrapAsync(adminController.handleHostRequest)
+);
+
 // DELETE /api/admin/users/:id — Admin delete user
 router.delete(
     "/users/:id",

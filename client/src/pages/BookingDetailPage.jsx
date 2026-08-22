@@ -161,7 +161,7 @@ export default function BookingDetailPage() {
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in text-vistaro-primary">
+    <div className="w-full space-y-8 pb-16 animate-fade-in text-vistaro-primary">
       {/* 1. Top Navigation Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-vistaro-border pb-4">
         <Link

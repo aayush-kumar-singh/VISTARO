@@ -72,6 +72,9 @@ module.exports.getAllUsers = async (req, res) => {
                 username: u.username,
                 email: u.email,
                 role: u.role || "user",
+                hostRequestStatus: u.hostRequestStatus || "none",
+                hostRequestReason: u.hostRequestReason || "",
+                hostRequestDate: u.hostRequestDate || null,
                 bio: u.bio || "",
                 createdAt: u.createdAt,
                 listingCount,
@@ -91,10 +94,10 @@ module.exports.updateUserRole = async (req, res) => {
     const { id } = req.params;
     const { role } = req.body;
 
-    if (!["user", "admin"].includes(role)) {
+    if (!["user", "host", "admin"].includes(role)) {
         return res.status(400).json({
             success: false,
-            error: "Role must be either 'user' or 'admin'.",
+            error: "Role must be 'user', 'host', or 'admin'.",
         });
     }
 
@@ -109,9 +112,14 @@ module.exports.updateUserRole = async (req, res) => {
         }
     }
 
+    const updatePayload = { role };
+    if (role === "host" || role === "admin") {
+        updatePayload.hostRequestStatus = "approved";
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
         id,
-        { role },
+        updatePayload,
         { new: true }
     ).select("-hash -salt");
 
@@ -125,6 +133,63 @@ module.exports.updateUserRole = async (req, res) => {
     res.json({
         success: true,
         message: `User ${updatedUser.username} role updated to ${role}.`,
+        user: updatedUser,
+    });
+};
+
+// PATCH /api/admin/users/:id/host-request
+module.exports.handleHostRequest = async (req, res) => {
+    const { id } = req.params;
+    const { action } = req.body; // 'approve' | 'reject' | 'revoke'
+
+    if (!["approve", "reject", "revoke"].includes(action)) {
+        return res.status(400).json({
+            success: false,
+            error: "Action must be 'approve', 'reject', or 'revoke'.",
+        });
+    }
+
+    let updateFields = {};
+    if (action === "approve") {
+        updateFields = {
+            role: "host",
+            hostRequestStatus: "approved",
+        };
+    } else if (action === "reject") {
+        updateFields = {
+            hostRequestStatus: "rejected",
+        };
+    } else if (action === "revoke") {
+        updateFields = {
+            role: "user",
+            hostRequestStatus: "none",
+            hostRequestReason: "",
+            hostRequestDate: null,
+        };
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+        id,
+        updateFields,
+        { new: true }
+    ).select("-hash -salt");
+
+    if (!updatedUser) {
+        return res.status(404).json({
+            success: false,
+            error: "User not found.",
+        });
+    }
+
+    const actionText = action === "approve"
+        ? "approved and granted Host privileges"
+        : action === "reject"
+        ? "request rejected"
+        : "host privileges revoked";
+
+    res.json({
+        success: true,
+        message: `User ${updatedUser.username} has been ${actionText}.`,
         user: updatedUser,
     });
 };

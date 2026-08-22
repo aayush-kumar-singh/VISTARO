@@ -61,6 +61,11 @@ export default function HomePage() {
 
   const activeFilterCount = (minPrice ? 1 : 0) + (maxPrice ? 1 : 0);
 
+  useEffect(() => {
+    document.title = 'Explore Curated Stays & Retreats — Vistaro';
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   // Fetch Main Paginated Listings
   useEffect(() => {
     async function fetchListings() {

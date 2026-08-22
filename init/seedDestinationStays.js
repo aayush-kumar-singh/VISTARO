@@ -161,7 +161,7 @@ async function seedDestinationStays() {
         await mongoose.connect(dbUrl);
         console.log("[SeedStays] Connected.");
 
-        let demoUser = await User.findOne({ email: "demo@villavista.com" });
+        let demoUser = await User.findOne({ role: "admin" });
         if (!demoUser) {
             demoUser = await User.findOne();
         }

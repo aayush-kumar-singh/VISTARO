@@ -5,6 +5,7 @@ import { destinationsApi } from '../api/destinationsApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import { UploadCloud, X, ArrowLeft, Check } from 'lucide-react';
+import HostAccessGate from '../components/auth/HostAccessGate.jsx';
 
 const CATEGORIES = [
   'Beach',
@@ -61,18 +62,11 @@ export default function CreateListingPage() {
     loadDestinations();
   }, []);
 
-  // Require login
-  if (!user) {
+  // If not logged in or not host/admin, HostAccessGate handles the gatekeeping
+  if (!user || (user.role !== 'host' && user.role !== 'admin')) {
     return (
-      <div className="max-w-md mx-auto my-16 p-8 bg-vistaro-surface border border-vistaro-border rounded-3xl text-center space-y-4 shadow-sm text-vistaro-primary">
-        <h2 className="text-display-h2 text-vistaro-primary">Sign in to list your stay</h2>
-        <p className="text-body text-vistaro-muted">You need to be logged into your Vistaro account to create and manage listings.</p>
-        <Link
-          to="/login"
-          className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-colors cursor-pointer"
-        >
-          Log In
-        </Link>
+      <div className="max-w-3xl mx-auto py-4 text-vistaro-primary">
+        <HostAccessGate title="Host Privileges Required to Create Listings" />
       </div>
     );
   }

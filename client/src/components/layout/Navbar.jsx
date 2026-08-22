@@ -80,7 +80,13 @@ export default function Navbar() {
 
         {/* 1. Left: Brand Logo & Explore */}
         <div className="flex items-center gap-6 shrink-0">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link
+            to="/"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="flex items-center gap-2 group cursor-pointer"
+          >
             {/* SVG Logo */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -108,14 +114,20 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/"
-            className={`hidden md:inline-flex items-center transition-colors ${location.pathname === '/' ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
+            to="/explore"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`hidden md:inline-flex items-center transition-colors ${location.pathname === '/explore' || location.pathname === '/listings' ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
           >
             Explore
           </Link>
 
           <Link
             to="/destinations"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             className={`hidden md:inline-flex items-center transition-colors ${location.pathname.startsWith('/destinations') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
           >
             Destinations
@@ -123,6 +135,9 @@ export default function Navbar() {
 
           <Link
             to="/tours"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             className={`hidden md:inline-flex items-center transition-colors ${location.pathname.startsWith('/tours') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
           >
             Tours
@@ -130,6 +145,9 @@ export default function Navbar() {
 
           <Link
             to="/experiences"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             className={`hidden md:inline-flex items-center transition-colors ${location.pathname.startsWith('/experiences') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
           >
             Experiences
@@ -507,8 +525,11 @@ export default function Navbar() {
               </div>
 
               <Link
-                to="/"
-                onClick={() => setIsUserMenuOpen(false)}
+                to="/explore"
+                onClick={() => {
+                  setIsUserMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
               >
                 <Compass className="w-5 h-5 text-vistaro-accent" />
@@ -517,7 +538,10 @@ export default function Navbar() {
 
               <Link
                 to="/destinations"
-                onClick={() => setIsUserMenuOpen(false)}
+                onClick={() => {
+                  setIsUserMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
               >
                 <div className="flex items-center gap-3">
@@ -531,7 +555,10 @@ export default function Navbar() {
 
               <Link
                 to="/tours"
-                onClick={() => setIsUserMenuOpen(false)}
+                onClick={() => {
+                  setIsUserMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
               >
                 <div className="flex items-center gap-3">
@@ -545,7 +572,10 @@ export default function Navbar() {
 
               <Link
                 to="/experiences"
-                onClick={() => setIsUserMenuOpen(false)}
+                onClick={() => {
+                  setIsUserMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
               >
                 <div className="flex items-center gap-3">

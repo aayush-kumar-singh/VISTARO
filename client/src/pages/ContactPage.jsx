@@ -117,7 +117,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-16 text-vistaro-primary transition-colors duration-200">
+    <div className="w-full space-y-8 pb-16 text-vistaro-primary transition-colors duration-200">
       
       {/* 1. Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-vistaro-border">

@@ -76,7 +76,7 @@ export default function TourPackagesPage() {
   });
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6 pb-16 text-vistaro-primary transition-colors duration-200">
+    <div className="w-full space-y-6 pb-16 text-vistaro-primary transition-colors duration-200">
 
       {/* 1. Clean Title Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-vistaro-border">

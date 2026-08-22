@@ -56,6 +56,9 @@ module.exports.signUpUser = async (req, res, next) => {
                 username: registeredUser.username,
                 email: registeredUser.email,
                 role: registeredUser.role || "user",
+                hostRequestStatus: registeredUser.hostRequestStatus || "none",
+                hostRequestReason: registeredUser.hostRequestReason || "",
+                hostRequestDate: registeredUser.hostRequestDate || null,
                 bio: registeredUser.bio || "",
                 wishlist: registeredUser.wishlist || [],
             };
@@ -87,6 +90,9 @@ module.exports.login = (req, res) => {
         username: req.user.username,
         email: req.user.email,
         role: req.user.role || "user",
+        hostRequestStatus: req.user.hostRequestStatus || "none",
+        hostRequestReason: req.user.hostRequestReason || "",
+        hostRequestDate: req.user.hostRequestDate || null,
         bio: req.user.bio || "",
         wishlist: req.user.wishlist || [],
     };
@@ -140,6 +146,9 @@ module.exports.getCurrentUser = async (req, res) => {
             username: req.user.username,
             email: req.user.email,
             role: req.user.role || "user",
+            hostRequestStatus: req.user.hostRequestStatus || "none",
+            hostRequestReason: req.user.hostRequestReason || "",
+            hostRequestDate: req.user.hostRequestDate || null,
             bio: req.user.bio || "",
             wishlist: req.user.wishlist || [],
             googleId: req.user.googleId || null,
@@ -205,6 +214,10 @@ module.exports.getProfile = async (req, res) => {
             _id: req.user._id,
             username: req.user.username,
             email: req.user.email,
+            role: req.user.role || "user",
+            hostRequestStatus: req.user.hostRequestStatus || "none",
+            hostRequestReason: req.user.hostRequestReason || "",
+            hostRequestDate: req.user.hostRequestDate || null,
             bio: req.user.bio || "",
             googleId: req.user.googleId || null,
         },
@@ -230,7 +243,48 @@ module.exports.updateProfile = async (req, res) => {
             _id: updatedUser._id,
             username: updatedUser.username,
             email: updatedUser.email,
+            role: updatedUser.role || "user",
+            hostRequestStatus: updatedUser.hostRequestStatus || "none",
+            hostRequestReason: updatedUser.hostRequestReason || "",
+            hostRequestDate: updatedUser.hostRequestDate || null,
             bio: updatedUser.bio,
+        },
+    });
+};
+
+module.exports.requestHostAccess = async (req, res) => {
+    const userId = req.user._id;
+    const reason = (req.body.reason || "").trim().slice(0, 500);
+
+    if (req.user.role === "host" || req.user.role === "admin") {
+        return res.status(400).json({
+            success: false,
+            error: "You already possess host or administrator privileges.",
+        });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+            hostRequestStatus: "pending",
+            hostRequestReason: reason,
+            hostRequestDate: new Date(),
+        },
+        { new: true }
+    ).select("-hash -salt");
+
+    res.json({
+        success: true,
+        message: "Your host access request has been submitted for administrator review.",
+        user: {
+            _id: updatedUser._id,
+            username: updatedUser.username,
+            email: updatedUser.email,
+            role: updatedUser.role || "user",
+            hostRequestStatus: updatedUser.hostRequestStatus,
+            hostRequestReason: updatedUser.hostRequestReason,
+            hostRequestDate: updatedUser.hostRequestDate,
+            bio: updatedUser.bio || "",
         },
     });
 };

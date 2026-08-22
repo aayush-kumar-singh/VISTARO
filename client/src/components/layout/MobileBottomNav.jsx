@@ -11,10 +11,10 @@ export default function MobileBottomNav() {
 
   const navItems = [
     {
-      to: '/',
+      to: '/explore',
       label: 'Explore',
       icon: Search,
-      isActive: location.pathname === '/' || location.pathname.startsWith('/listings') || location.pathname.startsWith('/search'),
+      isActive: location.pathname === '/explore' || location.pathname.startsWith('/listings') || location.pathname.startsWith('/search'),
     },
     {
       to: '/wishlist',

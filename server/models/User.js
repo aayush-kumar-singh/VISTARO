@@ -34,8 +34,23 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ["user", "admin"],
+        enum: ["user", "host", "admin"],
         default: "user",
+    },
+    hostRequestStatus: {
+        type: String,
+        enum: ["none", "pending", "approved", "rejected"],
+        default: "none",
+    },
+    hostRequestReason: {
+        type: String,
+        default: "",
+        maxlength: 500,
+        trim: true,
+    },
+    hostRequestDate: {
+        type: Date,
+        default: null,
     },
 }, { timestamps: true });
 

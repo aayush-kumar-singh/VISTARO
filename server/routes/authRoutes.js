@@ -24,10 +24,11 @@ router.get("/logout", authController.logout);
 // Current User session check
 router.get("/current-user", wrapAsync(authController.getCurrentUser));
 
-// User Profile
+// User Profile & Host Access
 router.get("/profile", isLoggedIn, wrapAsync(authController.getProfile));
 router.put("/profile", isLoggedIn, wrapAsync(authController.updateProfile));
 router.put("/change-password", isLoggedIn, wrapAsync(authController.changePassword));
+router.post("/request-host", isLoggedIn, wrapAsync(authController.requestHostAccess));
 
 // Google OAuth routes
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {

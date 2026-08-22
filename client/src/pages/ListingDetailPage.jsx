@@ -44,6 +44,7 @@ export default function ListingDetailPage() {
   const [similarListings, setSimilarListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAllReviews, setShowAllReviews] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [contactMessage, setContactMessage] = useState('');
@@ -211,7 +212,7 @@ export default function ListingDetailPage() {
       : null;
 
   return (
-    <div className="w-full max-w-[1180px] mx-auto space-y-6 text-vistaro-primary transition-colors duration-200">
+    <div className="w-full space-y-6 pb-16 text-vistaro-primary transition-colors duration-200">
 
       {/* 1. Breadcrumb Navigation */}
       <nav className="flex items-center gap-1.5 text-body-sm text-vistaro-muted">
@@ -405,17 +406,31 @@ export default function ListingDetailPage() {
 
             {/* Reviews List */}
             {reviews.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4">
-                {reviews.map((rev) => (
-                  <ReviewCard
-                    key={rev._id}
-                    review={rev}
-                    listingId={listing._id}
-                    listingOwnerId={typeof listing.owner === 'object' ? listing.owner?._id : listing.owner}
-                    onReviewDeleted={handleReviewDeleted}
-                    onReplyUpdated={handleReplyUpdated}
-                  />
-                ))}
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4">
+                  {(showAllReviews ? reviews : reviews.slice(0, 5)).map((rev) => (
+                    <ReviewCard
+                      key={rev._id}
+                      review={rev}
+                      listingId={listing._id}
+                      listingOwnerId={typeof listing.owner === 'object' ? listing.owner?._id : listing.owner}
+                      onReviewDeleted={handleReviewDeleted}
+                      onReplyUpdated={handleReplyUpdated}
+                    />
+                  ))}
+                </div>
+
+                {reviews.length > 5 && (
+                  <div className="pt-2 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowAllReviews(!showAllReviews)}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary text-body-sm font-semibold transition-colors duration-200 cursor-pointer shadow-xs"
+                    >
+                      {showAllReviews ? 'Show less' : `Show more (${reviews.length - 5} more)`}
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <p className="text-body-sm text-vistaro-muted italic">No reviews yet for this listing. Be the first to leave a review!</p>

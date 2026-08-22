@@ -865,9 +865,9 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Handle Role Toggle (Promote/Demote)
-  const handleToggleRole = async (targetUser) => {
-    const newRole = targetUser.role === 'admin' ? 'user' : 'admin';
+  // Handle Role Selection (User / Host / Admin)
+  const handleSelectRole = async (targetUser, newRole) => {
+    if (targetUser.role === newRole) return;
     const confirmMsg = `Are you sure you want to change @${targetUser.username}'s role to ${newRole.toUpperCase()}?`;
 
     if (!window.confirm(confirmMsg)) return;
@@ -877,13 +877,44 @@ export default function AdminDashboardPage() {
       const res = await adminApi.updateUserRole(targetUser._id, newRole);
       showSuccess(res.message || `User role updated to ${newRole}`);
       setUsersList((prev) =>
-        prev.map((u) => (u._id === targetUser._id ? { ...u, role: newRole } : u))
+        prev.map((u) => (u._id === targetUser._id ? { ...u, role: newRole, hostRequestStatus: (newRole === 'host' || newRole === 'admin') ? 'approved' : u.hostRequestStatus } : u))
       );
     } catch (err) {
-      showError(err.message || 'Failed to update user role.');
+      showError(err.response?.data?.error || err.message || 'Failed to update user role.');
     } finally {
       setActionLoading(false);
     }
+  };
+
+  // Handle Host Request Approval / Rejection
+  const handleHostApproval = async (targetUser, action) => {
+    try {
+      setActionLoading(true);
+      const res = await adminApi.handleHostRequest(targetUser._id, action);
+      showSuccess(res.message || `Host request ${action}ed.`);
+      setUsersList((prev) =>
+        prev.map((u) => {
+          if (u._id === targetUser._id) {
+            return {
+              ...u,
+              role: action === 'approve' ? 'host' : action === 'revoke' ? 'user' : u.role,
+              hostRequestStatus: action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'none',
+            };
+          }
+          return u;
+        })
+      );
+    } catch (err) {
+      showError(err.response?.data?.error || err.message || 'Failed to update host request.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Handle Role Toggle (Promote/Demote)
+  const handleToggleRole = async (targetUser) => {
+    const newRole = targetUser.role === 'admin' ? 'user' : 'admin';
+    await handleSelectRole(targetUser, newRole);
   };
 
   // Handle Deletions (Listing or User)
@@ -2108,106 +2139,187 @@ export default function AdminDashboardPage() {
 
       {/* TAB 4: USER MANAGEMENT */}
       {activeTab === 'users' && (
-        <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-vistaro-border">
-            <div>
-              <h3 className="font-bold text-base text-vistaro-primary">User Directory & Roles</h3>
-              <p className="text-xs text-vistaro-muted">Manage user accounts and grant/revoke administrator roles.</p>
-            </div>
+        <div className="space-y-6">
+          {/* Pending Host Applications Queue */}
+          {usersList.filter((u) => u.hostRequestStatus === 'pending').length > 0 && (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-6 shadow-xs space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-amber-500/20">
+                <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
+                  <Shield className="w-4 h-4" />
+                  <span>Pending Host Access Applications ({usersList.filter((u) => u.hostRequestStatus === 'pending').length})</span>
+                </div>
+                <span className="text-caption bg-amber-500/20 text-amber-500 px-2.5 py-0.5 rounded-full font-bold">
+                  Action Required
+                </span>
+              </div>
 
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-vistaro-muted absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search by username or email..."
-                value={userSearch}
-                onChange={(e) => setUserSearch(e.target.value)}
-                className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-56 sm:w-72"
-              />
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
-                  <th className="pb-3 font-semibold">User</th>
-                  <th className="pb-3 font-semibold">Email</th>
-                  <th className="pb-3 font-semibold">Joined Date</th>
-                  <th className="pb-3 font-semibold">Listings</th>
-                  <th className="pb-3 font-semibold">Bookings</th>
-                  <th className="pb-3 font-semibold">Current Role</th>
-                  <th className="pb-3 font-semibold text-right">Role Controls</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-vistaro-border">
-                {filteredUsers.map((u) => {
-                  const isCurrentAdmin = u._id === user?._id;
-
-                  return (
-                    <tr key={u._id} className="hover:bg-vistaro-secondary/50 transition-colors">
-                      <td className="py-3">
-                        <div className="flex items-center gap-2.5 font-bold text-vistaro-primary">
-                          <div className="w-8 h-8 rounded-full bg-vistaro-secondary text-vistaro-primary border border-vistaro-border flex items-center justify-center font-bold text-xs uppercase">
-                            {u.username?.charAt(0) || 'U'}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {usersList
+                  .filter((u) => u.hostRequestStatus === 'pending')
+                  .map((applicant) => (
+                    <div
+                      key={applicant._id}
+                      className="bg-vistaro-surface rounded-2xl border border-amber-500/30 p-4 flex flex-col justify-between gap-3 shadow-xs"
+                    >
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-body-sm text-vistaro-primary">
+                            @{applicant.username}
+                          </span>
+                          <span className="text-caption text-vistaro-muted">
+                            {applicant.email}
+                          </span>
+                        </div>
+                        {applicant.hostRequestReason ? (
+                          <p className="text-xs text-vistaro-secondary bg-vistaro-secondary p-2.5 rounded-xl border border-vistaro-border">
+                            <span className="font-semibold text-vistaro-primary">Application Note: </span>
+                            "{applicant.hostRequestReason}"
+                          </p>
+                        ) : (
+                          <p className="text-xs text-vistaro-muted italic">No specific note provided.</p>
+                        )}
+                        {applicant.hostRequestDate && (
+                          <div className="text-2xs text-vistaro-muted">
+                            Requested on: {new Date(applicant.hostRequestDate).toLocaleDateString()}
                           </div>
-                          <span>@{u.username}</span>
-                          {isCurrentAdmin && (
-                            <span className="text-caption bg-vistaro-secondary text-vistaro-accent border border-vistaro-border px-2 py-0.5 rounded-full font-bold">
-                              You
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="py-3 text-vistaro-secondary">{u.email}</td>
-                      <td className="py-3 text-vistaro-muted">
-                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}
-                      </td>
-                      <td className="py-3 font-semibold text-vistaro-primary">{u.listingCount || 0}</td>
-                      <td className="py-3 font-semibold text-vistaro-primary">{u.bookingCount || 0}</td>
-                      <td className="py-3">
-                        <span
-                          className={`px-2.5 py-1 rounded-full text-caption font-bold uppercase tracking-wider border border-vistaro-border ${
-                            u.role === 'admin'
-                              ? 'bg-vistaro-secondary text-vistaro-accent'
-                              : 'bg-vistaro-secondary text-vistaro-secondary'
-                          }`}
-                        >
-                          {u.role || 'user'}
-                        </span>
-                      </td>
-                      <td className="py-3 text-right">
-                        <div className="inline-flex items-center gap-2">
-                          <button
-                            type="button"
-                            disabled={actionLoading || isCurrentAdmin}
-                            onClick={() => handleToggleRole(u)}
-                            className={`px-3 py-1.5 rounded-xl text-cta transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
-                              u.role === 'admin'
-                                ? 'bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border'
-                                : 'bg-vistaro-accent hover:bg-vistaro-accent-hover text-white shadow-xs'
-                            }`}
-                          >
-                            {u.role === 'admin' ? 'Demote to User' : 'Promote to Admin'}
-                          </button>
+                        )}
+                      </div>
 
-                          {!isCurrentAdmin && (
-                            <button
-                              type="button"
-                              onClick={() => setDeleteModal({ type: 'user', id: u._id, name: `@${u.username}` })}
-                              className="p-1.5 text-vistaro-muted hover:text-vistaro-error hover:bg-vistaro-secondary rounded-lg transition-colors cursor-pointer"
-                              title="Delete user account"
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-vistaro-border">
+                        <button
+                          type="button"
+                          disabled={actionLoading}
+                          onClick={() => handleHostApproval(applicant, 'reject')}
+                          className="px-3 py-1.5 rounded-xl text-caption font-bold text-vistaro-error hover:bg-vistaro-error/10 border border-vistaro-error/20 transition-all cursor-pointer disabled:opacity-50"
+                        >
+                          Decline
+                        </button>
+                        <button
+                          type="button"
+                          disabled={actionLoading}
+                          onClick={() => handleHostApproval(applicant, 'approve')}
+                          className="px-4 py-1.5 rounded-xl text-caption font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                        >
+                          Approve Host Privileges
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
+          {/* User Directory Table */}
+          <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-vistaro-border">
+              <div>
+                <h3 className="font-bold text-base text-vistaro-primary">User Directory & Host Permissions</h3>
+                <p className="text-xs text-vistaro-muted">Manage member accounts and assign Host or Administrator privileges.</p>
+              </div>
+
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-vistaro-muted absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search by username or email..."
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
+                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-56 sm:w-72"
+                />
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
+                    <th className="pb-3 font-semibold">User</th>
+                    <th className="pb-3 font-semibold">Email</th>
+                    <th className="pb-3 font-semibold">Joined Date</th>
+                    <th className="pb-3 font-semibold">Listings</th>
+                    <th className="pb-3 font-semibold">Bookings</th>
+                    <th className="pb-3 font-semibold">Role & Status</th>
+                    <th className="pb-3 font-semibold text-right">Access Controls</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-vistaro-border">
+                  {filteredUsers.map((u) => {
+                    const isCurrentAdmin = u._id === user?._id;
+
+                    return (
+                      <tr key={u._id} className="hover:bg-vistaro-secondary/50 transition-colors">
+                        <td className="py-3">
+                          <div className="flex items-center gap-2.5 font-bold text-vistaro-primary">
+                            <div className="w-8 h-8 rounded-full bg-vistaro-secondary text-vistaro-primary border border-vistaro-border flex items-center justify-center font-bold text-xs uppercase">
+                              {u.username?.charAt(0) || 'U'}
+                            </div>
+                            <span>@{u.username}</span>
+                            {isCurrentAdmin && (
+                              <span className="text-caption bg-vistaro-secondary text-vistaro-accent border border-vistaro-border px-2 py-0.5 rounded-full font-bold">
+                                You
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-3 text-vistaro-secondary">{u.email}</td>
+                        <td className="py-3 text-vistaro-muted">
+                          {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}
+                        </td>
+                        <td className="py-3 font-semibold text-vistaro-primary">{u.listingCount || 0}</td>
+                        <td className="py-3 font-semibold text-vistaro-primary">{u.bookingCount || 0}</td>
+                        <td className="py-3">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span
+                              className={`px-2.5 py-0.5 rounded-full text-caption font-bold uppercase tracking-wider border border-vistaro-border ${
+                                u.role === 'admin'
+                                  ? 'bg-vistaro-secondary text-vistaro-accent'
+                                  : u.role === 'host'
+                                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                                  : 'bg-vistaro-secondary text-vistaro-secondary'
+                              }`}
                             >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                              {u.role || 'user'}
+                            </span>
+                            {u.hostRequestStatus === 'pending' && (
+                              <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                                Host Pending
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-3 text-right">
+                          <div className="inline-flex items-center gap-2">
+                            {/* Role Dropdown Selector */}
+                            <select
+                              disabled={actionLoading || isCurrentAdmin}
+                              value={u.role || 'user'}
+                              onChange={(e) => handleSelectRole(u, e.target.value)}
+                              className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-2.5 py-1 text-xs focus:outline-hidden focus:border-vistaro-accent cursor-pointer disabled:opacity-40"
+                              title="Assign user role"
+                            >
+                              <option value="user">User (Traveler)</option>
+                              <option value="host">Host (Verified)</option>
+                              <option value="admin">Admin (Full)</option>
+                            </select>
+
+                            {!isCurrentAdmin && (
+                              <button
+                                type="button"
+                                onClick={() => setDeleteModal({ type: 'user', id: u._id, name: `@${u.username}` })}
+                                className="p-1.5 text-vistaro-muted hover:text-vistaro-error hover:bg-vistaro-secondary rounded-lg transition-colors cursor-pointer"
+                                title="Delete user account"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

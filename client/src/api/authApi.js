@@ -35,4 +35,9 @@ export const authApi = {
     const res = await api.put('/auth/change-password', data);
     return res.data;
   },
+
+  requestHostAccess: async (data) => {
+    const res = await api.post('/auth/request-host', data);
+    return res.data;
+  },
 };

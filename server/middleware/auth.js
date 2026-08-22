@@ -42,6 +42,22 @@ module.exports.isAdmin = (req, res, next) => {
     next();
 };
 
+module.exports.isHostOrAdmin = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({
+            success: false,
+            error: "Please log in to continue.",
+        });
+    }
+    if (!req.user || !["host", "admin"].includes(req.user.role)) {
+        return res.status(403).json({
+            success: false,
+            error: "Access denied. Host privileges required. Please request host access from an administrator.",
+        });
+    }
+    next();
+};
+
 module.exports.isOwner = async (req, res, next) => {
     try {
         const { id } = req.params;

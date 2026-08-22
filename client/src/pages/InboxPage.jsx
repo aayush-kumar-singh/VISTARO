@@ -29,8 +29,13 @@ export default function InboxPage() {
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState('');
 
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const selectedConvId = searchParams.get('conv') || '';
+
+  // Scroll to top on page mount to prevent sticky navbar clipping
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   // 1. Fetch all conversations
   useEffect(() => {
@@ -143,9 +148,11 @@ export default function InboxPage() {
     };
   }, [socket, activeConversation]);
 
-  // 4. Scroll to bottom smoothly
+  // 4. Scroll messages container to bottom smoothly
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages, loadingMessages]);
 
   const handleSelectConversation = (conv) => {
@@ -328,7 +335,7 @@ export default function InboxPage() {
             })()}
 
             {/* Messages Scroll Area */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-3">
+            <div ref={messagesContainerRef} className="flex-1 p-4 overflow-y-auto space-y-3">
               {loadingMessages ? (
                 <LoadingSpinner text="Loading thread..." />
               ) : messages.length === 0 ? (
@@ -365,7 +372,6 @@ export default function InboxPage() {
                     );
                   })
               )}
-              <div ref={messagesEndRef} />
             </div>
 
             {/* Error Banner if sending fails */}

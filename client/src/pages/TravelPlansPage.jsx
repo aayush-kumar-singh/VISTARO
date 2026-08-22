@@ -84,7 +84,7 @@ export default function TravelPlansPage() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-16 text-[#171719]">
+    <div className="w-full space-y-8 pb-16 text-vistaro-primary">
       
       {/* 1. Page Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#171719]/10">

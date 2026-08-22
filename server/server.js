@@ -42,8 +42,48 @@ const server = http.createServer(app);
 // Enable reverse proxy trust (Render / Heroku / AWS ELB)
 app.set("trust proxy", 1);
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB & Bootstrap Admin Account
+connectDB().then(async () => {
+    const adminUser = process.env.ADMIN_USERNAME;
+    const adminPass = process.env.ADMIN_PASSWORD;
+    const adminEmail = process.env.ADMIN_EMAIL || (adminUser ? `${adminUser.toLowerCase()}@vistaro.com` : null);
+
+    if (adminUser && adminPass) {
+        try {
+            let user = await User.findOne({
+                $or: [{ username: adminUser }, { email: adminEmail }]
+            });
+
+            if (!user) {
+                user = new User({
+                    username: adminUser,
+                    email: adminEmail,
+                    role: "admin",
+                });
+                await User.register(user, adminPass);
+                console.log(`[Admin Bootstrap] Created administrator account: @${adminUser}`);
+            } else {
+                let needsSave = false;
+                if (user.role !== "admin") {
+                    user.role = "admin";
+                    needsSave = true;
+                }
+                if (user.username !== adminUser) {
+                    user.username = adminUser;
+                    needsSave = true;
+                }
+                if (needsSave) {
+                    await user.save();
+                }
+                await user.setPassword(adminPass);
+                await user.save();
+                console.log(`[Admin Bootstrap] Synchronized administrator account: @${adminUser}`);
+            }
+        } catch (err) {
+            console.error("[Admin Bootstrap] Failed to bootstrap admin account:", err.message);
+        }
+    }
+});
 
 // --------------------------------------------------
 // CORS Configuration

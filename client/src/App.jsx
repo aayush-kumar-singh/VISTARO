@@ -10,8 +10,11 @@ import AdminRoute from './components/auth/AdminRoute.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import GuestRoute from './components/auth/GuestRoute.jsx';
 
-// Core entry page kept in primary bundle for instant Initial/Hero Load
-import HomePage from './pages/HomePage.jsx';
+// Core entry page: New minimal Curated Landing Page
+import LandingPage from './pages/LandingPage.jsx';
+
+// Existing full-catalog explore page (retains all filters, curated rows, stays catalog & pagination)
+const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 
 // Lazy-loaded routes for code-splitting and reduced bundle size
 const ListingDetailPage = lazy(() => import('./pages/ListingDetailPage.jsx'));
@@ -65,8 +68,9 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     {/* 1. Public Browsing Routes (100% Unrestricted) */}
-                    <Route index element={<HomePage />} />
-                    <Route path="listings" element={<Navigate to="/" replace />} />
+                    <Route index element={<LandingPage />} />
+                    <Route path="explore" element={<HomePage />} />
+                    <Route path="listings" element={<Navigate to="/explore" replace />} />
                     <Route path="listings/:id" element={<ListingDetailPage />} />
                     <Route path="search" element={<SearchResultsPage />} />
                     <Route path="category/:category" element={<CategoryPage />} />
@@ -178,6 +182,14 @@ export default function App() {
                     />
 
                     {/* 4. Host & Listing Management Routes (Host / Owner Access) */}
+                    <Route
+                      path="dashboard"
+                      element={
+                        <ProtectedRoute>
+                          <HostDashboardPage />
+                        </ProtectedRoute>
+                      }
+                    />
                     <Route
                       path="host/dashboard"
                       element={

@@ -31,7 +31,7 @@ export default function TourPackageCard({ pkg }) {
   };
 
   return (
-    <div className="group bg-vistaro-surface rounded-3xl overflow-hidden border border-vistaro-border hover:border-vistaro-muted hover:shadow-xl transition-all duration-300 flex flex-col h-full relative">
+    <div className="group bg-vistaro-surface rounded-3xl overflow-hidden border border-vistaro-border hover:border-vistaro-muted hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full relative">
 
       {/* 1. Card Cover Image & Badges */}
       <div className="relative aspect-4/3 overflow-hidden bg-vistaro-secondary">
@@ -39,6 +39,7 @@ export default function TourPackageCard({ pkg }) {
           src={coverUrl}
           alt={pkg.title}
           loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
@@ -51,16 +52,13 @@ export default function TourPackageCard({ pkg }) {
               <MapPin className="w-3 h-3 text-vistaro-accent" />
               {destinationName}
             </span>
-            {pkg.isFeatured && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/90 backdrop-blur-md text-white text-caption font-bold shadow-xs">
-                <Star className="w-3 h-3 fill-white" />
-                <span>Featured</span>
-              </span>
-            )}
             {pkg.isTrending && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-500/90 backdrop-blur-md text-white text-caption font-bold shadow-xs">
-                <Flame className="w-3 h-3 fill-white" />
-                <span>Trending</span>
+              <span
+                className="inline-flex items-center justify-center p-1.5 rounded-full bg-rose-500/90 backdrop-blur-md text-white shadow-xs"
+                title="Trending"
+                aria-label="Trending"
+              >
+                <Flame className="w-3.5 h-3.5 fill-white" />
               </span>
             )}
           </div>

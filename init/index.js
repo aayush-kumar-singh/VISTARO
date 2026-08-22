@@ -13,8 +13,12 @@ async function main() {
 }
 
 async function getOrCreateDemoUser() {
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@vistaro.com";
+    const adminUsername = process.env.ADMIN_USERNAME || "admin";
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
     let demoUser = await User.findOne({
-        email: "demo@villavista.com",
+        $or: [{ email: adminEmail }, { username: adminUsername }, { role: "admin" }],
     });
 
     if (demoUser) {
@@ -22,19 +26,24 @@ async function getOrCreateDemoUser() {
             demoUser.role = "admin";
             await demoUser.save();
         }
-        console.log("Demo user already exists (admin)");
+        console.log(`Admin user '${demoUser.username}' already exists.`);
         return demoUser;
     }
 
+    if (!adminPassword) {
+        console.warn("No admin password specified in .env. Skipping default admin creation.");
+        return null;
+    }
+
     demoUser = new User({
-        email: "demo@villavista.com",
-        username: "demo",
+        email: adminEmail,
+        username: adminUsername,
         role: "admin",
     });
 
-    await User.register(demoUser, "VillaVistaDemo123");
+    await User.register(demoUser, adminPassword);
 
-    console.log("Demo user created");
+    console.log(`Admin user '${adminUsername}' created successfully.`);
 
     return demoUser;
 }

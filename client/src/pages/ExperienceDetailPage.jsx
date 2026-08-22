@@ -49,6 +49,7 @@ export default function ExperienceDetailPage() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   const handleReviewAdded = (newReview) => {
     setExperience((prev) => ({
@@ -156,7 +157,7 @@ export default function ExperienceDetailPage() {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-20 animate-fade-in text-vistaro-primary transition-colors duration-200">
+    <div className="w-full space-y-8 pb-20 animate-fade-in text-vistaro-primary transition-colors duration-200">
 
       {/* 1. Top Breadcrumbs & Back Nav */}
       <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
@@ -435,17 +436,31 @@ export default function ExperienceDetailPage() {
                     </p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {reviews.map((rev) => (
-                      <ReviewCard
-                        key={rev._id}
-                        review={rev}
-                        experienceId={experience._id}
-                        creatorId={experience.createdBy?._id || experience.createdBy}
-                        onReviewDeleted={handleReviewDeleted}
-                        onReplyUpdated={handleReplyUpdated}
-                      />
-                    ))}
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {(showAllReviews ? reviews : reviews.slice(0, 5)).map((rev) => (
+                        <ReviewCard
+                          key={rev._id}
+                          review={rev}
+                          experienceId={experience._id}
+                          creatorId={experience.createdBy?._id || experience.createdBy}
+                          onReviewDeleted={handleReviewDeleted}
+                          onReplyUpdated={handleReplyUpdated}
+                        />
+                      ))}
+                    </div>
+
+                    {reviewCount > 5 && (
+                      <div className="pt-2 flex justify-center">
+                        <button
+                          type="button"
+                          onClick={() => setShowAllReviews(!showAllReviews)}
+                          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary text-body-sm font-semibold transition-colors duration-200 cursor-pointer shadow-xs"
+                        >
+                          {showAllReviews ? 'Show less' : `Show more (${reviewCount - 5} more)`}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
