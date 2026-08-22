@@ -96,6 +96,8 @@ const destinationSchema = new Schema(
 
 // Explicit unique index on slug for fast lookups
 destinationSchema.index({ slug: 1 }, { unique: true });
+destinationSchema.index({ isActive: 1, isFeatured: 1 });
+destinationSchema.index({ isActive: 1, isTrending: 1 });
 
 // Schema virtuals for flexible property naming (tagline -> shortTagline, description -> longDescription)
 destinationSchema.virtual("tagline").get(function () {

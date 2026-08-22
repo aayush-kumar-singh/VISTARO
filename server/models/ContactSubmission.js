@@ -61,5 +61,8 @@ const contactSubmissionSchema = new Schema(
     }
 );
 
+contactSubmissionSchema.index({ status: 1, createdAt: -1 });
+contactSubmissionSchema.index({ category: 1, createdAt: -1 });
+
 const ContactSubmission = mongoose.model("ContactSubmission", contactSubmissionSchema);
 module.exports = ContactSubmission;

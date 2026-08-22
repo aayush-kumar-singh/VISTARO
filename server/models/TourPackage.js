@@ -153,6 +153,10 @@ const tourPackageSchema = new Schema(
 
 // Unique index on slug
 tourPackageSchema.index({ slug: 1 }, { unique: true });
+tourPackageSchema.index({ destination: 1, isActive: 1 });
+tourPackageSchema.index({ isActive: 1, isFeatured: 1 });
+tourPackageSchema.index({ isActive: 1, isTrending: 1 });
+tourPackageSchema.index({ category: 1, isActive: 1 });
 
 // Schema virtuals for flexible property getters/setters
 tourPackageSchema.virtual("image").get(function () {

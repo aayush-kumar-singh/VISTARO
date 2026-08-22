@@ -102,6 +102,9 @@ const listingSchema = new Schema({
 }, { timestamps: true });
 
 listingSchema.index({ destination: 1 });
+listingSchema.index({ isFeatured: 1, createdAt: -1 });
+listingSchema.index({ isTrending: 1, createdAt: -1 });
+listingSchema.index({ category: 1, price: 1 });
 
 // Cascade delete reviews when a listing is removed
 listingSchema.post("findOneAndDelete", async (listing) => {

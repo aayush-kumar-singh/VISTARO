@@ -134,6 +134,10 @@ const experienceSchema = new Schema(
 
 // Unique index on slug
 experienceSchema.index({ slug: 1 }, { unique: true });
+experienceSchema.index({ destination: 1, isActive: 1 });
+experienceSchema.index({ isActive: 1, isFeatured: 1 });
+experienceSchema.index({ isActive: 1, isTrending: 1 });
+experienceSchema.index({ category: 1, isActive: 1 });
 
 // Schema virtuals for flexible property getters/setters
 experienceSchema.virtual("image").get(function () {
