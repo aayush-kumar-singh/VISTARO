@@ -3,6 +3,9 @@ const Booking = require("../models/Booking.js");
 const Listing = require("../models/Listing.js");
 const Message = require("../models/Message.js");
 
+const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+const USERNAME_REGEX = /^[a-zA-Z0-9_]+$/;
+
 module.exports.signUpUser = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
@@ -14,18 +17,49 @@ module.exports.signUpUser = async (req, res, next) => {
             });
         }
 
+        const trimmedUsername = username.trim();
+        const trimmedEmail = email.trim().toLowerCase();
+
+        if (trimmedUsername.length < 3 || trimmedUsername.length > 30) {
+            return res.status(400).json({
+                success: false,
+                error: "Username must be between 3 and 30 characters.",
+            });
+        }
+
+        if (!USERNAME_REGEX.test(trimmedUsername)) {
+            return res.status(400).json({
+                success: false,
+                error: "Username can only contain letters, numbers, and underscores.",
+            });
+        }
+
+        if (!EMAIL_REGEX.test(trimmedEmail)) {
+            return res.status(400).json({
+                success: false,
+                error: "Please enter a valid email address.",
+            });
+        }
+
+        if (typeof password !== "string" || password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                error: "Password must be at least 6 characters.",
+            });
+        }
+
         // Check if username or email already exists
         const existingUser = await User.findOne({
             $or: [
                 {
                     username: new RegExp(
-                        "^" + username.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$",
+                        "^" + trimmedUsername.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$",
                         "i"
                     ),
                 },
                 {
                     email: new RegExp(
-                        "^" + email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$",
+                        "^" + trimmedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$",
                         "i"
                     ),
                 },
@@ -41,8 +75,8 @@ module.exports.signUpUser = async (req, res, next) => {
 
         // Create new user
         const newUser = new User({
-            username: username.trim(),
-            email: email.trim().toLowerCase(),
+            username: trimmedUsername,
+            email: trimmedEmail,
         });
 
         const registeredUser = await User.register(newUser, password);

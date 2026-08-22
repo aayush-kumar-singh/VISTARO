@@ -252,7 +252,7 @@ export default function ListingDetailPage() {
         </div>
 
         {/* Actions buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Owner controls */}
           {isOwner && (
             <>

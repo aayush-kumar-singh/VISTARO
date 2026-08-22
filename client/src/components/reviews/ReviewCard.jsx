@@ -51,7 +51,15 @@ export default function ReviewCard({
 
   const handlePostReply = async (e) => {
     e.preventDefault();
-    if (!replyText.trim()) return;
+    const trimmed = replyText.trim();
+    if (!trimmed || trimmed.length < 3) {
+      showError('Host reply must be at least 3 characters.');
+      return;
+    }
+    if (trimmed.length > 1000) {
+      showError('Host reply cannot exceed 1,000 characters.');
+      return;
+    }
 
     try {
       setIsSubmittingReply(true);

@@ -280,7 +280,7 @@ export default function HomePage() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
                 {featuredStays.slice(0, 6).map((listing) => (
                   <ListingCard key={`featured-stay-${listing._id}`} listing={listing} />
                 ))}
@@ -340,7 +340,7 @@ export default function HomePage() {
                         Trending Stays
                       </h3>
                     )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
                       {trendingItems.stays.map((s) => (
                         <ListingCard key={`trend-stay-${s._id}`} listing={s} />
                       ))}
@@ -545,7 +545,7 @@ export default function HomePage() {
           {/* Listings Grid */}
           {listings.length > 0 && (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
                 {listings.map((listing) => (
                   <ListingCard key={listing._id} listing={listing} />
                 ))}

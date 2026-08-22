@@ -28,12 +28,12 @@ const extension = (joi) => ({
 const Joi = JoiBase.extend(extension);
 
 const listingSchema = Joi.object({
-    title: Joi.string().escapeHTML().required(),
-    description: Joi.string().escapeHTML().required(),
-    location: Joi.string().escapeHTML().required(),
-    price: Joi.number().min(0).required(),
-    country: Joi.string().escapeHTML().required(),
-    maxGuests: Joi.number().integer().min(1).optional(),
+    title: Joi.string().escapeHTML().min(3).max(150).required(),
+    description: Joi.string().escapeHTML().min(10).max(5000).required(),
+    location: Joi.string().escapeHTML().min(2).max(100).required(),
+    price: Joi.number().min(0).max(10000000).required(),
+    country: Joi.string().escapeHTML().min(2).max(100).required(),
+    maxGuests: Joi.number().integer().min(1).max(50).optional(),
     amenities: Joi.array().items(Joi.string().escapeHTML()).optional(),
     cancellationPolicy: Joi.string().valid("flexible", "moderate", "strict").optional(),
     destination: Joi.string().allow("", null).optional(),
@@ -50,17 +50,17 @@ const listingSchema = Joi.object({
 
 const reviewSchema = Joi.object({
     rating: Joi.number().integer().min(1).max(5).required(),
-    comment: Joi.string().trim().escapeHTML().required(),
+    comment: Joi.string().trim().escapeHTML().min(5).max(2000).required(),
 }).unknown(true);
 
 const reviewReplySchema = Joi.object({
-    comment: Joi.string().trim().escapeHTML().required(),
+    comment: Joi.string().trim().escapeHTML().min(3).max(1000).required(),
 }).unknown(true);
 
 const bookingSchema = Joi.object({
     checkIn: Joi.date().iso().required(),
     checkOut: Joi.date().iso().greater(Joi.ref("checkIn")).required(),
-    guests: Joi.number().integer().min(1).optional(),
+    guests: Joi.number().integer().min(1).max(50).optional(),
 }).unknown(true);
 
 module.exports.validateListing = (req, res, next) => {

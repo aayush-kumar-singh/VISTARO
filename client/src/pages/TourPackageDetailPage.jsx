@@ -200,7 +200,7 @@ export default function TourPackageDetailPage() {
           <span className="text-vistaro-primary font-bold truncate max-w-xs">{tourPackage.title}</span>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => {

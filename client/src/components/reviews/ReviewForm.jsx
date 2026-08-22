@@ -38,8 +38,13 @@ export default function ReviewForm({ listingId, packageId, experienceId, onRevie
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!comment.trim()) {
-      showError('Please write a comment for your review.');
+    const trimmed = comment.trim();
+    if (!trimmed || trimmed.length < 5) {
+      showError('Review comment must be at least 5 characters.');
+      return;
+    }
+    if (trimmed.length > 2000) {
+      showError('Review comment cannot exceed 2,000 characters.');
       return;
     }
 

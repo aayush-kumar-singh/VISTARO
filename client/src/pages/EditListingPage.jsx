@@ -55,45 +55,49 @@ export default function EditListingPage() {
 
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [listingData, destsData] = await Promise.all([
+        listingsApi.getListingById(id),
+        destinationsApi.getDestinations().catch(() => ({ destinations: [] }))
+      ]);
+
+      setDestinationsList(destsData.destinations || []);
+      const l = listingData.listing;
+
+      // Check ownership
+      const ownerId = typeof l.owner === 'object' ? l.owner._id : l.owner;
+      if (user && ownerId !== user._id && user.role !== 'admin') {
+        showError('You do not have permission to edit this listing.');
+        navigate(`/listings/${id}`);
+        return;
+      }
+
+      setTitle(l.title || '');
+      setDescription(l.description || '');
+      setCategory(l.category || 'Trending');
+      setDestination(l.destination?._id || l.destination || '');
+      setPrice(l.price?.toString() || '');
+      setMaxGuests(l.maxGuests?.toString() || '4');
+      setCancellationPolicy(l.cancellationPolicy || 'flexible');
+      setLocation(l.location || '');
+      setCountry(l.country || '');
+      setAmenities(l.amenities || []);
+      setExistingImages(l.images || (l.image?.url ? [l.image] : []));
+    } catch (err) {
+      const errMsg = err.response?.data?.error || err.message || 'Unable to load listing details.';
+      setError(errMsg);
+      showError(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        setLoading(true);
-        const [listingData, destsData] = await Promise.all([
-          listingsApi.getListingById(id),
-          destinationsApi.getDestinations().catch(() => ({ destinations: [] }))
-        ]);
-
-        setDestinationsList(destsData.destinations || []);
-        const l = listingData.listing;
-
-        // Check ownership
-        const ownerId = typeof l.owner === 'object' ? l.owner._id : l.owner;
-        if (user && ownerId !== user._id && user.role !== 'admin') {
-          showError('You do not have permission to edit this listing.');
-          navigate(`/listings/${id}`);
-          return;
-        }
-
-        setTitle(l.title || '');
-        setDescription(l.description || '');
-        setCategory(l.category || 'Trending');
-        setDestination(l.destination?._id || l.destination || '');
-        setPrice(l.price?.toString() || '');
-        setMaxGuests(l.maxGuests?.toString() || '4');
-        setCancellationPolicy(l.cancellationPolicy || 'flexible');
-        setLocation(l.location || '');
-        setCountry(l.country || '');
-        setAmenities(l.amenities || []);
-        setExistingImages(l.images || (l.image?.url ? [l.image] : []));
-      } catch (err) {
-        showError(err.message);
-        navigate('/');
-      } finally {
-        setLoading(false);
-      }
-    }
     loadData();
   }, [id, user]);
 
@@ -101,17 +105,59 @@ export default function EditListingPage() {
     return <LoadingSpinner fullScreen text="Loading listing editor..." />;
   }
 
+  if (error) {
+    return (
+      <div className="max-w-md mx-auto my-16 p-8 bg-vistaro-surface border border-vistaro-error/30 rounded-3xl text-center space-y-4 shadow-sm text-vistaro-primary animate-fade-in">
+        <div className="w-12 h-12 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto border border-vistaro-border">
+          <UploadCloud className="w-6 h-6" />
+        </div>
+        <h2 className="text-display-h2 text-xl text-vistaro-primary">Failed to Load Listing</h2>
+        <p className="text-body-sm text-vistaro-secondary">{error}</p>
+        <div className="pt-2 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={loadData}
+            className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-colors cursor-pointer shadow-xs"
+          >
+            Retry
+          </button>
+          <Link
+            to={id ? `/listings/${id}` : '/'}
+            className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-cta py-2.5 px-5 rounded-full transition-colors"
+          >
+            Back to Stay
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
   const handleNewFileChange = (e) => {
-    const files = Array.from(e.target.files);
+    const rawFiles = Array.from(e.target.files);
+
+    for (const file of rawFiles) {
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        showError(`"${file.name}" is not supported. Please upload JPEG, PNG, or WebP images.`);
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        showError(`"${file.name}" exceeds the 5MB size limit. Please upload a smaller image.`);
+        return;
+      }
+    }
+
     const activeExisting = existingImages.filter((img) => !deleteImages.includes(img.filename));
-    const totalCount = activeExisting.length + newFiles.length + files.length;
+    const totalCount = activeExisting.length + newFiles.length + rawFiles.length;
 
     if (totalCount > 5) {
       showError('You can have a maximum of 5 photos per listing.');
       return;
     }
 
-    const combined = [...newFiles, ...files];
+    const combined = [...newFiles, ...rawFiles];
     setNewFiles(combined);
     setNewPreviews(combined.map((f) => URL.createObjectURL(f)));
   };
@@ -139,6 +185,42 @@ export default function EditListingPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!title.trim() || title.trim().length < 3) {
+      showError('Listing title must be at least 3 characters.');
+      return;
+    }
+
+    if (!description.trim() || description.trim().length < 10) {
+      showError('Listing description must be at least 10 characters.');
+      return;
+    }
+
+    const numPrice = Number(price);
+    if (isNaN(numPrice) || numPrice < 0) {
+      showError('Please enter a valid price per night.');
+      return;
+    }
+    if (numPrice > 10000000) {
+      showError('Price per night cannot exceed ₹10,000,000.');
+      return;
+    }
+
+    const numGuests = Number(maxGuests);
+    if (isNaN(numGuests) || numGuests < 1 || numGuests > 50) {
+      showError('Maximum guests must be between 1 and 50.');
+      return;
+    }
+
+    if (!location.trim() || location.trim().length < 2) {
+      showError('Please enter a valid city or location.');
+      return;
+    }
+
+    if (!country.trim() || country.trim().length < 2) {
+      showError('Please enter a valid country.');
+      return;
+    }
+
     const activeExisting = existingImages.filter((img) => !deleteImages.includes(img.filename));
     if (activeExisting.length + newFiles.length === 0) {
       showError('Listing must have at least one photo.');
@@ -153,8 +235,8 @@ export default function EditListingPage() {
       formData.append('description', description.trim());
       formData.append('category', category);
       formData.append('destination', destination || '');
-      formData.append('price', price);
-      formData.append('maxGuests', maxGuests);
+      formData.append('price', numPrice);
+      formData.append('maxGuests', numGuests);
       formData.append('cancellationPolicy', cancellationPolicy);
       formData.append('location', location.trim());
       formData.append('country', country.trim());

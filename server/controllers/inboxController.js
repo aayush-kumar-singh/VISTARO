@@ -126,6 +126,13 @@ module.exports.sendMessage = async (req, res) => {
         });
     }
 
+    if (messageBody.length > 1000) {
+        return res.status(400).json({
+            success: false,
+            error: "Message cannot exceed 1,000 characters.",
+        });
+    }
+
     const conversation = await Conversation.findById(conversationId);
     if (!conversation) {
         return res.status(404).json({

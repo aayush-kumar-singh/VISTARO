@@ -52,7 +52,7 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
                 <div
                   key={idx}
                   onClick={() => openLightbox(actualIdx)}
-                  className="relative cursor-pointer overflow-hidden group h-[216px] bg-vistaro-secondary"
+                  className="relative cursor-pointer overflow-hidden group h-full min-h-0 bg-vistaro-secondary"
                 >
                   <img
                     src={img.url}

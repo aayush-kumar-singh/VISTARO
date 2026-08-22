@@ -129,6 +129,22 @@ export default function ProfilePage() {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
+
+    if (!currentPassword) {
+      showError('Please enter your current password.');
+      return;
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      showError('New password must be at least 6 characters.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      showError('New passwords do not match. Please re-type.');
+      return;
+    }
+
     try {
       setIsChangingPassword(true);
       const data = await authApi.changePassword({

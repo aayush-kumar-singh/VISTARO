@@ -90,8 +90,22 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
       return;
     }
 
+    const start = new Date(checkIn);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (start < today) {
+      showError('Check-in date cannot be in the past.');
+      return;
+    }
+
     if (nights <= 0) {
       showError('Check-out date must be after check-in date.');
+      return;
+    }
+
+    if (nights > 90) {
+      showError('Maximum stay duration is 90 nights.');
       return;
     }
 
@@ -181,7 +195,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
           <form onSubmit={handleOpenSummary} className="space-y-4">
             {/* Dates Input Box */}
             <div className="border border-vistaro-border rounded-2xl overflow-hidden focus-within:border-vistaro-accent transition-colors">
-              <div className="grid grid-cols-2 divide-x divide-vistaro-border">
+              <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-vistaro-border">
                 <div className="p-2.5 bg-vistaro-secondary/50">
                   <label className="block text-label text-vistaro-muted mb-0.5">
                     Check-in

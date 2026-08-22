@@ -110,7 +110,7 @@ export default function Navbar() {
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className={`hidden md:inline-flex items-center transition-colors ${location.pathname === '/explore' || location.pathname === '/listings' ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
+            className={`hidden lg:inline-flex items-center transition-colors ${location.pathname === '/explore' || location.pathname === '/listings' ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
           >
             Explore
           </Link>
@@ -120,7 +120,7 @@ export default function Navbar() {
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className={`hidden md:inline-flex items-center transition-colors ${location.pathname.startsWith('/destinations') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
+            className={`hidden xl:inline-flex items-center transition-colors ${location.pathname.startsWith('/destinations') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
           >
             Destinations
           </Link>
@@ -130,7 +130,7 @@ export default function Navbar() {
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className={`hidden md:inline-flex items-center transition-colors ${location.pathname.startsWith('/tours') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
+            className={`hidden xl:inline-flex items-center transition-colors ${location.pathname.startsWith('/tours') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
           >
             Tours
           </Link>
@@ -140,14 +140,14 @@ export default function Navbar() {
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className={`hidden md:inline-flex items-center transition-colors ${location.pathname.startsWith('/experiences') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
+            className={`hidden 2xl:inline-flex items-center transition-colors ${location.pathname.startsWith('/experiences') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
           >
             Experiences
           </Link>
         </div>
 
         {/* 2. Middle: Search Bar (Desktop & Tablet >= 768px) */}
-        <div className="hidden md:flex flex-1 max-w-md mx-auto">
+        <div className="hidden md:flex flex-1 max-w-xs md:max-w-sm lg:max-w-md mx-2 lg:mx-auto">
           <form
             onSubmit={handleSearchSubmit}
             className="w-full flex items-center bg-vistaro-surface border border-vistaro-border hover:border-vistaro-muted hover:shadow-md transition-all rounded-full py-1.5 pl-4 pr-1.5 shadow-xs"
@@ -171,7 +171,7 @@ export default function Navbar() {
         </div>
 
         {/* 3. Right: Nav actions & User Menu (Desktop) */}
-        <div className="hidden md:flex items-center gap-4 shrink-0">
+        <div className="hidden md:flex items-center gap-2.5 lg:gap-4 shrink-0">
 
           {user?.role === 'admin' && (
             <Link

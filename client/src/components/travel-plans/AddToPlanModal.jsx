@@ -19,6 +19,7 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedPlanId, setSelectedPlanId] = useState('');
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -28,38 +29,32 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
   const [newPlanTitle, setNewPlanTitle] = useState('');
   const [creatingPlan, setCreatingPlan] = useState(false);
 
+  const loadPlans = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await travelPlansApi.getPlans({ archived: 'false' });
+      const userPlans = data.plans || [];
+      setPlans(userPlans);
+      if (userPlans.length > 0 && !selectedPlanId) {
+        // Select first available plan that doesn't already have this item
+        const available = userPlans.find(
+          (p) => !p.items?.some((it) => it.itemId === item?._id || it.itemId?._id === item?._id)
+        );
+        if (available) {
+          setSelectedPlanId(available._id);
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || err.message || 'Failed to load travel plans.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!isOpen) return;
-
-    let isMounted = true;
-    async function loadPlans() {
-      try {
-        setLoading(true);
-        const data = await travelPlansApi.getPlans({ archived: 'false' });
-        if (isMounted) {
-          const userPlans = data.plans || [];
-          setPlans(userPlans);
-          if (userPlans.length > 0 && !selectedPlanId) {
-            // Select first available plan that doesn't already have this item
-            const available = userPlans.find(
-              (p) => !p.items?.some((it) => it.itemId === item?._id || it.itemId?._id === item?._id)
-            );
-            if (available) {
-              setSelectedPlanId(available._id);
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('Failed to load plans:', err);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-
     loadPlans();
-    return () => {
-      isMounted = false;
-    };
   }, [isOpen, item]);
 
   if (!isOpen || !item) return null;
@@ -175,6 +170,19 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
             <div className="py-12 text-center text-vistaro-muted space-y-2">
               <Loader2 className="w-6 h-6 animate-spin mx-auto text-vistaro-accent" />
               <p className="text-xs">Loading your travel plans...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-6 space-y-3 bg-red-500/10 rounded-2xl border border-vistaro-error/20 p-5">
+              <AlertCircle className="w-8 h-8 text-vistaro-error mx-auto" />
+              <h4 className="font-bold text-sm text-vistaro-primary">Unable to Load Plans</h4>
+              <p className="text-xs text-vistaro-muted">{error}</p>
+              <button
+                type="button"
+                onClick={loadPlans}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-vistaro-accent text-white text-xs font-semibold shadow-xs hover:bg-vistaro-accent-hover transition-colors cursor-pointer"
+              >
+                Try Again
+              </button>
             </div>
           ) : (
             <>

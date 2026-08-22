@@ -1031,7 +1031,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Action Button: Quick CTAs */}
-        <div className="relative z-10 shrink-0 flex flex-wrap gap-2">
+        <div className="relative z-10 shrink-0 flex flex-wrap gap-2 w-full sm:w-auto">
           <button
             type="button"
             onClick={openCreateDestinationModal}
@@ -1075,7 +1075,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* 2. Key Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
         
         {/* Metric 1: Total Revenue */}
         <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-5 shadow-xs flex items-center gap-4">
@@ -1504,15 +1504,15 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-vistaro-muted">Manage regional travel hubs, configure curation tags (Featured / Trending), and publish destination guides.</p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="relative">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-initial">
                 <Search className="w-3.5 h-3.5 text-vistaro-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Filter destinations..."
                   value={destinationSearch}
                   onChange={(e) => setDestinationSearch(e.target.value)}
-                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-48 sm:w-64"
+                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-full sm:w-48 md:w-64"
                 />
               </div>
 
@@ -1675,15 +1675,15 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-vistaro-muted">Create, publish, edit, or deactivate curated multi-day tour experiences.</p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="relative">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-initial">
                 <Search className="w-3.5 h-3.5 text-vistaro-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Filter packages..."
                   value={packageSearch}
                   onChange={(e) => setPackageSearch(e.target.value)}
-                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-48 sm:w-64"
+                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-full sm:w-48 md:w-64"
                 />
               </div>
 
@@ -1847,15 +1847,15 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-vistaro-muted">Create, publish, edit, or deactivate curated local immersion activities.</p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="relative">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-initial">
                 <Search className="w-3.5 h-3.5 text-vistaro-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Filter experiences..."
                   value={experienceSearch}
                   onChange={(e) => setExperienceSearch(e.target.value)}
-                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-48 sm:w-64"
+                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-full sm:w-48 md:w-64"
                 />
               </div>
 
@@ -2013,15 +2013,15 @@ export default function AdminDashboardPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="relative">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-initial">
                 <Search className="w-3.5 h-3.5 text-vistaro-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Search transfers..."
                   value={transferSearch}
                   onChange={(e) => setTransferSearch(e.target.value)}
-                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-48 sm:w-64"
+                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-full sm:w-48 md:w-64"
                 />
               </div>
 

@@ -7,15 +7,53 @@ export default function SignupPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    const errors = {};
+    const trimmedUser = username.trim();
+    const trimmedEmail = email.trim();
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    const userRegex = /^[a-zA-Z0-9_]+$/;
+
+    if (!trimmedUser) {
+      errors.username = 'Username is required.';
+    } else if (trimmedUser.length < 3 || trimmedUser.length > 30) {
+      errors.username = 'Username must be between 3 and 30 characters.';
+    } else if (!userRegex.test(trimmedUser)) {
+      errors.username = 'Username can only contain letters, numbers, and underscores.';
+    }
+
+    if (!trimmedEmail) {
+      errors.email = 'Email address is required.';
+    } else if (!emailRegex.test(trimmedEmail)) {
+      errors.email = 'Please enter a valid email address.';
+    }
+
+    if (!password) {
+      errors.password = 'Password is required.';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters.';
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
       setLoading(true);
-      await signup({ username, email, password });
+      await signup({
+        username: username.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+      });
       navigate('/', { replace: true });
     } catch (err) {
       // Handled by AuthContext
@@ -82,7 +120,7 @@ export default function SignupPage() {
         </div>
 
         {/* Signup Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
             <label className="block text-label text-vistaro-primary mb-1">
               Username
@@ -91,10 +129,18 @@ export default function SignupPage() {
               type="text"
               placeholder="Choose a username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              onChange={(e) => {
+                setUsername(e.target.value);
+                if (fieldErrors.username) {
+                  setFieldErrors((prev) => ({ ...prev, username: '' }));
+                }
+              }}
+              className={`w-full bg-vistaro-secondary border ${fieldErrors.username ? 'border-vistaro-error' : 'border-vistaro-border'} text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors`}
               required
             />
+            {fieldErrors.username && (
+              <p className="text-caption text-vistaro-error mt-1 ml-1">{fieldErrors.username}</p>
+            )}
           </div>
 
           <div>
@@ -105,10 +151,18 @@ export default function SignupPage() {
               type="email"
               placeholder="name@example.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (fieldErrors.email) {
+                  setFieldErrors((prev) => ({ ...prev, email: '' }));
+                }
+              }}
+              className={`w-full bg-vistaro-secondary border ${fieldErrors.email ? 'border-vistaro-error' : 'border-vistaro-border'} text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors`}
               required
             />
+            {fieldErrors.email && (
+              <p className="text-caption text-vistaro-error mt-1 ml-1">{fieldErrors.email}</p>
+            )}
           </div>
 
           <div>
@@ -119,11 +173,19 @@ export default function SignupPage() {
               type="password"
               placeholder="At least 6 characters"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (fieldErrors.password) {
+                  setFieldErrors((prev) => ({ ...prev, password: '' }));
+                }
+              }}
+              className={`w-full bg-vistaro-secondary border ${fieldErrors.password ? 'border-vistaro-error' : 'border-vistaro-border'} text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors`}
               required
               minLength={6}
             />
+            {fieldErrors.password && (
+              <p className="text-caption text-vistaro-error mt-1 ml-1">{fieldErrors.password}</p>
+            )}
           </div>
 
           <button

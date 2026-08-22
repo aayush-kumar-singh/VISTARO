@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
-const { isLoggedIn, validateObjectId } = require("../middleware/auth.js");
+const { isLoggedIn, isReviewAuthor, isHostOrAdmin, validateObjectId } = require("../middleware/auth.js");
 const { validateReview, validateReviewReply } = require("../middleware/validate.js");
 const { bookingLimiter, reviewLimiter, replyLimiter } = require("../middleware/rateLimiter.js");
 const tourPackageController = require("../controllers/tourPackageController.js");
@@ -36,6 +36,7 @@ router.delete(
     validateObjectId("id"),
     validateObjectId("reviewId"),
     isLoggedIn,
+    isReviewAuthor,
     wrapAsync(reviewController.deletePackageReview)
 );
 
@@ -45,6 +46,7 @@ router.post(
     validateObjectId("reviewId"),
     replyLimiter,
     isLoggedIn,
+    isHostOrAdmin,
     validateReviewReply,
     wrapAsync(reviewController.addPackageReviewReply)
 );
@@ -54,6 +56,7 @@ router.delete(
     validateObjectId("id"),
     validateObjectId("reviewId"),
     isLoggedIn,
+    isHostOrAdmin,
     wrapAsync(reviewController.deletePackageReviewReply)
 );
 

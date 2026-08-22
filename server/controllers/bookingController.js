@@ -42,10 +42,36 @@ module.exports.createBooking = async (req, res) => {
     const startDate = new Date(checkIn);
     const endDate = new Date(checkOut);
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (startDate < today) {
+        return res.status(400).json({
+            success: false,
+            error: "Check-in date cannot be in the past.",
+        });
+    }
+
     if (endDate <= startDate) {
         return res.status(400).json({
             success: false,
             error: "Checkout date must be after check-in date.",
+        });
+    }
+
+    const diffTime = Math.abs(endDate - startDate);
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (nights <= 0) {
+        return res.status(400).json({
+            success: false,
+            error: "Invalid date selection.",
+        });
+    }
+
+    if (nights > 90) {
+        return res.status(400).json({
+            success: false,
+            error: "Maximum stay duration is 90 nights.",
         });
     }
 
@@ -61,16 +87,6 @@ module.exports.createBooking = async (req, res) => {
         return res.status(400).json({
             success: false,
             error: "Selected dates are no longer available. Please choose different dates.",
-        });
-    }
-
-    const diffTime = Math.abs(endDate - startDate);
-    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (nights <= 0) {
-        return res.status(400).json({
-            success: false,
-            error: "Invalid date selection.",
         });
     }
 

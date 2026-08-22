@@ -337,9 +337,14 @@ module.exports.updateListing = async (req, res, next) => {
             listing.images = combined.slice(0, 5);
         }
 
-        if (listing.images && listing.images.length > 0) {
-            listing.image = listing.images[0];
+        if (!listing.images || listing.images.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: "A property listing must have at least one photo. Please upload a new image before deleting existing photos.",
+            });
         }
+
+        listing.image = listing.images[0];
 
         await listing.save();
 

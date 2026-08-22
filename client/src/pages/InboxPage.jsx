@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { inboxApi } from '../api/inboxApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -28,6 +28,7 @@ export default function InboxPage() {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState('');
+  const [error, setError] = useState(null);
 
   const messagesContainerRef = useRef(null);
   const selectedConvId = searchParams.get('conv') || '';
@@ -38,44 +39,48 @@ export default function InboxPage() {
   }, []);
 
   // 1. Fetch all conversations
-  useEffect(() => {
-    async function fetchConversations() {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      try {
-        setLoading(true);
-        const data = await inboxApi.getConversations();
-        const convList = data.conversations || [];
-        setConversations(convList);
-
-        if (selectedConvId) {
-          const found = convList.find((c) => c._id === selectedConvId);
-          if (found) {
-            setActiveConversation(found);
-          } else {
-            try {
-              const single = await inboxApi.getConversation(selectedConvId);
-              if (single.conversation) {
-                setActiveConversation(single.conversation);
-                setConversations((prev) => [single.conversation, ...prev]);
-              }
-            } catch (e) {
-              // Ignore if not found
-            }
-          }
-        } else if (convList.length > 0) {
-          setActiveConversation(convList[0]);
-        }
-      } catch (err) {
-        showError(err.message || 'Failed to load conversations.');
-      } finally {
-        setLoading(false);
-      }
+  const fetchConversations = useCallback(async () => {
+    if (!user) {
+      setLoading(false);
+      return;
     }
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await inboxApi.getConversations();
+      const convList = data.conversations || [];
+      setConversations(convList);
+
+      if (selectedConvId) {
+        const found = convList.find((c) => c._id === selectedConvId);
+        if (found) {
+          setActiveConversation(found);
+        } else {
+          try {
+            const single = await inboxApi.getConversation(selectedConvId);
+            if (single.conversation) {
+              setActiveConversation(single.conversation);
+              setConversations((prev) => [single.conversation, ...prev]);
+            }
+          } catch (e) {
+            // Ignore if not found
+          }
+        }
+      } else if (convList.length > 0) {
+        setActiveConversation(convList[0]);
+      }
+    } catch (err) {
+      const errMsg = err.response?.data?.error || err.message || 'Failed to load conversations.';
+      setError(errMsg);
+      showError(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, selectedConvId, showError]);
+
+  useEffect(() => {
     fetchConversations();
-  }, [user, selectedConvId]);
+  }, [fetchConversations]);
 
   // 2. Fetch messages when active conversation changes & join room
   useEffect(() => {
@@ -224,8 +229,35 @@ export default function InboxPage() {
     return <LoadingSpinner fullScreen text="Loading messages..." />;
   }
 
+  if (error) {
+    return (
+      <div className="bg-vistaro-surface border border-vistaro-error/30 rounded-3xl p-8 text-center space-y-4 max-w-md mx-auto my-12 shadow-sm text-vistaro-primary">
+        <div className="w-12 h-12 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto border border-vistaro-border">
+          <MessageSquare className="w-6 h-6" />
+        </div>
+        <h2 className="text-display-h2 text-xl text-vistaro-primary">Unable to Load Messages</h2>
+        <p className="text-body-sm text-vistaro-secondary">{error}</p>
+        <div className="pt-2 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={fetchConversations}
+            className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-colors cursor-pointer shadow-xs"
+          >
+            Retry Loading
+          </button>
+          <Link
+            to="/"
+            className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-cta py-2.5 px-5 rounded-full transition-colors"
+          >
+            Back to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-[calc(100vh-210px)] min-h-[520px] bg-vistaro-surface rounded-3xl border border-vistaro-border shadow-sm flex overflow-hidden text-vistaro-primary transition-colors duration-200">
+    <div className="w-full h-[calc(100dvh-200px)] md:h-[calc(100vh-210px)] min-h-[440px] md:min-h-[520px] mb-16 md:mb-0 bg-vistaro-surface rounded-3xl border border-vistaro-border shadow-sm flex overflow-hidden text-vistaro-primary transition-colors duration-200">
 
       {/* LEFT PANE: Conversations list */}
       <div className={`w-full md:w-80 lg:w-96 border-r border-vistaro-border flex flex-col ${activeConversation ? 'hidden md:flex' : 'flex'}`}>

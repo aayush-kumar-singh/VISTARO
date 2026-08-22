@@ -71,14 +71,29 @@ export default function CreateListingPage() {
     );
   }
 
+  const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length + selectedFiles.length > 5) {
+    const rawFiles = Array.from(e.target.files);
+
+    for (const file of rawFiles) {
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        showError(`"${file.name}" is not supported. Please upload JPEG, PNG, or WebP images.`);
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        showError(`"${file.name}" exceeds the 5MB size limit. Please upload a smaller image.`);
+        return;
+      }
+    }
+
+    if (rawFiles.length + selectedFiles.length > 5) {
       showError('You can upload a maximum of 5 photos per listing.');
       return;
     }
 
-    const combined = [...selectedFiles, ...files].slice(0, 5);
+    const combined = [...selectedFiles, ...rawFiles].slice(0, 5);
     setSelectedFiles(combined);
 
     const newPreviews = combined.map((file) => URL.createObjectURL(file));
@@ -101,6 +116,42 @@ export default function CreateListingPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!title.trim() || title.trim().length < 3) {
+      showError('Listing title must be at least 3 characters.');
+      return;
+    }
+
+    if (!description.trim() || description.trim().length < 10) {
+      showError('Listing description must be at least 10 characters.');
+      return;
+    }
+
+    const numPrice = Number(price);
+    if (isNaN(numPrice) || numPrice < 0) {
+      showError('Please enter a valid price per night.');
+      return;
+    }
+    if (numPrice > 10000000) {
+      showError('Price per night cannot exceed ₹10,000,000.');
+      return;
+    }
+
+    const numGuests = Number(maxGuests);
+    if (isNaN(numGuests) || numGuests < 1 || numGuests > 50) {
+      showError('Maximum guests must be between 1 and 50.');
+      return;
+    }
+
+    if (!location.trim() || location.trim().length < 2) {
+      showError('Please enter a valid city or location.');
+      return;
+    }
+
+    if (!country.trim() || country.trim().length < 2) {
+      showError('Please enter a valid country.');
+      return;
+    }
+
     if (selectedFiles.length === 0) {
       showError('Please upload at least one photo for your property.');
       return;
@@ -114,8 +165,8 @@ export default function CreateListingPage() {
       formData.append('description', description.trim());
       formData.append('category', category);
       formData.append('destination', destination);
-      formData.append('price', price);
-      formData.append('maxGuests', maxGuests);
+      formData.append('price', numPrice);
+      formData.append('maxGuests', numGuests);
       formData.append('cancellationPolicy', cancellationPolicy);
       formData.append('location', location.trim());
       formData.append('country', country.trim());
