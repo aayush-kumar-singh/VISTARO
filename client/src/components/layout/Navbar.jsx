@@ -429,11 +429,12 @@ export default function Navbar() {
           {/* Slide-over Drawer Panel */}
           <div
             ref={mobileDrawerRef}
-            className="relative ml-auto w-full max-w-sm bg-vistaro-surface h-full shadow-2xl flex flex-col z-10 overflow-y-auto border-l border-vistaro-border"
+            className="relative ml-auto w-full max-w-sm bg-vistaro-surface h-dvh max-h-screen shadow-2xl flex flex-col z-10 overflow-y-auto overscroll-y-contain border-l border-vistaro-border touch-pan-y"
+            style={{ WebkitOverflowScrolling: 'touch' }}
           >
 
             {/* Drawer Header */}
-            <div className="p-5 border-b border-vistaro-border flex items-center justify-between bg-vistaro-secondary">
+            <div className="p-5 border-b border-vistaro-border flex items-center justify-between bg-vistaro-secondary shrink-0">
               <Link
                 to="/"
                 onClick={() => setIsUserMenuOpen(false)}
@@ -456,10 +457,10 @@ export default function Navbar() {
             </div>
 
             {/* User Greeting / Auth Banner */}
-            <div className="p-5 border-b border-vistaro-border bg-vistaro-surface">
+            <div className="p-5 border-b border-vistaro-border bg-vistaro-surface shrink-0">
               {user ? (
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-semibold text-base shadow-xs">
+                  <div className="w-12 h-12 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-semibold text-base shadow-xs shrink-0">
                     {user.username.charAt(0).toUpperCase()}
                   </div>
                   <div className="min-w-0">
@@ -495,7 +496,7 @@ export default function Navbar() {
             </div>
 
             {/* Theme Toggle Section in Drawer */}
-            <div className="p-4 flex items-center justify-between border-b border-vistaro-border">
+            <div className="p-4 flex items-center justify-between border-b border-vistaro-border shrink-0">
               <span className="text-nav-link text-vistaro-primary">Theme Appearance</span>
               <button
                 type="button"
@@ -517,7 +518,7 @@ export default function Navbar() {
             </div>
 
             {/* Core Discovery Navigation Links */}
-            <div className="p-4 space-y-1 border-b border-vistaro-border">
+            <div className="p-4 space-y-1 border-b border-vistaro-border shrink-0">
               <div className="px-3 py-1 text-label text-vistaro-muted">
                 Discover Vistaro
               </div>
@@ -588,7 +589,7 @@ export default function Navbar() {
 
             {/* Authenticated Navigation Links */}
             {user && (
-              <div className="p-4 space-y-1 border-b border-vistaro-border">
+              <div className="p-4 space-y-1 border-b border-vistaro-border shrink-0">
                 <div className="px-3 py-1 text-label text-vistaro-muted">
                   My Account
                 </div>
@@ -683,7 +684,7 @@ export default function Navbar() {
             )}
 
             {/* Currency Selector Section */}
-            <div className="p-4 space-y-2 border-b border-vistaro-border">
+            <div className="p-4 space-y-2 border-b border-vistaro-border shrink-0">
               <div className="px-3 text-label text-vistaro-muted">
                 Display Currency
               </div>
@@ -707,11 +708,11 @@ export default function Navbar() {
 
             {/* Footer / Log Out */}
             {user && (
-              <div className="p-4 mt-auto">
+              <div className="p-4 mt-auto shrink-0 pb-20">
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl text-cta text-vistaro-error bg-vistaro-secondary hover:bg-vistaro-main transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl text-cta text-vistaro-error bg-vistaro-secondary hover:bg-vistaro-main transition-colors cursor-pointer border border-vistaro-border/60"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Log Out of Vistaro</span>

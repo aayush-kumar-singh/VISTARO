@@ -15,6 +15,7 @@ import {
   Settings,
   KeyRound,
   FileText,
+  LogOut,
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -198,14 +199,27 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {user.role === 'admin' && (
-          <Link
-            to="/admin"
-            className="inline-flex items-center justify-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-all shadow-xs shrink-0 cursor-pointer"
+        <div className="flex items-center gap-3 shrink-0 flex-wrap">
+          {user.role === 'admin' && (
+            <Link
+              to="/admin"
+              className="inline-flex items-center justify-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-5 rounded-full transition-all shadow-xs shrink-0 cursor-pointer"
+            >
+              Admin Console
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              logout();
+              navigate('/login');
+            }}
+            className="inline-flex items-center justify-center gap-2 bg-vistaro-surface hover:bg-red-500/10 text-vistaro-error border border-vistaro-border hover:border-red-500/30 text-cta py-2.5 px-5 rounded-full transition-all shadow-xs shrink-0 cursor-pointer"
           >
-            Admin Console
-          </Link>
-        )}
+            <LogOut className="w-4 h-4" />
+            <span>Log Out</span>
+          </button>
+        </div>
       </div>
 
       {/* 2. Navigation Pills */}
@@ -605,6 +619,30 @@ export default function ProfilePage() {
               </p>
             </div>
           )}
+
+          {/* Session Management / Log Out Card */}
+          <div className="bg-vistaro-surface rounded-3xl p-6 border border-vistaro-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h4 className="text-display-h3 text-base text-vistaro-primary flex items-center gap-2">
+                <LogOut className="w-4 h-4 text-vistaro-error" />
+                <span>Account Session</span>
+              </h4>
+              <p className="text-body-sm text-vistaro-muted mt-1">
+                Log out of your current session on this device.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                logout();
+                navigate('/login');
+              }}
+              className="inline-flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-vistaro-error border border-red-500/20 text-cta py-2.5 px-6 rounded-full transition-colors shrink-0 cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Log Out</span>
+            </button>
+          </div>
         </div>
       )}
 
