@@ -78,6 +78,17 @@ const destinationSchema = new Schema(
         isActive: {
             type: Boolean,
             default: true,
+            index: true,
+        },
+        isFeatured: {
+            type: Boolean,
+            default: false,
+            index: true,
+        },
+        isTrending: {
+            type: Boolean,
+            default: false,
+            index: true,
         },
     },
     { timestamps: true }

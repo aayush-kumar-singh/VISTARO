@@ -18,6 +18,14 @@ module.exports.index = async (req, res) => {
         filter.destination = destination;
     }
 
+    if (req.query.featured === "true" || req.query.isFeatured === "true") {
+        filter.isFeatured = true;
+    }
+
+    if (req.query.trending === "true" || req.query.isTrending === "true") {
+        filter.isTrending = true;
+    }
+
     if (minPrice || maxPrice) {
         filter.price = {};
         if (minPrice && !isNaN(Number(minPrice))) {

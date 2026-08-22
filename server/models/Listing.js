@@ -89,6 +89,16 @@ const listingSchema = new Schema({
         ],
         required: true,
     },
+    isFeatured: {
+        type: Boolean,
+        default: false,
+        index: true,
+    },
+    isTrending: {
+        type: Boolean,
+        default: false,
+        index: true,
+    },
 }, { timestamps: true });
 
 listingSchema.index({ destination: 1 });

@@ -38,9 +38,22 @@ module.exports.index = async (req, res) => {
         filter.category = req.query.category.trim();
     }
 
-    const experiences = await Experience.find(filter)
+    if (req.query.featured === "true" || req.query.isFeatured === "true") {
+        filter.isFeatured = true;
+    }
+    if (req.query.trending === "true" || req.query.isTrending === "true") {
+        filter.isTrending = true;
+    }
+
+    let query = Experience.find(filter)
         .populate("destination", "name slug state country shortTagline heroImage")
         .sort({ createdAt: -1 });
+
+    if (req.query.limit && !isNaN(Number(req.query.limit))) {
+        query = query.limit(Number(req.query.limit));
+    }
+
+    const experiences = await query;
 
     res.json({
         success: true,

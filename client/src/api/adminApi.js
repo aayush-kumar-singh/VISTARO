@@ -26,6 +26,11 @@ export const adminApi = {
     return res.data;
   },
 
+  updateListing: async (listingId, data) => {
+    const res = await client.patch(`/admin/listings/${listingId}`, { listing: data });
+    return res.data;
+  },
+
   // Tour Packages Management
   getTourPackages: async () => {
     const res = await client.get('/admin/tour-packages');

@@ -176,6 +176,38 @@ module.exports.deleteListingAdmin = async (req, res) => {
     });
 };
 
+// PATCH /api/admin/listings/:id — Update Listing (curation flags & fields)
+module.exports.updateListingAdmin = async (req, res) => {
+    const { id } = req.params;
+    const data = req.body.listing || req.body;
+
+    const listing = await Listing.findById(id);
+    if (!listing) {
+        return res.status(404).json({
+            success: false,
+            error: "Listing not found.",
+        });
+    }
+
+    if (typeof data.isFeatured === "boolean") listing.isFeatured = data.isFeatured;
+    if (typeof data.isTrending === "boolean") listing.isTrending = data.isTrending;
+    if (data.title !== undefined) listing.title = String(data.title).trim();
+    if (data.description !== undefined) listing.description = String(data.description).trim();
+    if (data.price !== undefined) listing.price = Number(data.price);
+    if (data.category !== undefined) listing.category = data.category;
+    if (data.location !== undefined) listing.location = String(data.location).trim();
+    if (data.country !== undefined) listing.country = String(data.country).trim();
+
+    const updated = await listing.save();
+    await updated.populate("owner", "username email role");
+
+    res.json({
+        success: true,
+        message: `Listing '${updated.title}' updated successfully.`,
+        listing: updated,
+    });
+};
+
 // DELETE /api/admin/users/:id
 module.exports.deleteUserAdmin = async (req, res) => {
     const { id } = req.params;
@@ -321,6 +353,8 @@ module.exports.updateDestinationAdmin = async (req, res) => {
     }
     if (data.coordinates !== undefined) destination.coordinates = data.coordinates;
     if (typeof data.isActive === "boolean") destination.isActive = data.isActive;
+    if (typeof data.isFeatured === "boolean") destination.isFeatured = data.isFeatured;
+    if (typeof data.isTrending === "boolean") destination.isTrending = data.isTrending;
 
     // Validate and save
     const updated = await destination.save();
@@ -632,6 +666,8 @@ module.exports.updateTourPackageAdmin = async (req, res) => {
         }
     }
     if (typeof data.isActive === "boolean") tourPackage.isActive = data.isActive;
+    if (typeof data.isFeatured === "boolean") tourPackage.isFeatured = data.isFeatured;
+    if (typeof data.isTrending === "boolean") tourPackage.isTrending = data.isTrending;
 
     const updated = await tourPackage.save();
     await updated.populate("destination", "name slug state country shortTagline heroImage");
@@ -911,6 +947,8 @@ module.exports.updateExperienceAdmin = async (req, res) => {
     }
     if (data.meetingPoint !== undefined) experience.meetingPoint = String(data.meetingPoint).trim();
     if (typeof data.isActive === "boolean") experience.isActive = data.isActive;
+    if (typeof data.isFeatured === "boolean") experience.isFeatured = data.isFeatured;
+    if (typeof data.isTrending === "boolean") experience.isTrending = data.isTrending;
 
     const updated = await experience.save();
     await updated.populate("destination", "name slug state country shortTagline heroImage");

@@ -86,3 +86,17 @@ module.exports.bookingLimiter = rateLimit({
     },
 });
 
+module.exports.contactLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 15,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: isTestEnv,
+    handler: (req, res) => {
+        res.status(429).json({
+            success: false,
+            error: "Too many support inquiries submitted. Please wait 15 minutes before sending another inquiry.",
+        });
+    },
+});
+

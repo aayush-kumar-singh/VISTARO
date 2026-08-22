@@ -33,9 +33,22 @@ module.exports.index = async (req, res) => {
         }
     }
 
-    const tourPackages = await TourPackage.find(filter)
+    if (req.query.featured === "true" || req.query.isFeatured === "true") {
+        filter.isFeatured = true;
+    }
+    if (req.query.trending === "true" || req.query.isTrending === "true") {
+        filter.isTrending = true;
+    }
+
+    let query = TourPackage.find(filter)
         .populate("destination", "name slug state country shortTagline heroImage")
         .sort({ createdAt: -1 });
+
+    if (req.query.limit && !isNaN(Number(req.query.limit))) {
+        query = query.limit(Number(req.query.limit));
+    }
+
+    const tourPackages = await query;
 
     res.json({
         success: true,

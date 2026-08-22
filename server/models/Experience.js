@@ -113,6 +113,16 @@ const experienceSchema = new Schema(
             default: true,
             index: true,
         },
+        isFeatured: {
+            type: Boolean,
+            default: false,
+            index: true,
+        },
+        isTrending: {
+            type: Boolean,
+            default: false,
+            index: true,
+        },
         createdBy: {
             type: Schema.Types.ObjectId,
             ref: "User",

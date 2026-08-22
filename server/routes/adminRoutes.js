@@ -28,6 +28,13 @@ router.delete(
     wrapAsync(adminController.deleteUserAdmin)
 );
 
+// PATCH /api/admin/listings/:id — Admin update listing (curation flags & fields)
+router.patch(
+    "/listings/:id",
+    validateObjectId("id"),
+    wrapAsync(adminController.updateListingAdmin)
+);
+
 // DELETE /api/admin/listings/:id — Admin delete listing
 router.delete(
     "/listings/:id",

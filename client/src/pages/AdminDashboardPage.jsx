@@ -26,6 +26,9 @@ import {
   Navigation,
   ToggleLeft,
   ToggleRight,
+  Star,
+  Flame,
+  MapPin,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -51,8 +54,26 @@ export default function AdminDashboardPage() {
   const [packageSearch, setPackageSearch] = useState('');
   const [experienceSearch, setExperienceSearch] = useState('');
   const [transferSearch, setTransferSearch] = useState('');
+  const [destinationSearch, setDestinationSearch] = useState('');
   const [userSearch, setUserSearch] = useState('');
   const [error, setError] = useState(null);
+
+  // Destination Modal State
+  const [destinationModal, setDestinationModal] = useState(null);
+  const [destinationForm, setDestinationForm] = useState({
+    name: '',
+    slug: '',
+    state: '',
+    country: 'India',
+    shortTagline: '',
+    longDescription: '',
+    heroImageUrl: '',
+    bestFor: '',
+    identityTags: '',
+    isFeatured: false,
+    isTrending: false,
+    isActive: true,
+  });
 
   // Experience Modal State
   const [experienceModal, setExperienceModal] = useState(null);
@@ -70,6 +91,8 @@ export default function AdminDashboardPage() {
     difficultyLevel: 'Easy',
     whatsIncluded: '',
     meetingPoint: '',
+    isFeatured: false,
+    isTrending: false,
     isActive: true,
   });
 
@@ -110,6 +133,8 @@ export default function AdminDashboardPage() {
     difficultyLevel: 'Moderate',
     inclusions: '',
     exclusions: '',
+    isFeatured: false,
+    isTrending: false,
     isActive: true,
   });
 
@@ -182,6 +207,8 @@ export default function AdminDashboardPage() {
       difficultyLevel: 'Easy',
       whatsIncluded: 'Certified local host guide\nEssential safety gear & permits\nRefreshments & tasting snacks',
       meetingPoint: 'Central Meeting Landmark',
+      isFeatured: false,
+      isTrending: false,
       isActive: true,
     });
     setExperienceModal({ mode: 'create' });
@@ -206,6 +233,8 @@ export default function AdminDashboardPage() {
       difficultyLevel: exp.difficultyLevel || 'Easy',
       whatsIncluded: includedStr,
       meetingPoint: exp.meetingPoint || '',
+      isFeatured: exp.isFeatured ?? false,
+      isTrending: exp.isTrending ?? false,
       isActive: exp.isActive !== false,
     });
     setExperienceModal({ mode: 'edit', id: exp._id });
@@ -237,6 +266,8 @@ export default function AdminDashboardPage() {
         difficultyLevel: experienceForm.difficultyLevel,
         whatsIncluded: experienceForm.whatsIncluded.split('\n').map(s => s.trim()).filter(Boolean),
         meetingPoint: experienceForm.meetingPoint.trim(),
+        isFeatured: Boolean(experienceForm.isFeatured),
+        isTrending: Boolean(experienceForm.isTrending),
         isActive: Boolean(experienceForm.isActive),
       };
 
@@ -248,13 +279,112 @@ export default function AdminDashboardPage() {
         const res = await adminApi.updateExperience(experienceModal.id, payload);
         showSuccess(res.message || 'Experience updated successfully!');
         setExperiencesList((prev) =>
-          prev.map((item) => (item._id === experienceModal.id ? res.experience : item))
+          prev.map((e) => (e._id === experienceModal.id ? res.experience : e))
         );
       }
 
       setExperienceModal(null);
     } catch (err) {
       showError(err.response?.data?.error || err.message || 'Failed to save experience.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Handle Destination Modal Open (Create / Edit)
+  const openCreateDestinationModal = () => {
+    setDestinationForm({
+      name: '',
+      slug: '',
+      state: '',
+      country: 'India',
+      shortTagline: '',
+      longDescription: '',
+      heroImageUrl: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
+      bestFor: 'Beaches, Nightlife, Heritage Stays, Water Sports',
+      identityTags: 'Coastal, Tropical, Verified Hosts, Scenic Views',
+      isFeatured: false,
+      isTrending: false,
+      isActive: true,
+    });
+    setDestinationModal({ mode: 'create' });
+  };
+
+  const openEditDestinationModal = (dest) => {
+    setDestinationForm({
+      name: dest.name || '',
+      slug: dest.slug || '',
+      state: dest.state || '',
+      country: dest.country || 'India',
+      shortTagline: dest.shortTagline || dest.tagline || '',
+      longDescription: dest.longDescription || dest.description || '',
+      heroImageUrl: dest.heroImage?.url || dest.image?.url || '',
+      bestFor: Array.isArray(dest.bestFor) ? dest.bestFor.join(', ') : dest.bestFor || '',
+      identityTags: Array.isArray(dest.identityTags) ? dest.identityTags.join(', ') : dest.identityTags || '',
+      isFeatured: dest.isFeatured ?? false,
+      isTrending: dest.isTrending ?? false,
+      isActive: dest.isActive !== false,
+    });
+    setDestinationModal({ mode: 'edit', id: dest._id });
+  };
+
+  const handleSaveDestination = async (e) => {
+    e.preventDefault();
+    if (!destinationForm.name.trim() || !destinationForm.shortTagline.trim() || !destinationForm.heroImageUrl.trim()) {
+      showError('Please provide a name, short tagline, and hero image URL.');
+      return;
+    }
+
+    try {
+      setActionLoading(true);
+      const payload = {
+        name: destinationForm.name.trim(),
+        slug: destinationForm.slug.trim() || destinationForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        state: destinationForm.state.trim(),
+        country: destinationForm.country.trim() || 'India',
+        shortTagline: destinationForm.shortTagline.trim(),
+        longDescription: destinationForm.longDescription.trim(),
+        heroImage: { url: destinationForm.heroImageUrl.trim(), filename: '' },
+        bestFor: destinationForm.bestFor.split(',').map(s => s.trim()).filter(Boolean),
+        identityTags: destinationForm.identityTags.split(',').map(s => s.trim()).filter(Boolean),
+        isFeatured: Boolean(destinationForm.isFeatured),
+        isTrending: Boolean(destinationForm.isTrending),
+        isActive: Boolean(destinationForm.isActive),
+      };
+
+      if (destinationModal.mode === 'create') {
+        const res = await adminApi.createDestination(payload);
+        showSuccess(res.message || 'Destination created successfully!');
+        setDestinationsList((prev) => [res.destination, ...prev]);
+      } else {
+        const res = await adminApi.updateDestination(destinationModal.id, payload);
+        showSuccess(res.message || 'Destination updated successfully!');
+        setDestinationsList((prev) =>
+          prev.map((d) => (d._id === destinationModal.id ? res.destination : d))
+        );
+      }
+      setDestinationModal(null);
+    } catch (err) {
+      showError(err.response?.data?.error || err.message || 'Failed to save destination.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleToggleDestinationActive = async (dest) => {
+    const action = dest.isActive !== false ? 'deactivate' : 'activate';
+    if (!window.confirm(`Are you sure you want to ${action} "${dest.name}"?`)) return;
+
+    try {
+      setActionLoading(true);
+      const nextActive = dest.isActive === false;
+      const res = await adminApi.updateDestination(dest._id, { isActive: nextActive });
+      showSuccess(res.message || `Destination ${nextActive ? 'activated' : 'deactivated'}.`);
+      setDestinationsList((prev) =>
+        prev.map((d) => (d._id === dest._id ? { ...d, isActive: nextActive } : d))
+      );
+    } catch (err) {
+      showError(err.response?.data?.error || err.message || 'Failed to update destination status.');
     } finally {
       setActionLoading(false);
     }
@@ -435,6 +565,8 @@ export default function AdminDashboardPage() {
         { dayNumber: 2, title: 'Regional Discovery & Highlights', description: 'Full-day guided excursion exploring iconic natural landmarks, heritage points, and local artisan spots.', activities: 'Guided sightseeing tour\nLocal cuisine tasting\nScenic photography' },
         { dayNumber: 3, title: 'Farewell & Departure', description: 'Morning leisure, breakfast at the stay, and private transfer to airport or onward journey.', activities: 'Breakfast at stay\nSouvenir shopping\nAirport drop-off' },
       ],
+      isFeatured: false,
+      isTrending: false,
       isActive: true,
     });
     setPackageModal({ mode: 'create' });
@@ -467,6 +599,8 @@ export default function AdminDashboardPage() {
       inclusions: Array.isArray(pkg.inclusions) ? pkg.inclusions.join('\n') : pkg.inclusions || '',
       exclusions: Array.isArray(pkg.exclusions) ? pkg.exclusions.join('\n') : pkg.exclusions || '',
       itinerary: rawItinerary,
+      isFeatured: pkg.isFeatured ?? false,
+      isTrending: pkg.isTrending ?? false,
       isActive: pkg.isActive ?? true,
     });
     setPackageModal({ mode: 'edit', id: pkg._id });
@@ -547,6 +681,8 @@ export default function AdminDashboardPage() {
         inclusions: packageForm.inclusions.split('\n').map(s => s.trim()).filter(Boolean),
         exclusions: packageForm.exclusions.split('\n').map(s => s.trim()).filter(Boolean),
         itinerary: parsedItinerary,
+        isFeatured: Boolean(packageForm.isFeatured),
+        isTrending: Boolean(packageForm.isTrending),
         isActive: Boolean(packageForm.isActive),
       };
 
@@ -594,6 +730,138 @@ export default function AdminDashboardPage() {
       showError(err.response?.data?.error || err.message || 'Failed to update tour package status.');
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  // Toggle Listing Curation (Featured / Trending)
+  const handleToggleListingFeatured = async (listing) => {
+    const nextVal = !listing.isFeatured;
+    try {
+      setRecentListings((prev) =>
+        prev.map((l) => (l._id === listing._id ? { ...l, isFeatured: nextVal } : l))
+      );
+      await adminApi.updateListing(listing._id, { isFeatured: nextVal });
+      showSuccess(`"${listing.title}" ${nextVal ? 'marked as Featured ⭐' : 'removed from Featured'}`);
+    } catch (err) {
+      setRecentListings((prev) =>
+        prev.map((l) => (l._id === listing._id ? { ...l, isFeatured: listing.isFeatured } : l))
+      );
+      showError(err.response?.data?.error || err.message || 'Failed to update curation.');
+    }
+  };
+
+  const handleToggleListingTrending = async (listing) => {
+    const nextVal = !listing.isTrending;
+    try {
+      setRecentListings((prev) =>
+        prev.map((l) => (l._id === listing._id ? { ...l, isTrending: nextVal } : l))
+      );
+      await adminApi.updateListing(listing._id, { isTrending: nextVal });
+      showSuccess(`"${listing.title}" ${nextVal ? 'marked as Trending 🔥' : 'removed from Trending'}`);
+    } catch (err) {
+      setRecentListings((prev) =>
+        prev.map((l) => (l._id === listing._id ? { ...l, isTrending: listing.isTrending } : l))
+      );
+      showError(err.response?.data?.error || err.message || 'Failed to update curation.');
+    }
+  };
+
+  // Toggle Tour Package Curation (Featured / Trending)
+  const handleTogglePackageFeatured = async (pkg) => {
+    const nextVal = !pkg.isFeatured;
+    try {
+      setTourPackagesList((prev) =>
+        prev.map((p) => (p._id === pkg._id ? { ...p, isFeatured: nextVal } : p))
+      );
+      await adminApi.updateTourPackage(pkg._id, { isFeatured: nextVal });
+      showSuccess(`"${pkg.title}" ${nextVal ? 'marked as Featured ⭐' : 'removed from Featured'}`);
+    } catch (err) {
+      setTourPackagesList((prev) =>
+        prev.map((p) => (p._id === pkg._id ? { ...p, isFeatured: pkg.isFeatured } : p))
+      );
+      showError(err.response?.data?.error || err.message || 'Failed to update curation.');
+    }
+  };
+
+  const handleTogglePackageTrending = async (pkg) => {
+    const nextVal = !pkg.isTrending;
+    try {
+      setTourPackagesList((prev) =>
+        prev.map((p) => (p._id === pkg._id ? { ...p, isTrending: nextVal } : p))
+      );
+      await adminApi.updateTourPackage(pkg._id, { isTrending: nextVal });
+      showSuccess(`"${pkg.title}" ${nextVal ? 'marked as Trending 🔥' : 'removed from Trending'}`);
+    } catch (err) {
+      setTourPackagesList((prev) =>
+        prev.map((p) => (p._id === pkg._id ? { ...p, isTrending: pkg.isTrending } : p))
+      );
+      showError(err.response?.data?.error || err.message || 'Failed to update curation.');
+    }
+  };
+
+  // Toggle Experience Curation (Featured / Trending)
+  const handleToggleExperienceFeatured = async (exp) => {
+    const nextVal = !exp.isFeatured;
+    try {
+      setExperiencesList((prev) =>
+        prev.map((e) => (e._id === exp._id ? { ...e, isFeatured: nextVal } : e))
+      );
+      await adminApi.updateExperience(exp._id, { isFeatured: nextVal });
+      showSuccess(`"${exp.title}" ${nextVal ? 'marked as Featured ⭐' : 'removed from Featured'}`);
+    } catch (err) {
+      setExperiencesList((prev) =>
+        prev.map((e) => (e._id === exp._id ? { ...e, isFeatured: exp.isFeatured } : e))
+      );
+      showError(err.response?.data?.error || err.message || 'Failed to update curation.');
+    }
+  };
+
+  const handleToggleExperienceTrending = async (exp) => {
+    const nextVal = !exp.isTrending;
+    try {
+      setExperiencesList((prev) =>
+        prev.map((e) => (e._id === exp._id ? { ...e, isTrending: nextVal } : e))
+      );
+      await adminApi.updateExperience(exp._id, { isTrending: nextVal });
+      showSuccess(`"${exp.title}" ${nextVal ? 'marked as Trending 🔥' : 'removed from Trending'}`);
+    } catch (err) {
+      setExperiencesList((prev) =>
+        prev.map((e) => (e._id === exp._id ? { ...e, isTrending: exp.isTrending } : e))
+      );
+      showError(err.response?.data?.error || err.message || 'Failed to update curation.');
+    }
+  };
+
+  // Toggle Destination Curation (Featured / Trending)
+  const handleToggleDestinationFeatured = async (dest) => {
+    const nextVal = !dest.isFeatured;
+    try {
+      setDestinationsList((prev) =>
+        prev.map((d) => (d._id === dest._id ? { ...d, isFeatured: nextVal } : d))
+      );
+      await adminApi.updateDestination(dest._id, { isFeatured: nextVal });
+      showSuccess(`"${dest.name}" ${nextVal ? 'marked as Featured ⭐' : 'removed from Featured'}`);
+    } catch (err) {
+      setDestinationsList((prev) =>
+        prev.map((d) => (d._id === dest._id ? { ...d, isFeatured: dest.isFeatured } : d))
+      );
+      showError(err.response?.data?.error || err.message || 'Failed to update destination.');
+    }
+  };
+
+  const handleToggleDestinationTrending = async (dest) => {
+    const nextVal = !dest.isTrending;
+    try {
+      setDestinationsList((prev) =>
+        prev.map((d) => (d._id === dest._id ? { ...d, isTrending: nextVal } : d))
+      );
+      await adminApi.updateDestination(dest._id, { isTrending: nextVal });
+      showSuccess(`"${dest.name}" ${nextVal ? 'marked as Trending 🔥' : 'removed from Trending'}`);
+    } catch (err) {
+      setDestinationsList((prev) =>
+        prev.map((d) => (d._id === dest._id ? { ...d, isTrending: dest.isTrending } : d))
+      );
+      showError(err.response?.data?.error || err.message || 'Failed to update destination.');
     }
   };
 
@@ -733,6 +1001,14 @@ export default function AdminDashboardPage() {
 
         {/* Action Button: Quick CTAs */}
         <div className="relative z-10 shrink-0 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={openCreateDestinationModal}
+            className="bg-vistaro-surface hover:bg-vistaro-main text-vistaro-primary text-cta py-3 px-5 rounded-full transition-all border border-vistaro-border flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <MapPin className="w-4 h-4 text-sky-500" />
+            <span>New Destination</span>
+          </button>
           <button
             type="button"
             onClick={openCreateTransferModal}
@@ -890,6 +1166,18 @@ export default function AdminDashboardPage() {
           }`}
         >
           All Listings ({recentListings.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('destinations')}
+          className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+            activeTab === 'destinations'
+              ? 'bg-vistaro-accent text-white shadow-xs'
+              : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
+          }`}
+        >
+          <MapPin className="w-3.5 h-3.5 text-sky-500" />
+          <span>Destinations ({destinationsList.length})</span>
         </button>
         <button
           type="button"
@@ -1089,6 +1377,7 @@ export default function AdminDashboardPage() {
                   <th className="pb-3 font-semibold">Category</th>
                   <th className="pb-3 font-semibold">Price / Night</th>
                   <th className="pb-3 font-semibold">Host</th>
+                  <th className="pb-3 font-semibold text-center">Curation</th>
                   <th className="pb-3 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
@@ -1113,6 +1402,34 @@ export default function AdminDashboardPage() {
                     </td>
                     <td className="py-3 text-price text-sm text-vistaro-primary">{formatPrice(listing.price)}</td>
                     <td className="py-3 text-vistaro-secondary">@{listing.owner?.username || 'Host'}</td>
+                    <td className="py-3 text-center">
+                      <div className="inline-flex items-center gap-1.5 bg-vistaro-secondary px-2 py-1 rounded-full border border-vistaro-border">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleListingFeatured(listing)}
+                          className={`p-1 rounded-full transition-all cursor-pointer ${
+                            listing.isFeatured
+                              ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
+                              : 'text-vistaro-muted hover:text-amber-500'
+                          }`}
+                          title={listing.isFeatured ? 'Featured (Click to remove)' : 'Mark as Featured ⭐'}
+                        >
+                          <Star className={`w-3.5 h-3.5 ${listing.isFeatured ? 'fill-amber-500' : ''}`} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleListingTrending(listing)}
+                          className={`p-1 rounded-full transition-all cursor-pointer ${
+                            listing.isTrending
+                              ? 'bg-rose-500/20 text-rose-500 hover:bg-rose-500/30'
+                              : 'text-vistaro-muted hover:text-rose-500'
+                          }`}
+                          title={listing.isTrending ? 'Trending (Click to remove)' : 'Mark as Trending 🔥'}
+                        >
+                          <Flame className={`w-3.5 h-3.5 ${listing.isTrending ? 'fill-rose-500' : ''}`} />
+                        </button>
+                      </div>
+                    </td>
                     <td className="py-3 text-right">
                       <div className="inline-flex items-center gap-2">
                         <Link
@@ -1141,6 +1458,174 @@ export default function AdminDashboardPage() {
                     </td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: DESTINATIONS MANAGEMENT */}
+      {activeTab === 'destinations' && (
+        <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-6 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-vistaro-border">
+            <div>
+              <h3 className="font-bold text-base text-vistaro-primary">Curated Travel Destinations</h3>
+              <p className="text-xs text-vistaro-muted">Manage regional travel hubs, configure curation tags (Featured / Trending), and publish destination guides.</p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-vistaro-muted absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Filter destinations..."
+                  value={destinationSearch}
+                  onChange={(e) => setDestinationSearch(e.target.value)}
+                  className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full pl-8 pr-4 py-2 text-xs focus:outline-hidden focus:border-vistaro-accent w-48 sm:w-64"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={openCreateDestinationModal}
+                className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2 px-4 rounded-full transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer shadow-xs"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>New Destination</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
+                  <th className="pb-3 font-semibold">Destination Hub</th>
+                  <th className="pb-3 font-semibold">Region / State</th>
+                  <th className="pb-3 font-semibold">Tagline</th>
+                  <th className="pb-3 font-semibold text-center">Curation</th>
+                  <th className="pb-3 font-semibold">Status</th>
+                  <th className="pb-3 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-vistaro-border">
+                {destinationsList.filter((d) => 
+                  (d.name || '').toLowerCase().includes(destinationSearch.toLowerCase()) ||
+                  (d.state || '').toLowerCase().includes(destinationSearch.toLowerCase()) ||
+                  (d.shortTagline || '').toLowerCase().includes(destinationSearch.toLowerCase())
+                ).length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-8 text-center text-vistaro-muted">
+                      No destinations found matching your criteria. Click "New Destination" to create one.
+                    </td>
+                  </tr>
+                ) : (
+                  destinationsList
+                    .filter((d) => 
+                      (d.name || '').toLowerCase().includes(destinationSearch.toLowerCase()) ||
+                      (d.state || '').toLowerCase().includes(destinationSearch.toLowerCase()) ||
+                      (d.shortTagline || '').toLowerCase().includes(destinationSearch.toLowerCase())
+                    )
+                    .map((dest) => (
+                      <tr key={dest._id} className="hover:bg-vistaro-secondary/50 transition-colors">
+                        <td className="py-3">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={dest.heroImage?.url || dest.image?.url || 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=200&q=60'}
+                              alt={dest.name}
+                              className="w-10 h-10 rounded-xl object-cover shrink-0 bg-vistaro-surface"
+                            />
+                            <div className="min-w-0">
+                              <div className="font-semibold text-body-sm text-vistaro-primary truncate max-w-xs">{dest.name}</div>
+                              <div className="text-caption text-vistaro-muted font-mono">/{dest.slug}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3">
+                          <span className="bg-vistaro-secondary text-vistaro-secondary border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-caption">
+                            {dest.state || 'Region'}, {dest.country || 'India'}
+                          </span>
+                        </td>
+                        <td className="py-3 text-vistaro-secondary truncate max-w-xs">
+                          {dest.shortTagline || dest.tagline || '—'}
+                        </td>
+                        <td className="py-3 text-center">
+                          <div className="inline-flex items-center gap-1.5 bg-vistaro-secondary px-2 py-1 rounded-full border border-vistaro-border">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleDestinationFeatured(dest)}
+                              className={`p-1 rounded-full transition-all cursor-pointer ${
+                                dest.isFeatured
+                                  ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
+                                  : 'text-vistaro-muted hover:text-amber-500'
+                              }`}
+                              title={dest.isFeatured ? 'Featured (Click to remove)' : 'Mark as Featured ⭐'}
+                            >
+                              <Star className={`w-3.5 h-3.5 ${dest.isFeatured ? 'fill-amber-500' : ''}`} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleDestinationTrending(dest)}
+                              className={`p-1 rounded-full transition-all cursor-pointer ${
+                                dest.isTrending
+                                  ? 'bg-rose-500/20 text-rose-500 hover:bg-rose-500/30'
+                                  : 'text-vistaro-muted hover:text-rose-500'
+                              }`}
+                              title={dest.isTrending ? 'Trending (Click to remove)' : 'Mark as Trending 🔥'}
+                            >
+                              <Flame className={`w-3.5 h-3.5 ${dest.isTrending ? 'fill-rose-500' : ''}`} />
+                            </button>
+                          </div>
+                        </td>
+                        <td className="py-3">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-caption font-bold capitalize border border-vistaro-border ${
+                              dest.isActive !== false
+                                ? 'bg-vistaro-surface text-vistaro-success'
+                                : 'bg-vistaro-surface text-vistaro-muted'
+                            }`}
+                          >
+                            {dest.isActive !== false ? 'Active' : 'Inactive'}
+                          </span>
+                        </td>
+                        <td className="py-3 text-right">
+                          <div className="inline-flex items-center gap-2">
+                            <Link
+                              to={`/destinations/${dest.slug || dest._id}`}
+                              className="p-1.5 text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary rounded-lg transition-colors"
+                              title="View destination portal"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => openEditDestinationModal(dest)}
+                              className="p-1.5 text-vistaro-muted hover:text-vistaro-accent hover:bg-vistaro-secondary rounded-lg transition-colors cursor-pointer"
+                              title="Edit destination"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleDestinationActive(dest)}
+                              className={`p-1.5 rounded-lg transition-colors cursor-pointer hover:bg-vistaro-secondary ${
+                                dest.isActive !== false
+                                  ? 'text-vistaro-success hover:text-vistaro-rating'
+                                  : 'text-vistaro-muted hover:text-vistaro-success'
+                              }`}
+                              title={dest.isActive !== false ? 'Deactivate destination' : 'Activate destination'}
+                            >
+                              {dest.isActive !== false ? (
+                                <ToggleRight className="w-4 h-4 text-vistaro-success" />
+                              ) : (
+                                <ToggleLeft className="w-4 h-4 text-vistaro-muted" />
+                              )}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                )}
               </tbody>
             </table>
           </div>
@@ -1191,6 +1676,7 @@ export default function AdminDashboardPage() {
                   <th className="pb-3 font-semibold">Duration</th>
                   <th className="pb-3 font-semibold">Base Price</th>
                   <th className="pb-3 font-semibold">Difficulty</th>
+                  <th className="pb-3 font-semibold text-center">Curation</th>
                   <th className="pb-3 font-semibold">Status</th>
                   <th className="pb-3 font-semibold text-right">Actions</th>
                 </tr>
@@ -1198,7 +1684,7 @@ export default function AdminDashboardPage() {
               <tbody className="divide-y divide-vistaro-border">
                 {filteredTourPackages.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-vistaro-muted">
+                    <td colSpan={8} className="py-8 text-center text-vistaro-muted">
                       No tour packages found. Click "Create Package" to publish your first regional itinerary.
                     </td>
                   </tr>
@@ -1241,6 +1727,34 @@ export default function AdminDashboardPage() {
                         >
                           {pkg.difficultyLevel || 'Moderate'}
                         </span>
+                      </td>
+                      <td className="py-3 text-center">
+                        <div className="inline-flex items-center gap-1.5 bg-vistaro-secondary px-2 py-1 rounded-full border border-vistaro-border">
+                          <button
+                            type="button"
+                            onClick={() => handleTogglePackageFeatured(pkg)}
+                            className={`p-1 rounded-full transition-all cursor-pointer ${
+                              pkg.isFeatured
+                                ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
+                                : 'text-vistaro-muted hover:text-amber-500'
+                            }`}
+                            title={pkg.isFeatured ? 'Featured (Click to remove)' : 'Mark as Featured ⭐'}
+                          >
+                            <Star className={`w-3.5 h-3.5 ${pkg.isFeatured ? 'fill-amber-500' : ''}`} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleTogglePackageTrending(pkg)}
+                            className={`p-1 rounded-full transition-all cursor-pointer ${
+                              pkg.isTrending
+                                ? 'bg-rose-500/20 text-rose-500 hover:bg-rose-500/30'
+                                : 'text-vistaro-muted hover:text-rose-500'
+                            }`}
+                            title={pkg.isTrending ? 'Trending (Click to remove)' : 'Mark as Trending 🔥'}
+                          >
+                            <Flame className={`w-3.5 h-3.5 ${pkg.isTrending ? 'fill-rose-500' : ''}`} />
+                          </button>
+                        </div>
                       </td>
                       <td className="py-3">
                         <span
@@ -1334,6 +1848,7 @@ export default function AdminDashboardPage() {
                   <th className="pb-3 font-semibold">Category</th>
                   <th className="pb-3 font-semibold">Duration</th>
                   <th className="pb-3 font-semibold">Base Price</th>
+                  <th className="pb-3 font-semibold text-center">Curation</th>
                   <th className="pb-3 font-semibold">Status</th>
                   <th className="pb-3 font-semibold text-right">Actions</th>
                 </tr>
@@ -1341,7 +1856,7 @@ export default function AdminDashboardPage() {
               <tbody className="divide-y divide-vistaro-border">
                 {filteredExperiences.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-vistaro-muted">
+                    <td colSpan={8} className="py-8 text-center text-vistaro-muted">
                       No experiences found. Click "Create Experience" to publish your first local host activity.
                     </td>
                   </tr>
@@ -1376,6 +1891,34 @@ export default function AdminDashboardPage() {
                       </td>
                       <td className="py-3 text-price text-sm text-vistaro-primary">
                         {formatPrice(exp.price?.basePrice ?? exp.basePrice ?? 0)}
+                      </td>
+                      <td className="py-3 text-center">
+                        <div className="inline-flex items-center gap-1.5 bg-vistaro-secondary px-2 py-1 rounded-full border border-vistaro-border">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleExperienceFeatured(exp)}
+                            className={`p-1 rounded-full transition-all cursor-pointer ${
+                              exp.isFeatured
+                                ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
+                                : 'text-vistaro-muted hover:text-amber-500'
+                            }`}
+                            title={exp.isFeatured ? 'Featured (Click to remove)' : 'Mark as Featured ⭐'}
+                          >
+                            <Star className={`w-3.5 h-3.5 ${exp.isFeatured ? 'fill-amber-500' : ''}`} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleExperienceTrending(exp)}
+                            className={`p-1 rounded-full transition-all cursor-pointer ${
+                              exp.isTrending
+                                ? 'bg-rose-500/20 text-rose-500 hover:bg-rose-500/30'
+                                : 'text-vistaro-muted hover:text-rose-500'
+                            }`}
+                            title={exp.isTrending ? 'Trending (Click to remove)' : 'Mark as Trending 🔥'}
+                          >
+                            <Flame className={`w-3.5 h-3.5 ${exp.isTrending ? 'fill-rose-500' : ''}`} />
+                          </button>
+                        </div>
                       </td>
                       <td className="py-3">
                         <span
@@ -2034,17 +2577,42 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Active Toggle */}
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="packageIsActive"
-                  checked={packageForm.isActive}
-                  onChange={(e) => setPackageForm({ ...packageForm, isActive: e.target.checked })}
-                  className="w-4 h-4 text-vistaro-accent rounded border-vistaro-border focus:ring-vistaro-accent cursor-pointer"
-                />
-                <label htmlFor="packageIsActive" className="text-body-sm font-semibold text-vistaro-primary cursor-pointer">
-                  Publish package immediately (Active on public portal)
+              {/* Curation & Active Toggles */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={packageForm.isFeatured}
+                    onChange={(e) => setPackageForm({ ...packageForm, isFeatured: e.target.checked })}
+                    className="w-4 h-4 text-amber-500 rounded border-vistaro-border focus:ring-amber-500 cursor-pointer"
+                  />
+                  <div className="flex items-center gap-1.5 text-body-sm font-semibold text-vistaro-primary">
+                    <Star className="w-4 h-4 text-amber-500" />
+                    <span>Featured ⭐</span>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={packageForm.isTrending}
+                    onChange={(e) => setPackageForm({ ...packageForm, isTrending: e.target.checked })}
+                    className="w-4 h-4 text-rose-500 rounded border-vistaro-border focus:ring-rose-500 cursor-pointer"
+                  />
+                  <div className="flex items-center gap-1.5 text-body-sm font-semibold text-vistaro-primary">
+                    <Flame className="w-4 h-4 text-rose-500" />
+                    <span>Trending 🔥</span>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={packageForm.isActive}
+                    onChange={(e) => setPackageForm({ ...packageForm, isActive: e.target.checked })}
+                    className="w-4 h-4 text-vistaro-accent rounded border-vistaro-border focus:ring-vistaro-accent cursor-pointer"
+                  />
+                  <div className="text-body-sm font-semibold text-vistaro-primary">
+                    <span>Active on Portal</span>
+                  </div>
                 </label>
               </div>
 
@@ -2083,10 +2651,10 @@ export default function AdminDashboardPage() {
                 </div>
                 <div>
                   <h3 className="text-display-h3 text-lg text-vistaro-primary">
-                    {experienceModal.mode === 'create' ? 'Create Experience' : 'Edit Experience'}
+                    {experienceModal.mode === 'create' ? 'Create Host Experience' : 'Edit Experience'}
                   </h3>
                   <p className="text-body-sm text-vistaro-muted">
-                    {experienceModal.mode === 'create' ? 'Publish a new host-led immersive activity' : 'Update experience details, category, or pricing'}
+                    {experienceModal.mode === 'create' ? 'Publish a unique local immersion or guided activity' : 'Update experience itinerary, inclusions, or pricing'}
                   </p>
                 </div>
               </div>
@@ -2099,34 +2667,25 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveExperience} className="space-y-4 text-xs">
-              
-              {/* Title & Slug */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
+            <form onSubmit={handleSaveExperience} className="space-y-4">
+              {/* Title & Destination */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
                   <label className="block text-label text-vistaro-primary mb-1">Title *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Sunrise Yoga & Himalayan Tea"
+                    placeholder="e.g. Traditional Tea Tasting & Plantation Walk"
                     value={experienceForm.title}
-                    onChange={(e) => {
-                      const titleVal = e.target.value;
-                      setExperienceForm((prev) => ({
-                        ...prev,
-                        title: titleVal,
-                        slug: experienceModal.mode === 'create' ? titleVal.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : prev.slug,
-                      }));
-                    }}
-                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                    onChange={(e) => setExperienceForm({ ...experienceForm, title: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs font-medium focus:outline-hidden focus:border-vistaro-accent"
                   />
                 </div>
                 <div>
-                  <label className="block text-label text-vistaro-primary mb-1">URL Slug *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">URL Slug</label>
                   <input
                     type="text"
-                    required
-                    placeholder="e.g. sunrise-yoga-himalayan-tea"
+                    placeholder="tea-tasting-walk"
                     value={experienceForm.slug}
                     onChange={(e) => setExperienceForm({ ...experienceForm, slug: e.target.value })}
                     className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-hidden focus:border-vistaro-accent"
@@ -2134,20 +2693,20 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Destination & Category */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Destination Hub & Category */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-label text-vistaro-primary mb-1">Destination *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Destination Hub *</label>
                   <select
-                    required
                     value={experienceForm.destination}
                     onChange={(e) => setExperienceForm({ ...experienceForm, destination: e.target.value })}
                     className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+                    required
                   >
-                    <option value="" disabled>Select a Destination</option>
+                    <option value="">Select Destination Hub</option>
                     {destinationsList.map((d) => (
                       <option key={d._id} value={d._id}>
-                        {d.name} ({d.state || d.country})
+                        {d.name} ({d.state})
                       </option>
                     ))}
                   </select>
@@ -2216,7 +2775,7 @@ export default function AdminDashboardPage() {
               </div>
 
               {/* Cover Image URL & Meeting Point */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-label text-vistaro-primary mb-1">Cover Image URL *</label>
                   <input
@@ -2276,17 +2835,42 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Active Toggle */}
-              <div className="flex items-center gap-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="experienceIsActive"
-                  checked={experienceForm.isActive}
-                  onChange={(e) => setExperienceForm({ ...experienceForm, isActive: e.target.checked })}
-                  className="w-4 h-4 text-vistaro-accent rounded-sm border-vistaro-border focus:ring-vistaro-accent cursor-pointer"
-                />
-                <label htmlFor="experienceIsActive" className="text-body-sm font-semibold text-vistaro-primary cursor-pointer">
-                  Publish experience immediately (Active on public portal)
+              {/* Curation & Active Toggles */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={experienceForm.isFeatured}
+                    onChange={(e) => setExperienceForm({ ...experienceForm, isFeatured: e.target.checked })}
+                    className="w-4 h-4 text-amber-500 rounded border-vistaro-border focus:ring-amber-500 cursor-pointer"
+                  />
+                  <div className="flex items-center gap-1.5 text-body-sm font-semibold text-vistaro-primary">
+                    <Star className="w-4 h-4 text-amber-500" />
+                    <span>Featured ⭐</span>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={experienceForm.isTrending}
+                    onChange={(e) => setExperienceForm({ ...experienceForm, isTrending: e.target.checked })}
+                    className="w-4 h-4 text-rose-500 rounded border-vistaro-border focus:ring-rose-500 cursor-pointer"
+                  />
+                  <div className="flex items-center gap-1.5 text-body-sm font-semibold text-vistaro-primary">
+                    <Flame className="w-4 h-4 text-rose-500" />
+                    <span>Trending 🔥</span>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={experienceForm.isActive}
+                    onChange={(e) => setExperienceForm({ ...experienceForm, isActive: e.target.checked })}
+                    className="w-4 h-4 text-vistaro-accent rounded border-vistaro-border focus:ring-vistaro-accent cursor-pointer"
+                  />
+                  <div className="text-body-sm font-semibold text-vistaro-primary">
+                    <span>Active on Portal</span>
+                  </div>
                 </label>
               </div>
 
@@ -2562,6 +3146,206 @@ export default function AdminDashboardPage() {
                   className="px-6 py-2.5 rounded-full text-cta bg-vistaro-accent hover:bg-vistaro-accent-hover text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? 'Saving...' : transferModal.mode === 'create' ? 'Publish Transfer' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Destination Create / Edit Modal */}
+      {destinationModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
+          <div className="bg-vistaro-surface rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-vistaro-border my-8 max-h-[90vh] overflow-y-auto text-vistaro-primary">
+            <div className="flex items-center justify-between pb-4 border-b border-vistaro-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-vistaro-secondary text-sky-500 border border-vistaro-border flex items-center justify-center">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-display-h3 text-lg text-vistaro-primary">
+                    {destinationModal.mode === 'create' ? 'Create Travel Destination' : 'Edit Destination Hub'}
+                  </h3>
+                  <p className="text-body-sm text-vistaro-muted">
+                    {destinationModal.mode === 'create' ? 'Publish a new regional travel destination and gateway' : 'Update destination details, hero imagery, and curation flags'}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDestinationModal(null)}
+                className="p-2 text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary rounded-full transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveDestination} className="space-y-4">
+              {/* Name & Slug */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-label text-vistaro-primary mb-1">Destination Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Goa"
+                    value={destinationForm.name}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, name: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs font-medium focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">URL Slug</label>
+                  <input
+                    type="text"
+                    placeholder="goa"
+                    value={destinationForm.slug}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, slug: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+              </div>
+
+              {/* State & Country */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">State / Province</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Goa / Ladakh / Himachal Pradesh"
+                    value={destinationForm.state}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, state: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Country</label>
+                  <input
+                    type="text"
+                    value={destinationForm.country}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, country: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+              </div>
+
+              {/* Short Tagline */}
+              <div>
+                <label className="block text-label text-vistaro-primary mb-1">Short Tagline *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Golden Sands, Portuguese Architecture & Tropical Bliss"
+                  value={destinationForm.shortTagline}
+                  onChange={(e) => setDestinationForm({ ...destinationForm, shortTagline: e.target.value })}
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                />
+              </div>
+
+              {/* Hero Image URL */}
+              <div>
+                <label className="block text-label text-vistaro-primary mb-1">Hero Image URL *</label>
+                <input
+                  type="url"
+                  required
+                  placeholder="https://images.unsplash.com/photo-..."
+                  value={destinationForm.heroImageUrl}
+                  onChange={(e) => setDestinationForm({ ...destinationForm, heroImageUrl: e.target.value })}
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                />
+              </div>
+
+              {/* Best For & Identity Tags */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Best For (comma-separated)</label>
+                  <input
+                    type="text"
+                    placeholder="Beaches, Nightlife, Water Sports"
+                    value={destinationForm.bestFor}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, bestFor: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label text-vistaro-primary mb-1">Identity Tags (comma-separated)</label>
+                  <input
+                    type="text"
+                    placeholder="Coastal, Tropical, Heritage"
+                    value={destinationForm.identityTags}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, identityTags: e.target.value })}
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                  />
+                </div>
+              </div>
+
+              {/* Long Description */}
+              <div>
+                <label className="block text-label text-vistaro-primary mb-1">Destination Overview</label>
+                <textarea
+                  rows={3}
+                  placeholder="Detailed background and travel narrative for this destination..."
+                  value={destinationForm.longDescription}
+                  onChange={(e) => setDestinationForm({ ...destinationForm, longDescription: e.target.value })}
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+                />
+              </div>
+
+              {/* Curation & Active Toggles */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={destinationForm.isFeatured}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, isFeatured: e.target.checked })}
+                    className="w-4 h-4 text-amber-500 rounded border-vistaro-border focus:ring-amber-500 cursor-pointer"
+                  />
+                  <div className="flex items-center gap-1.5 text-body-sm font-semibold text-vistaro-primary">
+                    <Star className="w-4 h-4 text-amber-500" />
+                    <span>Featured ⭐</span>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={destinationForm.isTrending}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, isTrending: e.target.checked })}
+                    className="w-4 h-4 text-rose-500 rounded border-vistaro-border focus:ring-rose-500 cursor-pointer"
+                  />
+                  <div className="flex items-center gap-1.5 text-body-sm font-semibold text-vistaro-primary">
+                    <Flame className="w-4 h-4 text-rose-500" />
+                    <span>Trending 🔥</span>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer bg-vistaro-secondary/60 border border-vistaro-border p-3 rounded-2xl">
+                  <input
+                    type="checkbox"
+                    checked={destinationForm.isActive}
+                    onChange={(e) => setDestinationForm({ ...destinationForm, isActive: e.target.checked })}
+                    className="w-4 h-4 text-vistaro-accent rounded border-vistaro-border focus:ring-vistaro-accent cursor-pointer"
+                  />
+                  <div className="text-body-sm font-semibold text-vistaro-primary">
+                    <span>Active on Portal</span>
+                  </div>
+                </label>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-vistaro-border">
+                <button
+                  type="button"
+                  onClick={() => setDestinationModal(null)}
+                  disabled={actionLoading}
+                  className="px-5 py-2.5 rounded-full text-cta bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="px-6 py-2.5 rounded-full text-cta bg-vistaro-accent hover:bg-vistaro-accent-hover text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  {actionLoading ? 'Saving...' : destinationModal.mode === 'create' ? 'Publish Destination' : 'Save Changes'}
                 </button>
               </div>
             </form>

@@ -60,7 +60,7 @@ export default function Footer() {
         </div>
 
         {/* Functional Footer Links */}
-        <div className="flex justify-center items-center gap-6 text-footer text-vistaro-muted">
+        <div className="flex flex-wrap justify-center items-center gap-6 text-footer text-vistaro-muted">
           <Link
             to="/privacy"
             className="hover:underline hover:text-vistaro-primary transition-colors"
@@ -76,10 +76,24 @@ export default function Footer() {
           </Link>
           <span>&middot;</span>
           <Link
+            to="/cancellation-policy"
+            className="hover:underline hover:text-vistaro-primary transition-colors"
+          >
+            Cancellation Policy
+          </Link>
+          <span>&middot;</span>
+          <Link
             to="/company"
             className="hover:underline hover:text-vistaro-primary transition-colors"
           >
             Company details
+          </Link>
+          <span>&middot;</span>
+          <Link
+            to="/contact"
+            className="hover:underline hover:text-vistaro-primary transition-colors"
+          >
+            Contact & Support
           </Link>
         </div>
 

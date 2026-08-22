@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { useCurrency } from '../../context/CurrencyContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 import { wishlistApi } from '../../api/wishlistApi.js';
-import { Heart, Star } from 'lucide-react';
+import { Heart, Star, Flame } from 'lucide-react';
 
 export default function ListingCard({ listing, onWishlistToggle }) {
   const { user, updateUser } = useAuth();
@@ -76,15 +76,31 @@ export default function ListingCard({ listing, onWishlistToggle }) {
         </Link>
 
         {/* Top-Left Badge */}
-        {isGuestFavourite ? (
-          <div className="absolute top-3 left-3 z-10 bg-vistaro-surface/95 backdrop-blur-xs text-vistaro-primary border border-vistaro-border text-caption px-2.5 py-1 rounded-full shadow-sm">
-            Guest favourite
-          </div>
-        ) : isNew ? (
-          <div className="absolute top-3 left-3 z-10 bg-vistaro-accent text-white text-caption px-2 py-0.5 rounded-full shadow-sm">
-            New
-          </div>
-        ) : null}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 pointer-events-none">
+          {listing.isFeatured && (
+            <div className="inline-flex items-center gap-1 bg-amber-500/95 backdrop-blur-xs text-white text-caption font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <Star className="w-3 h-3 fill-white" />
+              <span>Featured</span>
+            </div>
+          )}
+          {listing.isTrending && (
+            <div className="inline-flex items-center gap-1 bg-rose-500/95 backdrop-blur-xs text-white text-caption font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <Flame className="w-3 h-3 fill-white" />
+              <span>Trending</span>
+            </div>
+          )}
+          {!listing.isFeatured && !listing.isTrending && (
+            isGuestFavourite ? (
+              <div className="bg-vistaro-surface/95 backdrop-blur-xs text-vistaro-primary border border-vistaro-border text-caption px-2.5 py-1 rounded-full shadow-sm">
+                Guest favourite
+              </div>
+            ) : isNew ? (
+              <div className="bg-vistaro-accent text-white text-caption px-2 py-0.5 rounded-full shadow-sm">
+                New
+              </div>
+            ) : null
+          )}
+        </div>
 
         {/* Top-Right Heart Button (min 40x40px touch area) */}
         <button

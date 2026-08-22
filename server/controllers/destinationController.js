@@ -4,10 +4,24 @@ const Destination = require("../models/Destination.js");
 // Get all active destinations (Lightweight payload, sorted alphabetically)
 // --------------------------------------------------
 module.exports.index = async (req, res) => {
-    const destinations = await Destination.find({ isActive: true })
-        .select("name slug state country shortTagline heroImage bestFor identityTags coordinates createdAt")
-        .sort({ name: 1 })
-        .lean();
+    const filter = { isActive: true };
+
+    if (req.query.featured === "true" || req.query.isFeatured === "true") {
+        filter.isFeatured = true;
+    }
+    if (req.query.trending === "true" || req.query.isTrending === "true") {
+        filter.isTrending = true;
+    }
+
+    let query = Destination.find(filter)
+        .select("name slug state country shortTagline heroImage bestFor identityTags coordinates isFeatured isTrending createdAt")
+        .sort({ name: 1 });
+
+    if (req.query.limit && !isNaN(Number(req.query.limit))) {
+        query = query.limit(Number(req.query.limit));
+    }
+
+    const destinations = await query.lean();
 
     res.json({
         success: true,

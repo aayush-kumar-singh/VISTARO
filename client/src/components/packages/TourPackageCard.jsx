@@ -5,6 +5,8 @@ import {
   Clock,
   MapPin,
   ArrowRight,
+  Star,
+  Flame,
 } from 'lucide-react';
 
 export default function TourPackageCard({ pkg }) {
@@ -44,10 +46,24 @@ export default function TourPackageCard({ pkg }) {
 
         {/* Top Badges */}
         <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-          <span className="inline-flex items-center gap-1 bg-vistaro-surface/95 backdrop-blur-md text-vistaro-primary border border-vistaro-border text-caption px-3 py-1 rounded-full shadow-md">
-            <MapPin className="w-3 h-3 text-vistaro-accent" />
-            {destinationName}
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 bg-vistaro-surface/95 backdrop-blur-md text-vistaro-primary border border-vistaro-border text-caption px-3 py-1 rounded-full shadow-md">
+              <MapPin className="w-3 h-3 text-vistaro-accent" />
+              {destinationName}
+            </span>
+            {pkg.isFeatured && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/90 backdrop-blur-md text-white text-caption font-bold shadow-xs">
+                <Star className="w-3 h-3 fill-white" />
+                <span>Featured</span>
+              </span>
+            )}
+            {pkg.isTrending && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-500/90 backdrop-blur-md text-white text-caption font-bold shadow-xs">
+                <Flame className="w-3 h-3 fill-white" />
+                <span>Trending</span>
+              </span>
+            )}
+          </div>
 
           <span
             className={`text-caption px-2.5 py-0.5 rounded-full border backdrop-blur-md ${difficultyColors[pkg.difficultyLevel] || difficultyColors.Moderate

@@ -1,8 +1,8 @@
 import api from './client.js';
 
 export const destinationsApi = {
-  getDestinations: async () => {
-    const res = await api.get('/destinations');
+  getDestinations: async (params = {}) => {
+    const res = await api.get('/destinations', { params });
     return res.data;
   },
 

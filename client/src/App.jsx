@@ -35,7 +35,9 @@ import LoginPage from './pages/LoginPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 import PrivacyPage from './pages/PrivacyPage.jsx';
 import TermsPage from './pages/TermsPage.jsx';
+import CancellationPolicyPage from './pages/CancellationPolicyPage.jsx';
 import CompanyDetailsPage from './pages/CompanyDetailsPage.jsx';
+import ContactPage from './pages/ContactPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
 export default function App() {
@@ -61,8 +63,12 @@ export default function App() {
                   <Route path="experiences/:slug" element={<ExperienceDetailPage />} />
                   <Route path="privacy" element={<PrivacyPage />} />
                   <Route path="terms" element={<TermsPage />} />
+                  <Route path="cancellation-policy" element={<CancellationPolicyPage />} />
+                  <Route path="policies/cancellation" element={<CancellationPolicyPage />} />
                   <Route path="company" element={<CompanyDetailsPage />} />
                   <Route path="about" element={<Navigate to="/company" replace />} />
+                  <Route path="contact" element={<ContactPage />} />
+                  <Route path="support" element={<Navigate to="/contact" replace />} />
 
                   {/* 2. Guest-Only Routes (Redirect to / if logged in) */}
                   <Route

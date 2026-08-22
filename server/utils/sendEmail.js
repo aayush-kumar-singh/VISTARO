@@ -215,3 +215,66 @@ module.exports.sendCancellationConfirmation = async ({ user, listing, booking, r
         console.error("[Email] Failed to send cancellation email:", err);
     }
 };
+
+module.exports.sendContactNotification = async ({ submission }) => {
+    try {
+        const mailer = await getTransporter();
+        const refNumber = submission._id ? submission._id.toString().slice(-8).toUpperCase() : "SUPPORT";
+
+        const htmlContent = `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 12px; background-color: #ffffff;">
+            <div style="text-align: center; border-bottom: 2px solid #FF385C; padding-bottom: 16px; margin-bottom: 24px;">
+                <h1 style="color: #FF385C; margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Vis<span style="color: #1a1a2e;">taro</span></h1>
+                <p style="color: #666; margin: 4px 0 0 0; font-size: 14px;">Support Request Received (#${refNumber})</p>
+            </div>
+
+            <p style="font-size: 16px; color: #333;">Hi <strong>${submission.name}</strong>,</p>
+            <p style="font-size: 15px; color: #555; line-height: 1.5;">Thank you for contacting Vistaro Support. We have received your message regarding <strong>${submission.subject}</strong> and our team is actively reviewing your inquiry.</p>
+
+            <div style="background-color: #f8f9fa; border-radius: 8px; padding: 16px; margin: 20px 0;">
+                <h3 style="margin-top: 0; color: #222; font-size: 16px; border-bottom: 1px solid #e9ecef; padding-bottom: 8px;">Inquiry Details</h3>
+                <table style="width: 100%; font-size: 14px; color: #444; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 6px 0; width: 35%;"><strong>Reference:</strong></td>
+                        <td style="padding: 6px 0;">#${refNumber}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 0;"><strong>Category:</strong></td>
+                        <td style="padding: 6px 0;">${submission.category}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 0;"><strong>Subject:</strong></td>
+                        <td style="padding: 6px 0;">${submission.subject}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 0; vertical-align: top;"><strong>Message:</strong></td>
+                        <td style="padding: 6px 0; white-space: pre-wrap; font-style: italic;">${submission.message}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <p style="font-size: 14px; color: #666; line-height: 1.5;">
+                We typically respond within <strong>24 business hours</strong>. If you have additional details or urgent booking updates, simply reply directly to this email.
+            </p>
+
+            <div style="text-align: center; margin-top: 30px; padding-top: 16px; border-top: 1px solid #e0e0e0; color: #888; font-size: 12px;">
+                <p style="margin: 4px 0;">&copy; ${new Date().getFullYear()} Vistaro, Inc. All rights reserved.</p>
+            </div>
+        </div>
+        `;
+
+        const mailOptions = {
+            from: process.env.EMAIL_FROM || '"Vistaro Support" <support@vistaro.com>',
+            to: submission.email,
+            subject: `[Vistaro Support #${refNumber}] We received your inquiry: ${submission.subject}`,
+            text: `Hi ${submission.name}, we received your inquiry regarding "${submission.subject}" (Ref: #${refNumber}). Our team will respond shortly.`,
+            html: htmlContent,
+        };
+
+        const info = await mailer.sendMail(mailOptions);
+        console.log("[Email] Support contact notification sent:", info.messageId || "logged");
+        return info;
+    } catch (err) {
+        console.error("[Email] Failed to send support contact notification email:", err);
+    }
+};
