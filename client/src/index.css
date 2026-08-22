@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 @layer base {
   :root {
@@ -52,7 +53,7 @@
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'General Sans', system-ui, -apple-system, sans-serif;
     color: var(--vistaro-text-primary);
     background-color: var(--vistaro-bg-main);
     margin: 0;
@@ -63,6 +64,74 @@
   select,
   textarea {
     font-size: 16px;
+  }
+}
+
+@layer components {
+  /* Vistaro Semantic Typography System */
+  .text-display-hero {
+    @apply font-serif font-normal text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-tight;
+  }
+
+  .text-display-h2 {
+    @apply font-serif font-medium text-2xl sm:text-3xl md:text-4xl tracking-tight;
+  }
+
+  .text-display-h3 {
+    @apply font-serif font-medium text-lg sm:text-xl leading-snug;
+  }
+
+  .text-card-title {
+    @apply font-serif font-medium text-base sm:text-lg leading-snug;
+  }
+
+  .text-price {
+    @apply font-serif font-medium;
+  }
+
+  .text-body {
+    @apply font-sans font-normal text-sm sm:text-base leading-relaxed;
+  }
+
+  .text-body-sm {
+    @apply font-sans font-normal text-xs sm:text-sm;
+  }
+
+  .text-muted {
+    @apply font-sans font-normal text-xs;
+    color: var(--vistaro-text-muted);
+  }
+
+  .text-nav-link {
+    @apply font-sans font-medium text-sm tracking-wide;
+  }
+
+  .text-nav-link-active {
+    @apply font-sans font-semibold text-sm tracking-wide;
+  }
+
+  .text-cta {
+    @apply font-sans font-semibold text-sm tracking-wide;
+  }
+
+  .text-label {
+    @apply font-sans font-medium text-2xs uppercase tracking-wider;
+  }
+
+  .text-caption {
+    @apply font-sans font-medium text-2xs uppercase tracking-wider;
+  }
+
+  .text-rating {
+    @apply font-sans font-semibold text-xs sm:text-sm;
+  }
+
+  .text-footer {
+    @apply font-sans font-normal text-xs;
+  }
+
+  .text-brand-logo {
+    @apply font-serif font-medium text-xl tracking-tight;
   }
 }
 

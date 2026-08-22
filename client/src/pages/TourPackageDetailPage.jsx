@@ -107,23 +107,23 @@ export default function TourPackageDetailPage() {
           <Compass className="w-8 h-8" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-vistaro-primary">
+          <h1 className="text-display-h2 text-vistaro-primary">
             Tour Package Not Found
           </h1>
-          <p className="text-xs sm:text-sm text-vistaro-secondary max-w-md mx-auto leading-relaxed">
+          <p className="text-body-sm text-vistaro-secondary max-w-md mx-auto leading-relaxed">
             The curated itinerary you are looking for might have been moved, deactivated, or does not exist.
           </p>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Link
             to="/tours"
-            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-colors shadow-xs"
+            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-colors shadow-xs"
           >
             Browse All Tour Packages
           </Link>
           <Link
             to="/destinations"
-            className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-colors"
+            className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-cta py-3 px-6 rounded-full transition-colors"
           >
             Explore Destinations
           </Link>
@@ -177,7 +177,7 @@ export default function TourPackageDetailPage() {
     <div className="w-full max-w-7xl mx-auto space-y-8 pb-16 animate-fade-in text-vistaro-primary transition-colors duration-200">
 
       {/* 1. Breadcrumbs & Back Nav */}
-      <div className="flex flex-wrap items-center justify-between gap-4 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-4 text-body-sm">
         <div className="flex items-center gap-2 text-vistaro-muted overflow-x-auto no-scrollbar">
           <Link to="/" className="hover:text-vistaro-primary transition-colors">Home</Link>
           <span>/</span>
@@ -199,7 +199,7 @@ export default function TourPackageDetailPage() {
 
         <Link
           to="/tours"
-          className="inline-flex items-center gap-1 text-vistaro-secondary hover:text-vistaro-primary font-bold transition-colors shrink-0"
+          className="inline-flex items-center gap-1 text-vistaro-secondary hover:text-vistaro-primary font-semibold text-cta transition-colors shrink-0"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to all tours</span>
@@ -212,45 +212,45 @@ export default function TourPackageDetailPage() {
           {destinationSlug ? (
             <Link
               to={`/destinations/${destinationSlug}`}
-              className="inline-flex items-center gap-1 bg-vistaro-secondary text-vistaro-accent hover:bg-vistaro-surface transition-colors text-xs font-extrabold px-3 py-1 rounded-full border border-vistaro-border shadow-2xs"
+              className="inline-flex items-center gap-1 bg-vistaro-secondary text-vistaro-accent hover:bg-vistaro-surface transition-colors text-caption px-3 py-1 rounded-full border border-vistaro-border shadow-2xs"
             >
               <MapPin className="w-3.5 h-3.5" />
               <span>{destinationName}, {destination.state || destination.country || 'India'}</span>
             </Link>
           ) : (
-            <span className="inline-flex items-center gap-1 bg-vistaro-secondary text-vistaro-primary text-xs font-bold px-3 py-1 rounded-full border border-vistaro-border">
+            <span className="inline-flex items-center gap-1 bg-vistaro-secondary text-vistaro-primary text-caption px-3 py-1 rounded-full border border-vistaro-border">
               <MapPin className="w-3.5 h-3.5 text-vistaro-accent" />
               {destinationName}
             </span>
           )}
 
           <span
-            className={`text-xs font-bold px-3 py-1 rounded-full border ${difficultyColors[tourPackage.difficultyLevel] || difficultyColors.Moderate
+            className={`text-caption px-3 py-1 rounded-full border ${difficultyColors[tourPackage.difficultyLevel] || difficultyColors.Moderate
               }`}
           >
             {tourPackage.difficultyLevel || 'Moderate'} Intensity
           </span>
 
-          <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-vistaro-secondary text-vistaro-primary border border-vistaro-border">
+          <span className="inline-flex items-center gap-1 text-caption px-3 py-1 rounded-full bg-vistaro-secondary text-vistaro-primary border border-vistaro-border">
             <ShieldCheck className="w-3.5 h-3.5 text-vistaro-success" />
             Curated Expedition
           </span>
 
           {avgRating && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-extrabold px-3 py-1 rounded-full bg-vistaro-secondary text-vistaro-rating border border-vistaro-border">
+            <span className="inline-flex items-center gap-1.5 text-caption px-3 py-1 rounded-full bg-vistaro-secondary text-vistaro-rating border border-vistaro-border">
               <Star className="w-3.5 h-3.5 fill-vistaro-rating text-vistaro-rating" />
               <span>{avgRating}</span>
-              <span className="text-vistaro-muted font-normal">({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
+              <span className="text-muted">({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
             </span>
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-extrabold text-vistaro-primary tracking-tight leading-tight">
+        <h1 className="text-display-hero text-vistaro-primary">
           {tourPackage.title}
         </h1>
 
         {tourPackage.shortDescription && (
-          <p className="text-sm sm:text-base text-vistaro-secondary max-w-3xl leading-relaxed">
+          <p className="text-body text-vistaro-secondary max-w-3xl leading-relaxed">
             {tourPackage.shortDescription}
           </p>
         )}
@@ -266,8 +266,8 @@ export default function TourPackageDetailPage() {
             <Clock className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[10px] uppercase font-bold text-vistaro-muted">Duration</div>
-            <div className="text-xs sm:text-sm font-extrabold text-vistaro-primary">
+            <div className="text-label text-vistaro-muted">Duration</div>
+            <div className="text-body-sm font-semibold text-vistaro-primary">
               {days} Days / {nights} Nights
             </div>
           </div>
@@ -278,8 +278,8 @@ export default function TourPackageDetailPage() {
             <Users className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[10px] uppercase font-bold text-vistaro-muted">Group Size</div>
-            <div className="text-xs sm:text-sm font-extrabold text-vistaro-primary">
+            <div className="text-label text-vistaro-muted">Group Size</div>
+            <div className="text-body-sm font-semibold text-vistaro-primary">
               Max {tourPackage.maxGroupSize || 12} Explorers
             </div>
           </div>
@@ -290,8 +290,8 @@ export default function TourPackageDetailPage() {
             <Compass className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[10px] uppercase font-bold text-vistaro-muted">Difficulty</div>
-            <div className="text-xs sm:text-sm font-extrabold text-vistaro-primary">
+            <div className="text-label text-vistaro-muted">Difficulty</div>
+            <div className="text-body-sm font-semibold text-vistaro-primary">
               {tourPackage.difficultyLevel || 'Moderate'}
             </div>
           </div>
@@ -302,8 +302,8 @@ export default function TourPackageDetailPage() {
             <MapPin className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[10px] uppercase font-bold text-vistaro-muted">Region</div>
-            <div className="text-xs sm:text-sm font-extrabold text-vistaro-primary truncate">
+            <div className="text-label text-vistaro-muted">Region</div>
+            <div className="text-body-sm font-semibold text-vistaro-primary truncate">
               {destinationName}
             </div>
           </div>
@@ -318,17 +318,17 @@ export default function TourPackageDetailPage() {
 
           {/* About The Expedition */}
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary">
+            <h2 className="text-display-h2 text-vistaro-primary">
               About This Expedition
             </h2>
-            <div className="text-xs sm:text-sm text-vistaro-secondary leading-relaxed whitespace-pre-line space-y-3">
+            <div className="text-body text-vistaro-secondary leading-relaxed whitespace-pre-line space-y-3">
               {tourPackage.longDescription || tourPackage.shortDescription || 'Experience a meticulously crafted travel journey.'}
             </div>
           </div>
 
           {/* Inclusions & Exclusions */}
           <div className="space-y-4 pt-4 border-t border-vistaro-border">
-            <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary">
+            <h2 className="text-display-h2 text-vistaro-primary">
               What’s Included & Excluded
             </h2>
 
@@ -336,12 +336,12 @@ export default function TourPackageDetailPage() {
 
               {/* Inclusions */}
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold text-vistaro-success uppercase tracking-wider">
+                <div className="flex items-center gap-2 text-label text-vistaro-success">
                   <CheckCircle2 className="w-4 h-4 text-vistaro-success" />
                   <span>Included in Package</span>
                 </div>
                 {Array.isArray(tourPackage.inclusions) && tourPackage.inclusions.length > 0 ? (
-                  <ul className="space-y-2 text-xs text-vistaro-secondary">
+                  <ul className="space-y-2 text-body-sm text-vistaro-secondary">
                     {tourPackage.inclusions.map((inc, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="text-vistaro-success font-bold">✓</span>
@@ -350,18 +350,18 @@ export default function TourPackageDetailPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-xs text-vistaro-muted italic">Standard inclusions apply (accommodations, transfers, guide).</p>
+                  <p className="text-body-sm text-vistaro-muted italic">Standard inclusions apply (accommodations, transfers, guide).</p>
                 )}
               </div>
 
               {/* Exclusions */}
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold text-vistaro-error uppercase tracking-wider">
+                <div className="flex items-center gap-2 text-label text-vistaro-error">
                   <XCircle className="w-4 h-4 text-vistaro-error" />
                   <span>Not Included</span>
                 </div>
                 {Array.isArray(tourPackage.exclusions) && tourPackage.exclusions.length > 0 ? (
-                  <ul className="space-y-2 text-xs text-vistaro-secondary">
+                  <ul className="space-y-2 text-body-sm text-vistaro-secondary">
                     {tourPackage.exclusions.map((exc, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="text-vistaro-error font-bold">✕</span>
@@ -370,7 +370,7 @@ export default function TourPackageDetailPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-xs text-vistaro-muted italic">Personal expenses, optional gratuities, and airfare.</p>
+                  <p className="text-body-sm text-vistaro-muted italic">Personal expenses, optional gratuities, and airfare.</p>
                 )}
               </div>
 
@@ -381,17 +381,17 @@ export default function TourPackageDetailPage() {
           <div className="space-y-6 pt-4 border-t border-vistaro-border">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary flex items-center gap-2">
+                <h2 className="text-display-h2 text-vistaro-primary flex items-center gap-2">
                   <Calendar className="w-6 h-6 text-vistaro-rating" />
                   <span>Day-by-Day Expedition Itinerary</span>
                 </h2>
-                <p className="text-xs text-vistaro-muted mt-0.5">
+                <p className="text-muted mt-0.5">
                   Detailed timeline, daily activities, meals, and overnight stops.
                 </p>
               </div>
 
               {Array.isArray(tourPackage.itinerary) && tourPackage.itinerary.length > 0 && (
-                <span className="inline-flex items-center gap-1.5 bg-vistaro-secondary text-vistaro-rating text-[11px] font-bold px-3 py-1 rounded-full border border-vistaro-border self-start sm:self-auto">
+                <span className="inline-flex items-center gap-1.5 bg-vistaro-secondary text-vistaro-rating text-caption px-3 py-1 rounded-full border border-vistaro-border self-start sm:self-auto">
                   <Sparkles className="w-3.5 h-3.5 text-vistaro-rating" />
                   {tourPackage.itinerary.length} Days Planned
                 </span>
@@ -405,10 +405,10 @@ export default function TourPackageDetailPage() {
                   <Calendar className="w-6 h-6" />
                 </div>
                 <div className="space-y-1.5 max-w-lg mx-auto">
-                  <h3 className="font-extrabold text-base text-vistaro-primary">
+                  <h3 className="text-display-h3 text-vistaro-primary">
                     Day-by-Day Itinerary Being Finalized
                   </h3>
-                  <p className="text-xs text-vistaro-secondary leading-relaxed">
+                  <p className="text-body-sm text-vistaro-secondary leading-relaxed">
                     Our tour directors are putting the finishing touches on the minute-by-minute schedule for this {days}-day expedition. All scheduled stops, meals, and luxury stays are included as standard.
                   </p>
                 </div>
@@ -425,21 +425,21 @@ export default function TourPackageDetailPage() {
                     >
                       <div className="flex items-start sm:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                          <span className="w-9 h-9 rounded-2xl bg-vistaro-accent text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                          <span className="w-9 h-9 rounded-2xl bg-vistaro-accent text-white font-semibold text-xs flex items-center justify-center shrink-0 shadow-xs">
                             {String(dayNum).padStart(2, '0')}
                           </span>
                           <div>
-                            <div className="text-[10px] uppercase font-bold text-vistaro-rating tracking-wider">
+                            <div className="text-label text-vistaro-rating tracking-wider">
                               Day {dayNum}
                             </div>
-                            <h3 className="font-extrabold text-sm sm:text-base text-vistaro-primary">
+                            <h3 className="text-card-title text-vistaro-primary">
                               {day.title}
                             </h3>
                           </div>
                         </div>
 
                         {Array.isArray(day.activities) && day.activities.length > 0 && (
-                          <span className="bg-vistaro-secondary text-vistaro-secondary border border-vistaro-border text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0">
+                          <span className="bg-vistaro-secondary text-vistaro-secondary border border-vistaro-border text-caption px-2.5 py-1 rounded-full shrink-0">
                             {day.activities.length} Highlight{day.activities.length !== 1 ? 's' : ''}
                           </span>
                         )}
@@ -447,7 +447,7 @@ export default function TourPackageDetailPage() {
 
                       {/* Day Description */}
                       {day.description && (
-                        <p className="text-xs sm:text-sm text-vistaro-secondary leading-relaxed pl-12">
+                        <p className="text-body text-vistaro-secondary leading-relaxed pl-12">
                           {day.description}
                         </p>
                       )}
@@ -458,7 +458,7 @@ export default function TourPackageDetailPage() {
                           {day.activities.map((act, aIdx) => (
                             <span
                               key={aIdx}
-                              className="inline-flex items-center gap-1 bg-vistaro-secondary border border-vistaro-border text-vistaro-primary text-[11px] font-medium px-2.5 py-1 rounded-xl"
+                              className="inline-flex items-center gap-1 bg-vistaro-secondary border border-vistaro-border text-vistaro-primary text-caption px-2.5 py-1 rounded-xl"
                             >
                               <Sparkles className="w-3 h-3 text-vistaro-rating shrink-0" />
                               <span>{act}</span>
@@ -477,19 +477,19 @@ export default function TourPackageDetailPage() {
           {destinationSlug && (
             <div className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-md">
               <div className="space-y-1.5">
-                <div className="text-[10px] uppercase font-bold tracking-wider text-vistaro-accent">
+                <div className="text-label text-vistaro-accent">
                   Destination Guide
                 </div>
-                <h3 className="text-lg font-bold text-vistaro-primary">
+                <h3 className="text-display-h3 text-vistaro-primary">
                   Discover more of {destinationName}
                 </h3>
-                <p className="text-xs text-vistaro-secondary max-w-md">
+                <p className="text-body-sm text-vistaro-secondary max-w-md">
                   Explore curated boutique stays, travel insights, local identity tags, and maps for {destinationName}.
                 </p>
               </div>
               <Link
                 to={`/destinations/${destinationSlug}`}
-                className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-3 px-6 rounded-full transition-colors shrink-0 self-start sm:self-auto cursor-pointer"
+                className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-colors shrink-0 self-start sm:self-auto cursor-pointer"
               >
                 <span>View Destination</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -501,7 +501,7 @@ export default function TourPackageDetailPage() {
           <div className="space-y-6 pt-6 border-t border-vistaro-border">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-vistaro-primary flex items-center gap-2">
+                <h2 className="text-display-h2 text-vistaro-primary flex items-center gap-2">
                   <Star className="w-6 h-6 fill-vistaro-rating text-vistaro-rating" />
                   <span>Verified Explorer Reviews</span>
                   {reviews.length > 0 && (
@@ -510,17 +510,17 @@ export default function TourPackageDetailPage() {
                     </span>
                   )}
                 </h2>
-                <p className="text-xs text-vistaro-muted mt-0.5">
+                <p className="text-muted mt-0.5">
                   Authentic reviews from travelers who reserved this expedition.
                 </p>
               </div>
 
               {avgRating && (
                 <div className="flex items-center gap-2 self-start sm:self-auto bg-vistaro-surface border border-vistaro-border px-4 py-2 rounded-2xl">
-                  <span className="text-2xl font-extrabold text-vistaro-rating">{avgRating}</span>
+                  <span className="text-display-h2 text-vistaro-rating">{avgRating}</span>
                   <div>
                     <StarRating rating={Math.round(Number(avgRating))} size="sm" />
-                    <div className="text-[10px] font-bold text-vistaro-muted">Overall Rating</div>
+                    <div className="text-label text-vistaro-muted">Overall Rating</div>
                   </div>
                 </div>
               )}
@@ -549,8 +549,8 @@ export default function TourPackageDetailPage() {
             ) : (
               <div className="bg-vistaro-surface border border-vistaro-border rounded-3xl p-8 text-center space-y-2">
                 <Star className="w-8 h-8 text-vistaro-muted mx-auto" />
-                <h4 className="font-bold text-sm text-vistaro-primary">No explorer reviews yet</h4>
-                <p className="text-xs text-vistaro-muted max-w-sm mx-auto">
+                <h4 className="text-display-h3 text-vistaro-primary">No explorer reviews yet</h4>
+                <p className="text-body-sm text-vistaro-muted max-w-sm mx-auto">
                   Be the first verified explorer to embark on this journey and share your insights.
                 </p>
               </div>
@@ -565,35 +565,35 @@ export default function TourPackageDetailPage() {
 
             {/* Price Header */}
             <div className="space-y-1 pb-4 border-b border-vistaro-border">
-              <div className="text-xs uppercase font-bold text-vistaro-muted">
+              <div className="text-label text-vistaro-muted">
                 Starting base price
               </div>
-              <div className="text-3xl font-extrabold text-vistaro-primary">
-                {formatPrice(basePrice)}
-                <span className="text-sm font-normal text-vistaro-muted"> / person</span>
+              <div className="text-price text-3xl text-vistaro-primary flex items-baseline gap-1">
+                <span>{formatPrice(basePrice)}</span>
+                <span className="font-sans font-normal text-sm text-vistaro-muted"> / person</span>
               </div>
-              <div className="text-[11px] text-vistaro-success font-semibold flex items-center gap-1 pt-0.5">
+              <div className="text-caption text-vistaro-success font-semibold flex items-center gap-1 pt-0.5">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Luxury stays & permits included
               </div>
             </div>
 
             {/* Quick Summary Specs */}
-            <div className="space-y-2.5 text-xs text-vistaro-secondary">
+            <div className="space-y-2.5 text-body-sm text-vistaro-secondary">
               <div className="flex items-center justify-between">
-                <span className="text-vistaro-muted">Duration:</span>
-                <span className="font-bold text-vistaro-primary">{days} Days / {nights} Nights</span>
+                <span className="text-muted">Duration:</span>
+                <span className="font-semibold text-vistaro-primary">{days} Days / {nights} Nights</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-vistaro-muted">Difficulty:</span>
-                <span className="font-bold text-vistaro-primary">{tourPackage.difficultyLevel || 'Moderate'}</span>
+                <span className="text-muted">Difficulty:</span>
+                <span className="font-semibold text-vistaro-primary">{tourPackage.difficultyLevel || 'Moderate'}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-vistaro-muted">Max Capacity:</span>
-                <span className="font-bold text-vistaro-primary">{tourPackage.maxGroupSize || 12} Explorers</span>
+                <span className="text-muted">Max Capacity:</span>
+                <span className="font-semibold text-vistaro-primary">{tourPackage.maxGroupSize || 12} Explorers</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-vistaro-muted">Destination:</span>
-                <span className="font-bold text-vistaro-primary">{destinationName}</span>
+                <span className="text-muted">Destination:</span>
+                <span className="font-semibold text-vistaro-primary">{destinationName}</span>
               </div>
             </div>
 
@@ -604,10 +604,10 @@ export default function TourPackageDetailPage() {
                   <Check className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-extrabold text-base text-vistaro-primary">
+                  <h4 className="text-display-h3 text-vistaro-primary">
                     Expedition Confirmed!
                   </h4>
-                  <p className="text-xs text-vistaro-secondary mt-1">
+                  <p className="text-body-sm text-vistaro-secondary mt-1">
                     Your {days}-day journey to {destinationName} starting on{' '}
                     <b>{new Date(bookingSuccess.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</b> is reserved.
                   </p>
@@ -616,14 +616,14 @@ export default function TourPackageDetailPage() {
                 <div className="pt-2 flex flex-col gap-2">
                   <Link
                     to="/profile"
-                    className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 rounded-full transition-colors"
+                    className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 rounded-full transition-colors"
                   >
                     View in My Trips
                   </Link>
                   <button
                     type="button"
                     onClick={() => setBookingSuccess(null)}
-                    className="text-xs text-vistaro-muted hover:underline cursor-pointer"
+                    className="text-body-sm text-vistaro-muted hover:underline cursor-pointer"
                   >
                     Book another date
                   </button>
@@ -664,11 +664,11 @@ export default function TourPackageDetailPage() {
                     setBookingLoading(false);
                   }
                 }}
-                className="space-y-4 pt-4 border-t border-vistaro-border text-xs"
+                className="space-y-4 pt-4 border-t border-vistaro-border text-body-sm"
               >
                 {/* 1. Departure Date */}
                 <div className="space-y-1">
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider text-[11px]">
+                  <label className="block font-semibold text-vistaro-primary text-label">
                     Departure Date
                   </label>
                   <div className="relative">
@@ -677,7 +677,7 @@ export default function TourPackageDetailPage() {
                       min={tomorrowStr}
                       value={departureDate}
                       onChange={(e) => setDepartureDate(e.target.value)}
-                      className="w-full bg-vistaro-secondary border border-vistaro-border rounded-xl px-3.5 py-2.5 text-xs font-medium text-vistaro-primary focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+                      className="w-full bg-vistaro-secondary border border-vistaro-border rounded-xl px-3.5 py-2.5 text-body-sm font-medium text-vistaro-primary focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
                       required
                     />
                   </div>
@@ -685,9 +685,9 @@ export default function TourPackageDetailPage() {
 
                 {/* 2. Travelers Counter */}
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-vistaro-primary uppercase tracking-wider">
+                  <div className="flex items-center justify-between text-label font-semibold text-vistaro-primary">
                     <span>Travelers</span>
-                    <span className="text-vistaro-muted font-normal capitalize">Max {tourPackage.maxGroupSize || 12}</span>
+                    <span className="text-muted capitalize">Max {tourPackage.maxGroupSize || 12}</span>
                   </div>
 
                   <div className="flex items-center justify-between bg-vistaro-secondary border border-vistaro-border rounded-xl p-2">
@@ -700,7 +700,7 @@ export default function TourPackageDetailPage() {
                       <Minus className="w-3.5 h-3.5" />
                     </button>
 
-                    <div className="font-extrabold text-sm text-vistaro-primary">
+                    <div className="font-semibold text-body text-vistaro-primary">
                       {travelers} Explorer{travelers !== 1 ? 's' : ''}
                     </div>
 
@@ -722,22 +722,22 @@ export default function TourPackageDetailPage() {
                   const total = subtotal + gst;
 
                   return (
-                    <div className="space-y-2 pt-3 border-t border-vistaro-border text-xs">
+                    <div className="space-y-2 pt-3 border-t border-vistaro-border text-body-sm">
                       <div className="flex items-center justify-between text-vistaro-secondary">
                         <span>
                           {formatPrice(basePrice)} &times; {travelers} traveler{travelers !== 1 ? 's' : ''}
                         </span>
-                        <span className="font-semibold text-vistaro-primary">{formatPrice(subtotal)}</span>
+                        <span className="font-medium text-vistaro-primary">{formatPrice(subtotal)}</span>
                       </div>
 
                       <div className="flex items-center justify-between text-vistaro-secondary">
                         <span>Applicable GST (18%)</span>
-                        <span className="font-semibold text-vistaro-primary">{formatPrice(gst)}</span>
+                        <span className="font-medium text-vistaro-primary">{formatPrice(gst)}</span>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-vistaro-border font-extrabold text-sm text-vistaro-primary">
+                      <div className="flex items-center justify-between pt-2 border-t border-vistaro-border font-semibold text-body text-vistaro-primary">
                         <span>Total (INR)</span>
-                        <span className="text-vistaro-accent">{formatPrice(total)}</span>
+                        <span className="text-price text-lg text-vistaro-accent">{formatPrice(total)}</span>
                       </div>
                     </div>
                   );
@@ -747,7 +747,7 @@ export default function TourPackageDetailPage() {
                 <button
                   type="submit"
                   disabled={bookingLoading}
-                  className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white font-bold py-3.5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer disabled:opacity-50"
+                  className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer disabled:opacity-50"
                 >
                   {bookingLoading ? (
                     <span>Confirming Expedition...</span>
@@ -761,7 +761,7 @@ export default function TourPackageDetailPage() {
             )}
 
             {/* Guarantees */}
-            <div className="pt-4 border-t border-vistaro-border space-y-2 text-[11px] text-vistaro-muted">
+            <div className="pt-4 border-t border-vistaro-border space-y-2 text-caption text-vistaro-muted">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-vistaro-success shrink-0" />
                 <span>100% Verified Local Operators</span>

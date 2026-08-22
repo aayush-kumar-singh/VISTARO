@@ -37,10 +37,10 @@ export default function SignupPage() {
           <div className="w-12 h-12 rounded-2xl bg-vistaro-secondary text-vistaro-accent border border-vistaro-border mx-auto flex items-center justify-center">
             <UserPlus className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-extrabold text-vistaro-primary tracking-tight">
+          <h1 className="text-display-h2 text-vistaro-primary">
             Create your account
           </h1>
-          <p className="text-xs text-vistaro-muted">
+          <p className="text-body-sm text-vistaro-muted">
             Join Vistaro to explore unique getaways and list your properties.
           </p>
         </div>
@@ -49,7 +49,7 @@ export default function SignupPage() {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary font-bold text-xs sm:text-sm text-vistaro-primary py-3 px-4 rounded-2xl transition-all shadow-xs cursor-pointer"
+          className="w-full flex items-center justify-center gap-3 bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary font-semibold text-body-sm text-vistaro-primary py-3 px-4 rounded-2xl transition-all shadow-xs cursor-pointer"
         >
           {/* Google Color SVG (Official Brand Colors - DO NOT MODIFY) */}
           <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -76,7 +76,7 @@ export default function SignupPage() {
         {/* Divider */}
         <div className="relative flex items-center justify-center">
           <div className="border-t border-vistaro-border w-full" />
-          <span className="bg-vistaro-surface px-3 text-[11px] font-semibold text-vistaro-muted uppercase tracking-wider absolute">
+          <span className="bg-vistaro-surface px-3 text-caption text-vistaro-muted absolute">
             or sign up with email
           </span>
         </div>
@@ -84,7 +84,7 @@ export default function SignupPage() {
         {/* Signup Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1">
+            <label className="block text-label text-vistaro-primary mb-1">
               Username
             </label>
             <input
@@ -92,13 +92,13 @@ export default function SignupPage() {
               placeholder="Choose a username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1">
+            <label className="block text-label text-vistaro-primary mb-1">
               Email Address
             </label>
             <input
@@ -106,13 +106,13 @@ export default function SignupPage() {
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1">
+            <label className="block text-label text-vistaro-primary mb-1">
               Password
             </label>
             <input
@@ -120,7 +120,7 @@ export default function SignupPage() {
               placeholder="At least 6 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
               minLength={6}
             />
@@ -129,7 +129,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white font-bold text-sm py-3.5 px-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3.5 px-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
           >
             <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
             {!loading && <ArrowRight className="w-4 h-4" />}
@@ -137,9 +137,9 @@ export default function SignupPage() {
         </form>
 
         {/* Footer Link */}
-        <div className="text-center pt-2 text-xs text-vistaro-muted">
+        <div className="text-center pt-2 text-body-sm text-vistaro-muted">
           Already have an account?{' '}
-          <Link to="/login" className="font-bold text-vistaro-accent hover:underline">
+          <Link to="/login" className="text-cta text-vistaro-accent hover:underline">
             Log In
           </Link>
         </div>

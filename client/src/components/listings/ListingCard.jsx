@@ -77,11 +77,11 @@ export default function ListingCard({ listing, onWishlistToggle }) {
 
         {/* Top-Left Badge */}
         {isGuestFavourite ? (
-          <div className="absolute top-3 left-3 z-10 bg-vistaro-surface/95 backdrop-blur-xs text-vistaro-primary border border-vistaro-border text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+          <div className="absolute top-3 left-3 z-10 bg-vistaro-surface/95 backdrop-blur-xs text-vistaro-primary border border-vistaro-border text-caption px-2.5 py-1 rounded-full shadow-sm">
             Guest favourite
           </div>
         ) : isNew ? (
-          <div className="absolute top-3 left-3 z-10 bg-vistaro-accent text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shadow-sm tracking-wider">
+          <div className="absolute top-3 left-3 z-10 bg-vistaro-accent text-white text-caption px-2 py-0.5 rounded-full shadow-sm">
             New
           </div>
         ) : null}
@@ -107,32 +107,32 @@ export default function ListingCard({ listing, onWishlistToggle }) {
       <Link to={`/listings/${listing._id}`} className="flex flex-col flex-1 text-inherit no-underline">
         {/* Title + Rating Row */}
         <div className="flex items-center justify-between gap-2 w-full mb-0.5">
-          <h3 className="font-semibold text-sm sm:text-base text-vistaro-primary truncate flex-1 leading-snug">
+          <h3 className="text-card-title text-vistaro-primary truncate flex-1">
             {listing.title}
           </h3>
 
-          <div className="flex items-center gap-1 shrink-0 text-xs sm:text-sm font-semibold text-vistaro-primary">
+          <div className="flex items-center gap-1 shrink-0 text-rating text-vistaro-primary">
             <Star className="w-3.5 h-3.5 fill-vistaro-rating text-vistaro-rating" />
             <span>{averageRating ? averageRating : 'New'}</span>
           </div>
         </div>
 
         {/* Location Subtitle */}
-        <p className="text-xs text-vistaro-secondary truncate mb-1">
+        <p className="text-body-sm text-vistaro-secondary truncate mb-1">
           {listing.location}, {listing.country}
         </p>
 
         {/* Category tag */}
         {listing.category && (
-          <p className="text-xs text-vistaro-muted truncate mb-1">
+          <p className="text-muted truncate mb-1">
             {listing.category} stay
           </p>
         )}
 
         {/* Price Row */}
-        <p className="text-sm sm:text-base font-semibold text-vistaro-primary mt-auto pt-1">
+        <p className="text-price text-lg text-vistaro-primary mt-auto pt-1 flex items-baseline gap-1">
           <span>{formatPrice(listing.price)}</span>
-          <span className="font-normal text-xs text-vistaro-muted"> / night</span>
+          <span className="font-sans font-normal text-xs text-vistaro-muted"> / night</span>
         </p>
       </Link>
     </div>

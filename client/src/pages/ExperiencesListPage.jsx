@@ -106,10 +106,10 @@ export default function ExperiencesListPage() {
       {/* 1. Clean Title Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-vistaro-border">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-vistaro-primary tracking-tight">
+          <h1 className="text-display-hero text-vistaro-primary">
             Host-Led Experiences
           </h1>
-          <p className="text-xs sm:text-sm text-vistaro-muted mt-1">
+          <p className="text-body text-vistaro-muted mt-1">
             Connect with passionate local guides, master artisans, and outdoor specialists for handcrafted immersions.
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function ExperiencesListPage() {
 
         {/* Destination Pills */}
         <div className="space-y-2">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-vistaro-muted flex items-center gap-1.5">
+          <div className="text-label text-vistaro-muted flex items-center gap-1.5">
             <MapPin className="w-3.5 h-3.5 text-vistaro-accent" />
             <span>Filter By Destination</span>
           </div>
@@ -129,7 +129,7 @@ export default function ExperiencesListPage() {
             <button
               type="button"
               onClick={() => handleDestinationSelect('')}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-4 py-2 rounded-full text-nav-link transition-all cursor-pointer whitespace-nowrap ${
                 !selectedDestSlug
                   ? 'bg-vistaro-accent text-white shadow-xs'
                   : 'bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary border border-vistaro-border'
@@ -145,7 +145,7 @@ export default function ExperiencesListPage() {
                   key={d._id}
                   type="button"
                   onClick={() => handleDestinationSelect(d.slug)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`px-4 py-2 rounded-full text-nav-link transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                     isSelected
                       ? 'bg-vistaro-accent text-white shadow-xs'
                       : 'bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary border border-vistaro-border'
@@ -161,7 +161,7 @@ export default function ExperiencesListPage() {
 
         {/* Category Pills */}
         <div className="space-y-2 pt-2 border-t border-vistaro-border">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-vistaro-muted flex items-center gap-1.5">
+          <div className="text-label text-vistaro-muted flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-vistaro-accent" />
             <span>Filter By Category</span>
           </div>
@@ -174,7 +174,7 @@ export default function ExperiencesListPage() {
                   key={cat}
                   type="button"
                   onClick={() => handleCategorySelect(cat)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  className={`px-3.5 py-1.5 rounded-full text-nav-link transition-all cursor-pointer whitespace-nowrap ${
                     isSelected
                       ? 'bg-vistaro-accent text-white shadow-xs'
                       : 'bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary border border-vistaro-border'
@@ -189,16 +189,16 @@ export default function ExperiencesListPage() {
 
         {/* Active Filters Summary Bar */}
         {hasActiveFilters && (
-          <div className="flex items-center justify-between bg-vistaro-secondary border border-vistaro-border rounded-2xl px-4 py-2.5 text-xs text-vistaro-primary">
+          <div className="flex items-center justify-between bg-vistaro-secondary border border-vistaro-border rounded-2xl px-4 py-2.5 text-body-sm text-vistaro-primary">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-vistaro-muted">Filtering by:</span>
               {selectedDestSlug && (
-                <span className="bg-vistaro-surface text-vistaro-primary font-bold px-2.5 py-0.5 rounded-full border border-vistaro-border shadow-2xs">
+                <span className="bg-vistaro-surface text-vistaro-primary text-caption px-2.5 py-0.5 rounded-full border border-vistaro-border shadow-2xs">
                   {destinations.find((d) => d.slug === selectedDestSlug)?.name || selectedDestSlug}
                 </span>
               )}
               {selectedCategory && selectedCategory !== 'all' && (
-                <span className="bg-vistaro-accent text-white font-bold px-2.5 py-0.5 rounded-full shadow-2xs">
+                <span className="bg-vistaro-accent text-white text-caption px-2.5 py-0.5 rounded-full shadow-2xs">
                   {selectedCategory}
                 </span>
               )}
@@ -206,7 +206,7 @@ export default function ExperiencesListPage() {
             <button
               type="button"
               onClick={handleClearAllFilters}
-              className="text-vistaro-accent font-bold hover:underline cursor-pointer text-xs"
+              className="text-vistaro-accent font-semibold text-cta hover:underline cursor-pointer"
             >
               Clear all filters
             </button>
@@ -225,19 +225,19 @@ export default function ExperiencesListPage() {
           <div className="w-14 h-14 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto shadow-inner border border-vistaro-border">
             <Sparkles className="w-7 h-7" />
           </div>
-          <h3 className="font-bold text-lg text-vistaro-primary">Unable to Load Experiences</h3>
-          <p className="text-xs sm:text-sm text-vistaro-secondary leading-relaxed">{error}</p>
+          <h3 className="text-display-h3 text-vistaro-primary">Unable to Load Experiences</h3>
+          <p className="text-body-sm text-vistaro-secondary leading-relaxed">{error}</p>
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               type="button"
               onClick={fetchExperiences}
-              className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
             >
               <RefreshCw className="w-4 h-4" /> Try Again
             </button>
             <Link
               to="/destinations"
-              className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-xs sm:text-sm font-semibold py-2.5 px-5 rounded-full transition-colors"
+              className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-cta py-2.5 px-5 rounded-full transition-colors"
             >
               Browse Destinations
             </Link>
@@ -251,8 +251,8 @@ export default function ExperiencesListPage() {
           <div className="w-14 h-14 rounded-full bg-vistaro-secondary text-vistaro-accent flex items-center justify-center mx-auto">
             <Sparkles className="w-7 h-7" />
           </div>
-          <h3 className="font-bold text-xl text-vistaro-primary">No Experiences Found</h3>
-          <p className="text-xs sm:text-sm text-vistaro-muted max-w-md mx-auto">
+          <h3 className="text-display-h3 text-vistaro-primary">No Experiences Found</h3>
+          <p className="text-body text-vistaro-muted max-w-md mx-auto">
             {hasActiveFilters
               ? 'No experiences matched your selected destination and category filters. Try clearing your filters to explore all options.'
               : 'Our experience hosts are currently publishing new activities. Please check back soon!'}
@@ -262,14 +262,14 @@ export default function ExperiencesListPage() {
               <button
                 type="button"
                 onClick={handleClearAllFilters}
-                className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-5 rounded-full transition-colors cursor-pointer shadow-xs"
+                className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-5 rounded-full transition-colors cursor-pointer shadow-xs"
               >
                 View All Experiences
               </button>
             )}
             <Link
               to="/destinations"
-              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-5 rounded-full transition-colors shadow-xs"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-5 rounded-full transition-colors shadow-xs"
             >
               Explore Destinations
             </Link>

@@ -132,12 +132,12 @@ export default function HomePage() {
           <div className="w-12 h-12 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto">
             <Compass className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-base text-vistaro-primary">Unable to load stays</h3>
-          <p className="text-xs text-vistaro-secondary max-w-sm mx-auto">{error}</p>
+          <h3 className="text-display-h3 text-vistaro-primary">Unable to load stays</h3>
+          <p className="text-body-sm text-vistaro-secondary max-w-sm mx-auto">{error}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
           >
             Retry Loading
           </button>
@@ -148,13 +148,13 @@ export default function HomePage() {
       {!loading && !error && listings.length === 0 && (
         <div className="text-center py-16 px-4 bg-vistaro-surface rounded-3xl border border-vistaro-border">
           <Compass className="w-12 h-12 text-vistaro-muted mx-auto mb-3" />
-          <h3 className="font-bold text-lg text-vistaro-primary">No properties found</h3>
-          <p className="text-sm text-vistaro-muted max-w-md mx-auto mt-1 mb-4">
+          <h3 className="text-display-h3 text-vistaro-primary">No properties found</h3>
+          <p className="text-body text-vistaro-muted max-w-md mx-auto mt-1 mb-4">
             We couldn't find any stays matching your current filters. Try changing or clearing filters.
           </p>
           <button
             onClick={() => setSearchParams({})}
-            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors cursor-pointer shadow-xs"
+            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-colors cursor-pointer shadow-xs"
           >
             Clear all filters
           </button>
@@ -192,7 +192,7 @@ export default function HomePage() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`w-8 h-8 rounded-full text-xs font-bold transition-colors cursor-pointer ${
+                      className={`w-8 h-8 rounded-full text-cta transition-colors cursor-pointer ${
                         isCurrent
                           ? 'bg-vistaro-accent text-white'
                           : 'text-vistaro-primary hover:bg-vistaro-secondary'
@@ -221,7 +221,7 @@ export default function HomePage() {
             <div className="mt-16 pt-10 border-t border-vistaro-border">
               <div className="flex items-center gap-2 mb-6">
                 <Clock className="w-5 h-5 text-vistaro-accent" />
-                <h3 className="font-bold text-lg text-vistaro-primary">Recently Viewed Stays</h3>
+                <h3 className="text-display-h2 text-vistaro-primary">Recently Viewed Stays</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">

@@ -122,10 +122,10 @@ export default function SearchResultsPage() {
       {/* Top Header & Filter Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-vistaro-border">
         <div>
-          <h1 className="text-2xl font-bold text-vistaro-primary">
+          <h1 className="text-display-hero text-vistaro-primary">
             {query ? `Search results for "${query}"` : 'All Search Results'}
           </h1>
-          <p className="text-xs text-vistaro-muted mt-1">
+          <p className="text-body-sm text-vistaro-muted mt-1">
             {pagination.totalResults} {pagination.totalResults === 1 ? 'stay' : 'stays'} available
           </p>
         </div>
@@ -136,12 +136,12 @@ export default function SearchResultsPage() {
           <button
             type="button"
             onClick={() => setFilterModalOpen(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-cta px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             <span>Filters</span>
             {activeFilterCount > 0 && (
-              <span className="w-4 h-4 bg-vistaro-accent text-white rounded-full text-[10px] flex items-center justify-center font-bold">
+              <span className="w-4 h-4 bg-vistaro-accent text-white rounded-full text-caption flex items-center justify-center font-bold">
                 {activeFilterCount}
               </span>
             )}
@@ -152,7 +152,7 @@ export default function SearchResultsPage() {
             <button
               type="button"
               onClick={() => setIsSortOpen(!isSortOpen)}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 text-cta px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
             >
               <ArrowUpDown className="w-3.5 h-3.5" />
               <span>Sort</span>
@@ -164,28 +164,28 @@ export default function SearchResultsPage() {
                 <button
                   type="button"
                   onClick={() => handleSortChange('')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
+                  className="w-full text-left px-4 py-2 text-nav-link hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
                 >
                   Featured
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSortChange('price_asc')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
+                  className="w-full text-left px-4 py-2 text-nav-link hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
                 >
                   Price: Low to High
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSortChange('price_desc')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
+                  className="w-full text-left px-4 py-2 text-nav-link hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
                 >
                   Price: High to Low
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSortChange('newest')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
+                  className="w-full text-left px-4 py-2 text-nav-link hover:bg-vistaro-secondary text-vistaro-primary cursor-pointer"
                 >
                   Newest First
                 </button>
@@ -195,7 +195,7 @@ export default function SearchResultsPage() {
 
           <Link
             to="/"
-            className="flex items-center gap-1 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors"
+            className="flex items-center gap-1 text-cta px-3.5 py-2 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> All Listings
           </Link>
@@ -226,19 +226,19 @@ export default function SearchResultsPage() {
           <div className="w-12 h-12 rounded-full bg-vistaro-secondary text-vistaro-error border border-vistaro-border flex items-center justify-center mx-auto">
             <Search className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-base text-vistaro-primary">Search Request Failed</h3>
-          <p className="text-xs text-vistaro-secondary max-w-sm mx-auto">{error}</p>
+          <h3 className="text-display-h3 text-vistaro-primary">Search Request Failed</h3>
+          <p className="text-body-sm text-vistaro-secondary max-w-sm mx-auto">{error}</p>
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
             >
               Retry Search
             </button>
             <Link
               to="/"
-              className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
+              className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-cta py-2.5 px-5 rounded-full transition-colors"
             >
               View All Stays
             </Link>
@@ -250,13 +250,13 @@ export default function SearchResultsPage() {
       {!loading && !error && results.length === 0 && (
         <div className="text-center py-16 px-4 bg-vistaro-surface rounded-3xl border border-vistaro-border">
           <Search className="w-12 h-12 text-vistaro-muted mx-auto mb-3" />
-          <h3 className="font-bold text-lg text-vistaro-primary">No exact matches found</h3>
-          <p className="text-sm text-vistaro-muted max-w-md mx-auto mt-1 mb-4">
+          <h3 className="text-display-h3 text-vistaro-primary">No exact matches found</h3>
+          <p className="text-body text-vistaro-muted max-w-md mx-auto mt-1 mb-4">
             Try adjusting your search location, price bounds, or changing dates.
           </p>
           <Link
             to="/"
-            className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors"
+            className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-colors"
           >
             Explore All Places
           </Link>
@@ -292,7 +292,7 @@ export default function SearchResultsPage() {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`w-8 h-8 rounded-full text-xs font-bold transition-colors cursor-pointer ${isCurrent ? 'bg-vistaro-accent text-white' : 'text-vistaro-secondary hover:bg-vistaro-secondary'
+                      className={`w-8 h-8 rounded-full text-nav-link transition-colors cursor-pointer ${isCurrent ? 'bg-vistaro-accent text-white' : 'text-vistaro-secondary hover:bg-vistaro-secondary'
                         }`}
                     >
                       {pageNum}

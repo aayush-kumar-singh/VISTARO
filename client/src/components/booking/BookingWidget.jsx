@@ -164,16 +164,16 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
         {/* Price Header */}
         <div className="flex items-baseline justify-between mb-4">
           <div>
-            <span className="text-2xl font-bold text-vistaro-primary">{formatPrice(listing.price)}</span>
-            <span className="text-sm text-vistaro-muted"> / night</span>
+            <span className="text-price text-2xl text-vistaro-primary">{formatPrice(listing.price)}</span>
+            <span className="text-body-sm text-vistaro-muted"> / night</span>
           </div>
-          <span className="text-xs font-semibold text-vistaro-muted capitalize bg-vistaro-secondary px-2.5 py-1 rounded-full border border-vistaro-border">
+          <span className="text-caption text-vistaro-muted capitalize bg-vistaro-secondary px-2.5 py-1 rounded-full border border-vistaro-border">
             {policyType} policy
           </span>
         </div>
 
         {isOwner ? (
-          <div className="p-4 bg-vistaro-secondary border border-vistaro-border rounded-2xl text-vistaro-rating text-xs font-medium mb-4 flex items-center gap-2">
+          <div className="p-4 bg-vistaro-secondary border border-vistaro-border rounded-2xl text-vistaro-rating text-body-sm font-medium mb-4 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-vistaro-rating" />
             <span>You are the host of this stay. Bookings cannot be placed on your own listing.</span>
           </div>
@@ -183,7 +183,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
             <div className="border border-vistaro-border rounded-2xl overflow-hidden focus-within:border-vistaro-accent transition-colors">
               <div className="grid grid-cols-2 divide-x divide-vistaro-border">
                 <div className="p-2.5 bg-vistaro-secondary/50">
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-vistaro-muted mb-0.5">
+                  <label className="block text-label text-vistaro-muted mb-0.5">
                     Check-in
                   </label>
                   <input
@@ -191,13 +191,13 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
                     min={todayStr}
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
-                    className="w-full bg-transparent text-xs font-semibold text-vistaro-primary focus:outline-hidden cursor-pointer"
+                    className="w-full bg-transparent text-body-sm font-semibold text-vistaro-primary focus:outline-hidden cursor-pointer"
                     required
                   />
                 </div>
 
                 <div className="p-2.5 bg-vistaro-secondary/50">
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-vistaro-muted mb-0.5">
+                  <label className="block text-label text-vistaro-muted mb-0.5">
                     Check-out
                   </label>
                   <input
@@ -205,7 +205,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
                     min={checkIn || todayStr}
                     value={checkOut}
                     onChange={(e) => setCheckOut(e.target.value)}
-                    className="w-full bg-transparent text-xs font-semibold text-vistaro-primary focus:outline-hidden cursor-pointer"
+                    className="w-full bg-transparent text-body-sm font-semibold text-vistaro-primary focus:outline-hidden cursor-pointer"
                     required
                   />
                 </div>
@@ -213,13 +213,13 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
 
               {/* Guests Selector */}
               <div className="border-t border-vistaro-border p-2.5 bg-vistaro-secondary/50">
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-vistaro-muted mb-0.5">
+                <label className="block text-label text-vistaro-muted mb-0.5">
                   Guests
                 </label>
                 <select
                   value={guests}
                   onChange={(e) => setGuests(e.target.value)}
-                  className="w-full bg-transparent text-xs font-semibold text-vistaro-primary focus:outline-hidden cursor-pointer"
+                  className="w-full bg-transparent text-body-sm font-semibold text-vistaro-primary focus:outline-hidden cursor-pointer"
                 >
                   {Array.from({ length: listing.maxGuests || 4 }).map((_, i) => (
                     <option key={i + 1} value={i + 1} className="bg-vistaro-surface text-vistaro-primary">
@@ -231,7 +231,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
             </div>
 
             {hasConflict && (
-              <div className="text-xs text-vistaro-error font-semibold bg-vistaro-secondary p-2.5 rounded-xl border border-vistaro-error/30">
+              <div className="text-body-sm text-vistaro-error font-semibold bg-vistaro-secondary p-2.5 rounded-xl border border-vistaro-error/30">
                 These dates are already booked. Please choose alternative dates.
               </div>
             )}
@@ -240,7 +240,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
             <button
               type="submit"
               disabled={hasConflict}
-              className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm"
+              className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3.5 px-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               Reserve Stay
             </button>
@@ -249,26 +249,26 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
 
         {/* Pricing Breakdown */}
         {nights > 0 && !hasConflict && (
-          <div className="mt-5 pt-4 border-t border-vistaro-border space-y-2 text-xs text-vistaro-secondary">
+          <div className="mt-5 pt-4 border-t border-vistaro-border space-y-2 text-body-sm text-vistaro-secondary">
             <div className="flex justify-between">
               <span>
                 {formatPrice(listing.price)} &times; {nights} night{nights > 1 ? 's' : ''}
               </span>
-              <span className="font-semibold text-vistaro-primary">{formatPrice(basePrice)}</span>
+              <span className="font-medium text-vistaro-primary">{formatPrice(basePrice)}</span>
             </div>
             <div className="flex justify-between">
               <span>GST (18%)</span>
-              <span className="font-semibold text-vistaro-primary">{formatPrice(gstPrice)}</span>
+              <span className="font-medium text-vistaro-primary">{formatPrice(gstPrice)}</span>
             </div>
-            <div className="flex justify-between text-sm font-bold text-vistaro-primary pt-3 border-t border-vistaro-border">
+            <div className="flex justify-between text-body-sm font-semibold text-vistaro-primary pt-3 border-t border-vistaro-border">
               <span>Total amount</span>
-              <span className="text-vistaro-accent">{formatPrice(totalPrice)}</span>
+              <span className="text-price text-base text-vistaro-accent">{formatPrice(totalPrice)}</span>
             </div>
           </div>
         )}
 
         {/* Reassurance Badge */}
-        <div className="mt-5 flex items-center justify-center gap-2 text-xs text-vistaro-muted">
+        <div className="mt-5 flex items-center justify-center gap-2 text-body-sm text-vistaro-muted">
           <ShieldCheck className="w-4 h-4 text-vistaro-success" />
           <span>You can review all details before confirming</span>
         </div>
@@ -283,7 +283,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
 
             {/* Modal Header */}
             <div className="flex items-center justify-between p-5 border-b border-vistaro-border">
-              <h2 className="text-lg font-bold text-vistaro-primary">Review your trip details</h2>
+              <h2 className="text-display-h3 text-vistaro-primary">Review your trip details</h2>
               <button
                 type="button"
                 onClick={() => setShowSummaryModal(false)}
@@ -303,16 +303,16 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
                   <img src={primaryImage} alt={listing.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-vistaro-accent">
+                  <span className="text-label text-vistaro-accent">
                     {listing.category || 'Stay'}
                   </span>
-                  <h3 className="font-bold text-sm text-vistaro-primary truncate mt-0.5">
+                  <h3 className="text-card-title text-vistaro-primary truncate mt-0.5">
                     {listing.title}
                   </h3>
-                  <p className="text-xs text-vistaro-muted truncate mt-0.5">
+                  <p className="text-body-sm text-vistaro-muted truncate mt-0.5">
                     {listing.location}, {listing.country}
                   </p>
-                  <p className="text-xs text-vistaro-muted mt-1">
+                  <p className="text-body-sm text-vistaro-muted mt-1">
                     Hosted by @{typeof listing.owner === 'object' ? listing.owner?.username : 'Host'}
                   </p>
                 </div>
@@ -320,23 +320,23 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
 
               {/* Trip Schedule Grid */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-vistaro-muted">
+                <h4 className="text-label text-vistaro-muted">
                   Your reservation
                 </h4>
-                <div className="grid grid-cols-2 gap-3 bg-vistaro-surface p-3.5 rounded-2xl border border-vistaro-border text-xs">
+                <div className="grid grid-cols-2 gap-3 bg-vistaro-surface p-3.5 rounded-2xl border border-vistaro-border text-body-sm">
                   <div>
-                    <span className="text-vistaro-muted block mb-0.5">Check-in</span>
-                    <span className="font-bold text-vistaro-primary block">{formattedCheckIn}</span>
-                    <span className="text-[11px] text-vistaro-muted">After 2:00 PM</span>
+                    <span className="text-muted block mb-0.5">Check-in</span>
+                    <span className="font-semibold text-vistaro-primary block">{formattedCheckIn}</span>
+                    <span className="text-caption text-vistaro-muted">After 2:00 PM</span>
                   </div>
                   <div>
-                    <span className="text-vistaro-muted block mb-0.5">Check-out</span>
-                    <span className="font-bold text-vistaro-primary block">{formattedCheckOut}</span>
-                    <span className="text-[11px] text-vistaro-muted">By 11:00 AM</span>
+                    <span className="text-muted block mb-0.5">Check-out</span>
+                    <span className="font-semibold text-vistaro-primary block">{formattedCheckOut}</span>
+                    <span className="text-caption text-vistaro-muted">By 11:00 AM</span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs px-1 text-vistaro-secondary">
+                <div className="flex items-center justify-between text-body-sm px-1 text-vistaro-secondary">
                   <span>Duration: <b className="text-vistaro-primary">{nights} night{nights > 1 ? 's' : ''}</b></span>
                   <span>Guests: <b className="text-vistaro-primary">{guests} guest{guests > 1 ? 's' : ''}</b></span>
                 </div>
@@ -344,32 +344,32 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
 
               {/* Price Breakdown */}
               <div className="space-y-3 pt-4 border-t border-vistaro-border">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-vistaro-muted">
+                <h4 className="text-label text-vistaro-muted">
                   Price Breakdown
                 </h4>
-                <div className="space-y-2 text-xs text-vistaro-secondary bg-vistaro-secondary p-4 rounded-2xl border border-vistaro-border">
+                <div className="space-y-2 text-body-sm text-vistaro-secondary bg-vistaro-secondary p-4 rounded-2xl border border-vistaro-border">
                   <div className="flex justify-between">
                     <span>{formatPrice(listing.price)} &times; {nights} night{nights > 1 ? 's' : ''}</span>
-                    <span className="font-semibold text-vistaro-primary">{formatPrice(basePrice)}</span>
+                    <span className="font-medium text-vistaro-primary">{formatPrice(basePrice)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>GST (18%)</span>
-                    <span className="font-semibold text-vistaro-primary">{formatPrice(gstPrice)}</span>
+                    <span className="font-medium text-vistaro-primary">{formatPrice(gstPrice)}</span>
                   </div>
-                  <div className="flex justify-between text-sm font-bold text-vistaro-primary pt-2 border-t border-vistaro-border">
+                  <div className="flex justify-between text-body-sm font-semibold text-vistaro-primary pt-2 border-t border-vistaro-border">
                     <span>Total due</span>
-                    <span className="text-vistaro-accent font-extrabold text-base">{formatPrice(totalPrice)}</span>
+                    <span className="text-price text-base text-vistaro-accent">{formatPrice(totalPrice)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Cancellation Policy Snapshot */}
               <div className="space-y-2 pt-2 border-t border-vistaro-border">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-vistaro-muted">
+                <h4 className="text-label text-vistaro-muted">
                   Cancellation Policy
                 </h4>
-                <div className="bg-vistaro-secondary border border-vistaro-border rounded-2xl p-3.5 text-xs text-vistaro-primary">
-                  <span className="font-bold capitalize block mb-0.5 text-vistaro-accent">{policyType} Policy</span>
+                <div className="bg-vistaro-secondary border border-vistaro-border rounded-2xl p-3.5 text-body-sm text-vistaro-primary">
+                  <span className="font-semibold capitalize block mb-0.5 text-vistaro-accent">{policyType} Policy</span>
                   <p className="text-vistaro-secondary leading-relaxed">
                     {policyDescriptions[policyType] || policyDescriptions.flexible}
                   </p>
@@ -377,7 +377,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
               </div>
 
               {/* Email Delivery confirmation */}
-              <div className="flex items-center gap-2.5 text-xs text-vistaro-secondary bg-vistaro-secondary p-3 rounded-2xl border border-vistaro-border">
+              <div className="flex items-center gap-2.5 text-body-sm text-vistaro-secondary bg-vistaro-secondary p-3 rounded-2xl border border-vistaro-border">
                 <Mail className="w-4 h-4 text-vistaro-accent shrink-0" />
                 <span>Booking confirmation & receipt will be sent to <b className="text-vistaro-primary">{user?.email}</b></span>
               </div>
@@ -390,7 +390,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
                 type="button"
                 onClick={() => setShowSummaryModal(false)}
                 disabled={isSubmitting}
-                className="text-xs font-semibold text-vistaro-secondary hover:text-vistaro-primary px-4 py-2 cursor-pointer"
+                className="text-body-sm text-vistaro-secondary hover:text-vistaro-primary px-4 py-2 cursor-pointer"
               >
                 Edit details
               </button>
@@ -399,7 +399,7 @@ export default function BookingWidget({ listing, activeBookings = [] }) {
                 type="button"
                 onClick={handleFinalConfirm}
                 disabled={isSubmitting}
-                className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+                className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex items-center gap-2 cursor-pointer"
               >
                 <span>{isSubmitting ? 'Confirming Stay...' : `Confirm & Pay ${formatPrice(totalPrice)}`}</span>
                 {!isSubmitting && <ArrowRight className="w-4 h-4" />}

@@ -77,11 +77,11 @@ export default function ListingDetailPage() {
     return (
       <div className="text-center py-20 bg-vistaro-surface rounded-3xl border border-vistaro-border">
         <ShieldAlert className="w-12 h-12 text-vistaro-error mx-auto mb-3" />
-        <h2 className="text-xl font-bold text-vistaro-primary mb-2">Property Not Found</h2>
-        <p className="text-sm text-vistaro-secondary mb-6">{error || "The listing you requested doesn't exist or was removed."}</p>
+        <h2 className="text-display-h2 text-vistaro-primary mb-2">Property Not Found</h2>
+        <p className="text-body-sm text-vistaro-secondary mb-6">{error || "The listing you requested doesn't exist or was removed."}</p>
         <Link
           to="/"
-          className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
+          className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-colors cursor-pointer"
         >
           Back to all listings
         </Link>
@@ -211,7 +211,7 @@ export default function ListingDetailPage() {
     <div className="w-full max-w-[1180px] mx-auto space-y-6 text-vistaro-primary transition-colors duration-200">
 
       {/* 1. Breadcrumb Navigation */}
-      <nav className="flex items-center gap-1.5 text-xs text-vistaro-muted">
+      <nav className="flex items-center gap-1.5 text-body-sm text-vistaro-muted">
         <Link to="/" className="hover:underline hover:text-vistaro-primary">
           All Listings
         </Link>
@@ -230,18 +230,18 @@ export default function ListingDetailPage() {
       {/* 2. Header Title & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-vistaro-primary tracking-tight">
+          <h1 className="text-display-hero text-vistaro-primary">
             {listing.title}
           </h1>
-          <p className="text-xs sm:text-sm text-vistaro-secondary mt-1 flex items-center gap-1">
+          <p className="text-body-sm text-vistaro-secondary mt-1 flex items-center gap-1">
             <MapPin className="w-4 h-4 text-vistaro-accent shrink-0" />
             <span>{listing.location}, {listing.country}</span>
             {averageRating && (
               <>
                 <span className="mx-1">&middot;</span>
                 <Star className="w-3.5 h-3.5 fill-vistaro-rating text-vistaro-rating" />
-                <span className="font-bold text-vistaro-primary">{averageRating}</span>
-                <span className="text-vistaro-muted">({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
+                <span className="text-rating text-vistaro-primary">{averageRating}</span>
+                <span className="text-muted">({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
               </>
             )}
           </p>
@@ -254,14 +254,14 @@ export default function ListingDetailPage() {
             <>
               <Link
                 to={`/listings/${listing._id}/edit`}
-                className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary transition-colors"
+                className="flex items-center gap-1.5 text-cta px-3.5 py-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary transition-colors"
               >
                 <Edit3 className="w-3.5 h-3.5" /> Edit
               </Link>
               <button
                 onClick={handleDeleteListing}
                 disabled={isDeleting}
-                className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-error/30 text-vistaro-error hover:bg-vistaro-secondary transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 text-cta px-3.5 py-2 rounded-full border border-vistaro-error/30 text-vistaro-error hover:bg-vistaro-secondary transition-colors cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" /> Delete
               </button>
@@ -271,7 +271,7 @@ export default function ListingDetailPage() {
           {/* Share */}
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-cta px-3.5 py-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
           >
             <Share2 className="w-3.5 h-3.5" /> Share
           </button>
@@ -279,7 +279,7 @@ export default function ListingDetailPage() {
           {/* Wishlist */}
           <button
             onClick={handleWishlistToggle}
-            className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border transition-colors cursor-pointer ${isSaved
+            className={`flex items-center gap-1.5 text-cta px-3.5 py-2 rounded-full border transition-colors cursor-pointer ${isSaved
                 ? 'border-vistaro-accent bg-vistaro-secondary text-vistaro-accent'
                 : 'border-vistaro-border hover:bg-vistaro-secondary text-vistaro-secondary hover:text-vistaro-primary'
               }`}
@@ -302,14 +302,14 @@ export default function ListingDetailPage() {
           {/* Host Info Banner */}
           <div className="flex items-center justify-between pb-6 border-b border-vistaro-border">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-bold text-lg">
+              <div className="w-12 h-12 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-semibold text-lg">
                 {listing.owner?.username ? listing.owner.username.charAt(0).toUpperCase() : 'H'}
               </div>
               <div>
-                <h3 className="font-bold text-base text-vistaro-primary">
+                <h3 className="text-display-h3 text-vistaro-primary">
                   Hosted by @{listing.owner?.username || 'Host'}
                 </h3>
-                <p className="text-xs text-vistaro-muted">
+                <p className="text-muted">
                   Max capacity: {listing.maxGuests || 4} guests &middot; {listing.category} stay
                 </p>
               </div>
@@ -318,7 +318,7 @@ export default function ListingDetailPage() {
             {!isOwner && (
               <button
                 onClick={handleContactHost}
-                className="flex items-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 text-cta px-4 py-2.5 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5 text-vistaro-accent" /> Contact Host
               </button>
@@ -327,33 +327,33 @@ export default function ListingDetailPage() {
 
           {/* Description */}
           <div className="space-y-3 pb-6 border-b border-vistaro-border">
-            <h3 className="font-bold text-lg text-vistaro-primary">About this place</h3>
-            <p className="text-sm text-vistaro-secondary leading-relaxed whitespace-pre-line">
+            <h2 className="text-display-h2 text-vistaro-primary">About this place</h2>
+            <p className="text-body text-vistaro-secondary leading-relaxed whitespace-pre-line">
               {listing.description}
             </p>
           </div>
 
           {/* Amenities */}
           <div className="space-y-4 pb-6 border-b border-vistaro-border">
-            <h3 className="font-bold text-lg text-vistaro-primary">What this place offers</h3>
+            <h2 className="text-display-h2 text-vistaro-primary">What this place offers</h2>
             {listing.amenities && listing.amenities.length > 0 ? (
               <div className="grid grid-cols-2 gap-3">
                 {listing.amenities.map((amenity, i) => (
-                  <div key={i} className="flex items-center gap-2.5 text-sm text-vistaro-secondary">
+                  <div key={i} className="flex items-center gap-2.5 text-body-sm text-vistaro-secondary">
                     <Sparkles className="w-4 h-4 text-vistaro-accent" />
                     <span>{amenity}</span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-vistaro-muted">Standard amenities provided by host.</p>
+              <p className="text-muted">Standard amenities provided by host.</p>
             )}
           </div>
 
           {/* Location Map */}
           <div className="space-y-4 pb-6 border-b border-vistaro-border">
-            <h3 className="font-bold text-lg text-vistaro-primary">Where you'll be</h3>
-            <p className="text-sm text-vistaro-secondary">{listing.location}, {listing.country}</p>
+            <h2 className="text-display-h2 text-vistaro-primary">Where you'll be</h2>
+            <p className="text-body-sm text-vistaro-secondary">{listing.location}, {listing.country}</p>
             <MapView
               geometry={listing.geometry}
               title={listing.title}
@@ -366,10 +366,10 @@ export default function ListingDetailPage() {
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <Star className="w-5 h-5 fill-vistaro-rating text-vistaro-rating" />
-              <h3 className="font-bold text-xl text-vistaro-primary">
+              <h2 className="text-display-h2 text-vistaro-primary">
                 {averageRating ? `${averageRating} · ` : ''}
                 {reviews.length} {reviews.length === 1 ? 'Review' : 'Reviews'}
-              </h3>
+              </h2>
             </div>
 
             {/* Review Form */}
@@ -392,7 +392,7 @@ export default function ListingDetailPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-vistaro-muted italic">No reviews yet for this listing. Be the first to leave a review!</p>
+              <p className="text-body-sm text-vistaro-muted italic">No reviews yet for this listing. Be the first to leave a review!</p>
             )}
           </div>
 
@@ -408,9 +408,9 @@ export default function ListingDetailPage() {
       {/* 5. Similar Listings Section */}
       {similarListings.length > 0 && (
         <div className="mt-16 pt-10 border-t border-vistaro-border space-y-6">
-          <h3 className="font-bold text-xl text-vistaro-primary">
+          <h2 className="text-display-h2 text-vistaro-primary">
             Similar stays in "{listing.category || 'Trending'}"
-          </h3>
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {similarListings.map((sim) => (
               <ListingCard key={sim._id} listing={sim} />
@@ -440,8 +440,8 @@ export default function ListingDetailPage() {
                   <CheckCircle2 className="w-9 h-9" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-xl font-extrabold text-vistaro-primary">Message Delivered!</h3>
-                  <p className="text-xs sm:text-sm text-vistaro-secondary max-w-xs mx-auto">
+                  <h3 className="text-display-h3 text-vistaro-primary">Message Delivered!</h3>
+                  <p className="text-body-sm text-vistaro-secondary max-w-xs mx-auto">
                     Your message was sent to <b>@{listing.owner?.username || 'the host'}</b>. You can continue the conversation in your messages inbox.
                   </p>
                 </div>
@@ -453,7 +453,7 @@ export default function ListingDetailPage() {
                       if (conversationId) navigate(`/inbox?conv=${conversationId}`);
                       else navigate('/inbox');
                     }}
-                    className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-3 px-6 rounded-full transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>Open Messages Inbox</span>
                     <ArrowRight className="w-4 h-4" />
@@ -461,7 +461,7 @@ export default function ListingDetailPage() {
                   <button
                     type="button"
                     onClick={() => setIsContactModalOpen(false)}
-                    className="w-full bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-xs font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
+                    className="w-full bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-cta py-3 px-6 rounded-full transition-colors cursor-pointer"
                   >
                     Back to Stay
                   </button>
@@ -473,14 +473,14 @@ export default function ListingDetailPage() {
 
                 {/* Header info */}
                 <div className="flex items-center gap-3.5 pb-4 border-b border-vistaro-border">
-                  <div className="w-12 h-12 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-bold text-base uppercase shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-semibold text-base uppercase shrink-0">
                     {(listing.owner?.username || 'H').charAt(0)}
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-base text-vistaro-primary">
+                    <h3 className="text-display-h3 text-vistaro-primary">
                       Contact @{listing.owner?.username || 'Host'}
                     </h3>
-                    <p className="text-xs text-vistaro-muted truncate max-w-xs">
+                    <p className="text-muted truncate max-w-xs">
                       Inquiring about <span className="font-semibold text-vistaro-primary">{listing.title}</span>
                     </p>
                   </div>
@@ -488,7 +488,7 @@ export default function ListingDetailPage() {
 
                 {/* Prompt Suggestions */}
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-vistaro-muted uppercase tracking-wider">
+                  <label className="text-label text-vistaro-muted">
                     Quick Suggestions
                   </label>
                   <div className="flex flex-wrap gap-1.5">
@@ -502,7 +502,7 @@ export default function ListingDetailPage() {
                         key={idx}
                         type="button"
                         onClick={() => setContactMessage(prompt)}
-                        className="text-[11px] font-medium bg-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-accent border border-vistaro-border hover:border-vistaro-accent rounded-full px-3 py-1 transition-all cursor-pointer text-vistaro-secondary text-left"
+                        className="text-caption font-normal bg-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-accent border border-vistaro-border hover:border-vistaro-accent rounded-full px-3 py-1 transition-all cursor-pointer text-vistaro-secondary text-left"
                       >
                         {prompt}
                       </button>
@@ -512,7 +512,7 @@ export default function ListingDetailPage() {
 
                 {/* Message Textarea */}
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-vistaro-muted uppercase tracking-wider">
+                  <label className="text-label text-vistaro-muted">
                     Your Message
                   </label>
                   <textarea
@@ -523,12 +523,12 @@ export default function ListingDetailPage() {
                       if (contactError) setContactError('');
                     }}
                     placeholder={`Hello @${listing.owner?.username || 'Host'}, I have a question about this stay...`}
-                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl p-3.5 text-xs sm:text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors resize-none"
+                    className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl p-3.5 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors resize-none"
                     required
                     maxLength={1000}
                     disabled={isSendingContact}
                   />
-                  <div className="flex items-center justify-between text-[10px] text-vistaro-muted px-1">
+                  <div className="flex items-center justify-between text-caption text-vistaro-muted px-1">
                     <span>Be polite and respectful.</span>
                     <span>{contactMessage.length} / 1000</span>
                   </div>
@@ -536,7 +536,7 @@ export default function ListingDetailPage() {
 
                 {/* Error Banner */}
                 {contactError && (
-                  <div className="p-3 rounded-2xl bg-vistaro-secondary border border-vistaro-error/30 flex items-center gap-2 text-xs text-vistaro-error animate-fade-in">
+                  <div className="p-3 rounded-2xl bg-vistaro-secondary border border-vistaro-error/30 flex items-center gap-2 text-body-sm text-vistaro-error animate-fade-in">
                     <AlertCircle className="w-4 h-4 shrink-0" />
                     <span className="flex-1 font-medium">{contactError}</span>
                   </div>
@@ -548,14 +548,14 @@ export default function ListingDetailPage() {
                     type="button"
                     onClick={() => setIsContactModalOpen(false)}
                     disabled={isSendingContact}
-                    className="bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-xs font-bold py-3 px-5 rounded-full transition-colors cursor-pointer"
+                    className="bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-cta py-3 px-5 rounded-full transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSendingContact || !contactMessage.trim()}
-                    className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-3 px-6 rounded-full transition-all shadow-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-all shadow-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {isSendingContact ? (
                       <>

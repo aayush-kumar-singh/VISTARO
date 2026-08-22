@@ -18,8 +18,8 @@ export default function ReviewForm({ listingId, packageId, experienceId, onRevie
   if (!user) {
     return (
       <div className="bg-vistaro-secondary border border-vistaro-border rounded-2xl p-5 text-center transition-colors duration-200">
-        <h4 className="text-sm font-semibold text-vistaro-primary mb-1">Leave a Review</h4>
-        <p className="text-xs text-vistaro-secondary mb-3">
+        <h4 className="text-display-h3 text-vistaro-primary mb-1">Leave a Review</h4>
+        <p className="text-body-sm text-vistaro-secondary mb-3">
           {isExperience
             ? 'Please sign in with your account to review this host-led experience.'
             : isPackage
@@ -28,7 +28,7 @@ export default function ReviewForm({ listingId, packageId, experienceId, onRevie
         </p>
         <a
           href="/login"
-          className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2 px-5 rounded-full transition-colors cursor-pointer"
+          className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2 px-5 rounded-full transition-colors cursor-pointer"
         >
           Log In to Review
         </a>
@@ -73,17 +73,17 @@ export default function ReviewForm({ listingId, packageId, experienceId, onRevie
 
   return (
     <form onSubmit={handleSubmit} className="bg-vistaro-surface rounded-3xl p-6 border border-vistaro-border shadow-sm space-y-4 transition-colors duration-200">
-      <h3 className="font-bold text-base text-vistaro-primary">Leave a Review</h3>
+      <h3 className="text-display-h3 text-vistaro-primary">Leave a Review</h3>
 
       <div>
-        <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-muted mb-1.5">
+        <label className="block text-label text-vistaro-muted mb-1.5">
           Rating ({rating} of 5 stars)
         </label>
         <StarRating rating={rating} size="md" interactive onChange={setRating} />
       </div>
 
       <div>
-        <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-muted mb-1.5">
+        <label className="block text-label text-vistaro-muted mb-1.5">
           Your Experience
         </label>
         <textarea
@@ -91,7 +91,7 @@ export default function ReviewForm({ listingId, packageId, experienceId, onRevie
           placeholder="What did you love about this place? How was the location and host communication?"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl p-3.5 text-sm focus:outline-hidden focus:border-vistaro-accent transition-colors placeholder:text-vistaro-muted"
+          className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl p-3.5 text-body-sm focus:outline-hidden focus:border-vistaro-accent transition-colors placeholder:text-vistaro-muted"
           required
         />
       </div>
@@ -99,7 +99,7 @@ export default function ReviewForm({ listingId, packageId, experienceId, onRevie
       <button
         type="submit"
         disabled={isSubmitting}
-        className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-3 px-6 rounded-full transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
+        className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
       >
         {isSubmitting ? 'Submitting Review...' : 'Submit Review'}
       </button>

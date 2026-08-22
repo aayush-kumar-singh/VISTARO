@@ -52,15 +52,15 @@ export default function Footer() {
           </button>
         </div>
 
-        {/* Copyright */}
-        <div className="text-center text-xs font-semibold text-vistaro-secondary mb-4 flex items-center justify-center gap-1">
+        {/* Copyright & Masthead */}
+        <div className="text-center text-footer text-vistaro-secondary mb-4 flex items-center justify-center gap-1">
           <span>&copy; {new Date().getFullYear()} Vistaro, Inc. Crafted with</span>
           <Heart className="w-3.5 h-3.5 fill-vistaro-accent text-vistaro-accent" />
           <span>for explorers worldwide.</span>
         </div>
 
         {/* Functional Footer Links */}
-        <div className="flex justify-center items-center gap-6 text-xs text-vistaro-muted font-medium">
+        <div className="flex justify-center items-center gap-6 text-footer text-vistaro-muted">
           <Link
             to="/privacy"
             className="hover:underline hover:text-vistaro-primary transition-colors"
@@ -96,10 +96,10 @@ export default function Footer() {
             </div>
 
             <div className="space-y-1.5">
-              <h3 className="font-extrabold text-xl text-vistaro-primary">
+              <h3 className="text-display-h3 text-vistaro-primary">
                 Coming Soon!
               </h3>
-              <p className="text-xs text-vistaro-secondary leading-relaxed">
+              <p className="text-body-sm text-vistaro-secondary leading-relaxed">
                 Our official <b>{modalApp}</b> community is launching shortly. Follow us soon for exclusive travel perks, stay inspiration, and community stories!
               </p>
             </div>
@@ -108,7 +108,7 @@ export default function Footer() {
               <button
                 type="button"
                 onClick={() => setModalApp(null)}
-                className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-3 px-6 rounded-full transition-all shadow-xs cursor-pointer"
+                className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-all shadow-xs cursor-pointer"
               >
                 Got it, thank you!
               </button>

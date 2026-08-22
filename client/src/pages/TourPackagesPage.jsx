@@ -81,10 +81,10 @@ export default function TourPackagesPage() {
       {/* 1. Clean Title Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-vistaro-border">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-vistaro-primary tracking-tight">
+          <h1 className="text-display-hero text-vistaro-primary">
             Curated Tour Packages
           </h1>
-          <p className="text-xs sm:text-sm text-vistaro-muted mt-1">
+          <p className="text-body text-vistaro-muted mt-1">
             Expertly planned multi-day regional expeditions with luxury stays, verified local guides, and scenic transfers.
           </p>
         </div>
@@ -99,7 +99,7 @@ export default function TourPackagesPage() {
             <button
               type="button"
               onClick={() => handleDestinationSelect('')}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-4 py-2 rounded-full text-nav-link transition-all cursor-pointer whitespace-nowrap ${
                 !selectedDestSlug
                   ? 'bg-vistaro-accent text-white shadow-xs'
                   : 'bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary border border-vistaro-border'
@@ -115,7 +115,7 @@ export default function TourPackagesPage() {
                   key={d._id}
                   type="button"
                   onClick={() => handleDestinationSelect(d.slug)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`px-4 py-2 rounded-full text-nav-link transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                     isSelected
                       ? 'bg-vistaro-accent text-white shadow-xs'
                       : 'bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-primary border border-vistaro-border'
@@ -134,7 +134,7 @@ export default function TourPackagesPage() {
             <select
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="bg-vistaro-surface border border-vistaro-border rounded-full px-3.5 py-1.5 text-xs font-bold text-vistaro-primary focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+              className="bg-vistaro-surface border border-vistaro-border rounded-full px-3.5 py-1.5 text-nav-link text-vistaro-primary focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
             >
               <option value="all">All Difficulties</option>
               <option value="Easy">Easy</option>
@@ -147,7 +147,7 @@ export default function TourPackagesPage() {
 
         {/* Selected Destination Indicator banner if filtered */}
         {selectedDestSlug && (
-          <div className="flex items-center justify-between bg-vistaro-secondary border border-vistaro-border rounded-2xl px-4 py-2 text-xs text-vistaro-secondary">
+          <div className="flex items-center justify-between bg-vistaro-secondary border border-vistaro-border rounded-2xl px-4 py-2 text-body-sm text-vistaro-secondary">
             <span>
               Showing packages curated specifically for{' '}
               <b className="text-vistaro-primary capitalize">
@@ -157,7 +157,7 @@ export default function TourPackagesPage() {
             <button
               type="button"
               onClick={() => handleDestinationSelect('')}
-              className="text-vistaro-accent font-bold hover:underline cursor-pointer"
+              className="text-vistaro-accent font-semibold text-cta hover:underline cursor-pointer"
             >
               Clear destination filter
             </button>
@@ -176,19 +176,19 @@ export default function TourPackagesPage() {
           <div className="w-14 h-14 rounded-full bg-vistaro-secondary text-vistaro-error flex items-center justify-center mx-auto shadow-inner">
             <Compass className="w-7 h-7" />
           </div>
-          <h3 className="font-bold text-lg text-vistaro-primary">Unable to Load Tour Packages</h3>
-          <p className="text-xs sm:text-sm text-vistaro-secondary leading-relaxed">{error}</p>
+          <h3 className="text-display-h3 text-vistaro-primary">Unable to Load Tour Packages</h3>
+          <p className="text-body-sm text-vistaro-secondary leading-relaxed">{error}</p>
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               type="button"
               onClick={fetchPackages}
-              className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
             >
               <RefreshCw className="w-4 h-4" /> Try Again
             </button>
             <Link
               to="/destinations"
-              className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-xs sm:text-sm font-semibold py-2.5 px-5 rounded-full transition-colors"
+              className="bg-vistaro-secondary border border-vistaro-border hover:bg-vistaro-main text-vistaro-primary text-cta py-2.5 px-5 rounded-full transition-colors"
             >
               Browse Destinations
             </Link>
@@ -202,8 +202,8 @@ export default function TourPackagesPage() {
           <div className="w-14 h-14 rounded-full bg-vistaro-secondary text-vistaro-rating flex items-center justify-center mx-auto">
             <Compass className="w-7 h-7" />
           </div>
-          <h3 className="font-bold text-xl text-vistaro-primary">No Tour Packages Found</h3>
-          <p className="text-xs sm:text-sm text-vistaro-muted max-w-md mx-auto">
+          <h3 className="text-display-h3 text-vistaro-primary">No Tour Packages Found</h3>
+          <p className="text-body text-vistaro-muted max-w-md mx-auto">
             {selectedDestSlug
               ? 'There are currently no tour packages published for this destination. Try exploring other regions or clearing the filter.'
               : 'Our travel curators are currently crafting new regional itineraries. Please check back soon!'}
@@ -213,14 +213,14 @@ export default function TourPackagesPage() {
               <button
                 type="button"
                 onClick={() => handleDestinationSelect('')}
-                className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-5 rounded-full transition-colors cursor-pointer shadow-xs"
+                className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-5 rounded-full transition-colors cursor-pointer shadow-xs"
               >
                 View All Packages
               </button>
             )}
             <Link
               to="/destinations"
-              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-5 rounded-full transition-colors shadow-xs"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-5 rounded-full transition-colors shadow-xs"
             >
               Explore Destinations
             </Link>
@@ -231,7 +231,7 @@ export default function TourPackagesPage() {
       {/* 6. Tour Packages Grid */}
       {!loading && !error && filteredPackages.length > 0 && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between text-xs text-vistaro-muted">
+          <div className="flex items-center justify-between text-body-sm text-vistaro-muted">
             <span>Showing <b className="text-vistaro-primary">{filteredPackages.length}</b> tour package{filteredPackages.length !== 1 ? 's' : ''}</span>
           </div>
 

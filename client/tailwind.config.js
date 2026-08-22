@@ -52,7 +52,11 @@ export default {
         border: 'var(--vistaro-border)',
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        serif: ['"Fraunces"', 'ui-serif', 'Georgia', 'serif'],
+        sans: ['"General Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      fontSize: {
+        '2xs': ['0.6875rem', { lineHeight: '1rem' }],
       },
       boxShadow: {
         'sm': '0 1px 2px rgba(0, 0, 0, 0.08)',

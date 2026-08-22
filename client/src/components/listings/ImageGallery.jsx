@@ -60,7 +60,7 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
                     className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                   />
                   {isLast && displayImages.length > 5 && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-lg backdrop-blur-xs">
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-medium text-lg backdrop-blur-xs">
                       +{displayImages.length - 5} more
                     </div>
                   )}
@@ -75,7 +75,7 @@ export default function ImageGallery({ images = [], title = 'Listing' }) {
           <button
             type="button"
             onClick={() => openLightbox(0)}
-            className="absolute bottom-4 right-4 z-10 bg-vistaro-surface/95 backdrop-blur-xs hover:bg-vistaro-surface text-vistaro-primary font-semibold text-xs py-2 px-3.5 rounded-xl shadow-md border border-vistaro-border flex items-center gap-1.5 transition-all cursor-pointer"
+            className="absolute bottom-4 right-4 z-10 bg-vistaro-surface/95 backdrop-blur-xs hover:bg-vistaro-surface text-vistaro-primary text-cta py-2 px-3.5 rounded-xl shadow-md border border-vistaro-border flex items-center gap-1.5 transition-all cursor-pointer"
           >
             <Grid className="w-3.5 h-3.5 text-vistaro-secondary" />
             <span>Show all {displayImages.length} photos</span>

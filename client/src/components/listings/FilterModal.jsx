@@ -77,7 +77,7 @@ export default function FilterModal({
 
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-vistaro-border">
-          <h2 className="text-lg font-bold text-vistaro-primary">Filters</h2>
+          <h2 className="text-display-h3 text-vistaro-primary">Filters</h2>
           <button
             onClick={onClose}
             className="p-1.5 rounded-full hover:bg-vistaro-secondary text-vistaro-muted hover:text-vistaro-primary transition-colors cursor-pointer"
@@ -91,26 +91,26 @@ export default function FilterModal({
 
           {/* Price Range */}
           <div>
-            <h3 className="text-sm font-bold text-vistaro-primary mb-3">Price range (per night)</h3>
+            <h3 className="text-display-h3 text-vistaro-primary mb-3">Price range (per night)</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-vistaro-muted mb-1">Minimum (₹)</label>
+                <label className="block text-label text-vistaro-muted mb-1">Minimum (₹)</label>
                 <input
                   type="number"
                   placeholder="Min price"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-sm focus:outline-hidden focus:border-vistaro-accent"
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-body-sm focus:outline-hidden focus:border-vistaro-accent"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-vistaro-muted mb-1">Maximum (₹)</label>
+                <label className="block text-label text-vistaro-muted mb-1">Maximum (₹)</label>
                 <input
                   type="number"
                   placeholder="Max price"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-sm focus:outline-hidden focus:border-vistaro-accent"
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2.5 text-body-sm focus:outline-hidden focus:border-vistaro-accent"
                 />
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function FilterModal({
 
           {/* Guests */}
           <div>
-            <h3 className="text-sm font-bold text-vistaro-primary mb-3">Guest capacity</h3>
+            <h3 className="text-display-h3 text-vistaro-primary mb-3">Guest capacity</h3>
             <div className="flex flex-wrap gap-2">
               {['', '1', '2', '3', '4', '5', '6+'].map((g) => {
                 const isSelected = (g === '6+' ? '6' : g) === guests;
@@ -129,7 +129,7 @@ export default function FilterModal({
                     key={g}
                     type="button"
                     onClick={() => setGuests(g === '6+' ? '6' : g)}
-                    className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all cursor-pointer ${isSelected
+                    className={`px-4 py-2 rounded-full text-body-sm font-semibold border transition-all cursor-pointer ${isSelected
                         ? 'bg-vistaro-accent text-white border-vistaro-accent'
                         : 'border-vistaro-border text-vistaro-secondary hover:border-vistaro-muted bg-vistaro-surface hover:bg-vistaro-secondary'
                       }`}
@@ -145,24 +145,24 @@ export default function FilterModal({
 
           {/* Dates */}
           <div>
-            <h3 className="text-sm font-bold text-vistaro-primary mb-3">Stay Dates</h3>
+            <h3 className="text-display-h3 text-vistaro-primary mb-3">Stay Dates</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-vistaro-muted mb-1">Check-in</label>
+                <label className="block text-label text-vistaro-muted mb-1">Check-in</label>
                 <input
                   type="date"
                   value={checkIn}
                   onChange={(e) => setCheckIn(e.target.value)}
-                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2 text-sm focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2 text-body-sm focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-vistaro-muted mb-1">Check-out</label>
+                <label className="block text-label text-vistaro-muted mb-1">Check-out</label>
                 <input
                   type="date"
                   value={checkOut}
                   onChange={(e) => setCheckOut(e.target.value)}
-                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2 text-sm focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
+                  className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl px-3.5 py-2 text-body-sm focus:outline-hidden focus:border-vistaro-accent cursor-pointer"
                 />
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function FilterModal({
 
           {/* Amenities */}
           <div>
-            <h3 className="text-sm font-bold text-vistaro-primary mb-3">Amenities</h3>
+            <h3 className="text-display-h3 text-vistaro-primary mb-3">Amenities</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {AMENITY_OPTIONS.map((amenity) => {
                 const isChecked = selectedAmenities.includes(amenity);
@@ -181,9 +181,9 @@ export default function FilterModal({
                     key={amenity}
                     type="button"
                     onClick={() => toggleAmenity(amenity)}
-                    className={`flex items-center justify-between p-3 rounded-xl border text-xs font-medium text-left transition-all cursor-pointer ${isChecked
+                    className={`flex items-center justify-between p-3 rounded-xl border text-body-sm text-left transition-all cursor-pointer ${isChecked
                         ? 'border-vistaro-accent bg-vistaro-secondary text-vistaro-accent font-semibold'
-                        : 'border-vistaro-border text-vistaro-secondary hover:border-vistaro-muted bg-vistaro-surface hover:bg-vistaro-secondary'
+                        : 'border-vistaro-border text-vistaro-secondary hover:border-vistaro-muted bg-vistaro-surface hover:bg-vistaro-secondary font-normal'
                       }`}
                   >
                     <span>{amenity}</span>
@@ -208,14 +208,14 @@ export default function FilterModal({
           <button
             type="button"
             onClick={handleReset}
-            className="text-xs font-semibold text-vistaro-secondary hover:underline hover:text-vistaro-primary cursor-pointer"
+            className="text-body-sm font-semibold text-vistaro-secondary hover:underline hover:text-vistaro-primary cursor-pointer"
           >
             Clear all
           </button>
           <button
             type="button"
             onClick={handleApply}
-            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-6 rounded-full transition-colors shadow-xs cursor-pointer"
+            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-6 rounded-full transition-colors shadow-xs cursor-pointer"
           >
             Show results
           </button>

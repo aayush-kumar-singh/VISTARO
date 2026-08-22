@@ -44,13 +44,13 @@ export default function TourPackageCard({ pkg }) {
 
         {/* Top Badges */}
         <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-          <span className="inline-flex items-center gap-1 bg-vistaro-surface/95 backdrop-blur-md text-vistaro-primary border border-vistaro-border text-[11px] font-extrabold px-3 py-1 rounded-full shadow-md">
+          <span className="inline-flex items-center gap-1 bg-vistaro-surface/95 backdrop-blur-md text-vistaro-primary border border-vistaro-border text-caption px-3 py-1 rounded-full shadow-md">
             <MapPin className="w-3 h-3 text-vistaro-accent" />
             {destinationName}
           </span>
 
           <span
-            className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border backdrop-blur-md ${difficultyColors[pkg.difficultyLevel] || difficultyColors.Moderate
+            className={`text-caption px-2.5 py-0.5 rounded-full border backdrop-blur-md ${difficultyColors[pkg.difficultyLevel] || difficultyColors.Moderate
               }`}
           >
             {pkg.difficultyLevel || 'Moderate'}
@@ -58,7 +58,7 @@ export default function TourPackageCard({ pkg }) {
         </div>
 
         {/* Bottom Duration Badge */}
-        <div className="absolute bottom-3 left-3.5 flex items-center gap-1.5 text-white text-xs font-semibold drop-shadow-sm">
+        <div className="absolute bottom-3 left-3.5 flex items-center gap-1.5 text-white text-body-sm font-semibold drop-shadow-sm">
           <Clock className="w-3.5 h-3.5 text-vistaro-rating" />
           <span>
             {days} Days {nights > 0 ? `· ${nights} Nights` : ''}
@@ -69,11 +69,11 @@ export default function TourPackageCard({ pkg }) {
       {/* 2. Card Content */}
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div className="space-y-2">
-          <h3 className="font-bold text-base sm:text-lg text-vistaro-primary line-clamp-1 group-hover:text-vistaro-accent transition-colors">
+          <h3 className="text-card-title text-vistaro-primary line-clamp-1 group-hover:text-vistaro-accent transition-colors">
             {pkg.title}
           </h3>
 
-          <p className="text-xs text-vistaro-secondary line-clamp-2 leading-relaxed">
+          <p className="text-body-sm text-vistaro-secondary line-clamp-2 leading-relaxed">
             {pkg.shortDescription || pkg.longDescription || 'An unforgettable curated expedition across iconic landscapes.'}
           </p>
 
@@ -83,13 +83,13 @@ export default function TourPackageCard({ pkg }) {
               {pkg.inclusions.slice(0, 3).map((inc, i) => (
                 <span
                   key={i}
-                  className="bg-vistaro-secondary text-vistaro-secondary border border-vistaro-border text-[10px] font-medium px-2 py-0.5 rounded-md"
+                  className="bg-vistaro-secondary text-vistaro-secondary border border-vistaro-border text-2xs font-normal px-2 py-0.5 rounded-md"
                 >
                   ✓ {inc}
                 </span>
               ))}
               {pkg.inclusions.length > 3 && (
-                <span className="text-[10px] text-vistaro-muted font-semibold self-center">
+                <span className="text-2xs text-vistaro-muted font-medium self-center">
                   +{pkg.inclusions.length - 3} more
                 </span>
               )}
@@ -100,18 +100,18 @@ export default function TourPackageCard({ pkg }) {
         {/* 3. Footer: Price & CTA */}
         <div className="pt-3 border-t border-vistaro-border flex items-center justify-between">
           <div>
-            <div className="text-[10px] uppercase tracking-wider font-bold text-vistaro-muted">
+            <div className="text-label text-vistaro-muted">
               Starting from
             </div>
-            <div className="text-base font-extrabold text-vistaro-primary">
-              {formatPrice(basePrice)}
-              <span className="text-[11px] font-normal text-vistaro-muted"> / person</span>
+            <div className="text-price text-lg text-vistaro-primary flex items-baseline gap-1">
+              <span>{formatPrice(basePrice)}</span>
+              <span className="font-sans font-normal text-xs text-vistaro-muted"> / person</span>
             </div>
           </div>
 
           <Link
             to={`/tours/${pkg.slug}`}
-            className="inline-flex items-center gap-1.5 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-bold py-2.5 px-4 rounded-full transition-all duration-300 shadow-xs hover:shadow-md group-hover:translate-x-0.5 cursor-pointer"
+            className="inline-flex items-center gap-1.5 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-2.5 px-4 rounded-full transition-all duration-300 shadow-xs hover:shadow-md group-hover:translate-x-0.5 cursor-pointer"
           >
             <span>View Tour</span>
             <ArrowRight className="w-3.5 h-3.5" />

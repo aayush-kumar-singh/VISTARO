@@ -550,14 +550,14 @@ export default function AdminDashboardPage() {
       {/* 1. Header Banner & New Listing CTA */}
       <div className="bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-3xl p-6 sm:p-8 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="relative z-10 space-y-2">
-          <div className="inline-flex items-center gap-2 bg-vistaro-surface text-vistaro-accent border border-vistaro-accent/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 bg-vistaro-surface text-vistaro-accent border border-vistaro-accent/30 px-3 py-1 rounded-full text-caption">
             <Shield className="w-3.5 h-3.5" />
             <span>Administrator Control Center</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-vistaro-primary">
+          <h1 className="text-display-hero text-2xl sm:text-3xl text-vistaro-primary">
             Vistaro Global Admin Console
           </h1>
-          <p className="text-xs sm:text-sm text-vistaro-secondary max-w-xl">
+          <p className="text-body-sm text-vistaro-secondary max-w-xl">
             Manage properties, publish verified tour packages & host-led experiences, review platform revenue, and oversee user roles.
           </p>
         </div>
@@ -567,7 +567,7 @@ export default function AdminDashboardPage() {
           <button
             type="button"
             onClick={openCreateExperienceModal}
-            className="bg-vistaro-surface hover:bg-vistaro-main text-vistaro-accent text-xs sm:text-sm font-bold py-3 px-5 rounded-full transition-all border border-vistaro-border flex items-center justify-center gap-2 cursor-pointer"
+            className="bg-vistaro-surface hover:bg-vistaro-main text-vistaro-accent text-cta py-3 px-5 rounded-full transition-all border border-vistaro-border flex items-center justify-center gap-2 cursor-pointer"
           >
             <Sparkles className="w-4 h-4 text-vistaro-accent" />
             <span>New Experience</span>
@@ -575,14 +575,14 @@ export default function AdminDashboardPage() {
           <button
             type="button"
             onClick={openCreatePackageModal}
-            className="bg-vistaro-surface hover:bg-vistaro-main text-vistaro-primary text-xs sm:text-sm font-bold py-3 px-5 rounded-full transition-all border border-vistaro-border flex items-center justify-center gap-2 cursor-pointer"
+            className="bg-vistaro-surface hover:bg-vistaro-main text-vistaro-primary text-cta py-3 px-5 rounded-full transition-all border border-vistaro-border flex items-center justify-center gap-2 cursor-pointer"
           >
             <Compass className="w-4 h-4 text-vistaro-rating" />
             <span>New Package</span>
           </button>
           <Link
             to="/listings/new"
-            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-3 px-5 rounded-full transition-all shadow-md flex items-center justify-center gap-2 group cursor-pointer"
+            className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-5 rounded-full transition-all shadow-md flex items-center justify-center gap-2 group cursor-pointer"
           >
             <PlusCircle className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
             <span>New Listing</span>
@@ -599,11 +599,11 @@ export default function AdminDashboardPage() {
             <DollarSign className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-vistaro-muted">Total Booking Volume</div>
-            <div className="text-xl font-extrabold text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Total Booking Volume</div>
+            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
               {formatPrice(stats?.totalRevenue || 0)}
             </div>
-            <div className="text-[10px] text-vistaro-success font-semibold flex items-center gap-1 mt-0.5">
+            <div className="text-caption text-vistaro-success font-semibold flex items-center gap-1 mt-0.5">
               <TrendingUp className="w-3 h-3" /> Gross Total
             </div>
           </div>
@@ -615,11 +615,11 @@ export default function AdminDashboardPage() {
             <Home className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-vistaro-muted">Active Listings</div>
-            <div className="text-xl font-extrabold text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Active Listings</div>
+            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
               {stats?.totalListings || 0}
             </div>
-            <div className="text-[10px] text-vistaro-muted font-medium mt-0.5">
+            <div className="text-caption text-vistaro-muted font-medium mt-0.5">
               Published stays
             </div>
           </div>
@@ -631,11 +631,11 @@ export default function AdminDashboardPage() {
             <Compass className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-vistaro-muted">Tour Packages</div>
-            <div className="text-xl font-extrabold text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Tour Packages</div>
+            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
               {tourPackagesList.length}
             </div>
-            <div className="text-[10px] text-vistaro-muted font-medium mt-0.5">
+            <div className="text-caption text-vistaro-muted font-medium mt-0.5">
               Multi-day expeditions
             </div>
           </div>
@@ -647,11 +647,11 @@ export default function AdminDashboardPage() {
             <Sparkles className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-vistaro-muted">Experiences</div>
-            <div className="text-xl font-extrabold text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Experiences</div>
+            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
               {experiencesList.length}
             </div>
-            <div className="text-[10px] text-vistaro-muted font-medium mt-0.5">
+            <div className="text-caption text-vistaro-muted font-medium mt-0.5">
               Host immersion sessions
             </div>
           </div>
@@ -663,11 +663,11 @@ export default function AdminDashboardPage() {
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-vistaro-muted">Registered Users</div>
-            <div className="text-xl font-extrabold text-vistaro-primary mt-0.5">
+            <div className="text-label text-vistaro-muted">Registered Users</div>
+            <div className="text-price text-3xl text-vistaro-primary mt-0.5">
               {stats?.totalUsers || 0}
             </div>
-            <div className="text-[10px] text-vistaro-muted font-medium mt-0.5">
+            <div className="text-caption text-vistaro-muted font-medium mt-0.5">
               Platform members
             </div>
           </div>
@@ -679,7 +679,7 @@ export default function AdminDashboardPage() {
         <button
           type="button"
           onClick={() => setActiveTab('overview')}
-          className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer ${
             activeTab === 'overview'
               ? 'bg-vistaro-accent text-white shadow-xs'
               : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
@@ -690,7 +690,7 @@ export default function AdminDashboardPage() {
         <button
           type="button"
           onClick={() => setActiveTab('listings')}
-          className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer ${
             activeTab === 'listings'
               ? 'bg-vistaro-accent text-white shadow-xs'
               : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
@@ -701,7 +701,7 @@ export default function AdminDashboardPage() {
         <button
           type="button"
           onClick={() => setActiveTab('packages')}
-          className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'packages'
               ? 'bg-vistaro-accent text-white shadow-xs'
               : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
@@ -713,7 +713,7 @@ export default function AdminDashboardPage() {
         <button
           type="button"
           onClick={() => setActiveTab('experiences')}
-          className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'experiences'
               ? 'bg-vistaro-accent text-white shadow-xs'
               : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
@@ -725,7 +725,7 @@ export default function AdminDashboardPage() {
         <button
           type="button"
           onClick={() => setActiveTab('users')}
-          className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer ${
             activeTab === 'users'
               ? 'bg-vistaro-accent text-white shadow-xs'
               : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
@@ -736,7 +736,7 @@ export default function AdminDashboardPage() {
         <button
           type="button"
           onClick={() => setActiveTab('bookings')}
-          className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-full text-nav-link transition-all shrink-0 cursor-pointer ${
             activeTab === 'bookings'
               ? 'bg-vistaro-accent text-white shadow-xs'
               : 'text-vistaro-secondary hover:bg-vistaro-surface hover:text-vistaro-primary'
@@ -780,13 +780,13 @@ export default function AdminDashboardPage() {
                       className="w-12 h-12 rounded-xl object-cover shrink-0 bg-vistaro-surface"
                     />
                     <div className="min-w-0">
-                      <h4 className="font-bold text-xs text-vistaro-primary truncate">{listing.title}</h4>
-                      <p className="text-[11px] text-vistaro-muted truncate">{listing.location}, {listing.country}</p>
+                      <h4 className="font-semibold text-body-sm text-vistaro-primary truncate">{listing.title}</h4>
+                      <p className="text-muted truncate">{listing.location}, {listing.country}</p>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className="text-xs font-bold text-vistaro-primary">{formatPrice(listing.price)}</div>
-                    <span className="text-[10px] text-vistaro-muted capitalize">{listing.category || 'Stay'}</span>
+                    <div className="text-price text-sm text-vistaro-primary">{formatPrice(listing.price)}</div>
+                    <span className="text-caption text-vistaro-muted capitalize">{listing.category || 'Stay'}</span>
                   </div>
                 </div>
               ))}
@@ -818,18 +818,18 @@ export default function AdminDashboardPage() {
                     className="flex items-center justify-between p-3 rounded-2xl bg-vistaro-secondary border border-vistaro-border hover:border-vistaro-muted transition-colors"
                   >
                     <div className="min-w-0">
-                      <div className="font-bold text-xs text-vistaro-primary truncate">
+                      <div className="font-semibold text-body-sm text-vistaro-primary truncate">
                         {booking.listing?.title || 'Stay Reservation'}
                       </div>
-                      <div className="text-[11px] text-vistaro-muted">
+                      <div className="text-muted">
                         Guest: @{booking.user?.username || 'Guest'} &middot; {booking.guests} guest{booking.guests !== 1 ? 's' : ''}
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-xs font-extrabold text-vistaro-accent">
+                      <div className="text-price text-sm text-vistaro-accent">
                         {formatPrice(booking.totalPrice || 0)}
                       </div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-vistaro-border ${
+                      <span className={`text-caption px-2 py-0.5 rounded-full border border-vistaro-border ${
                         booking.status === 'confirmed' ? 'bg-vistaro-surface text-vistaro-success' : 'bg-vistaro-surface text-vistaro-secondary'
                       }`}>
                         {booking.status}
@@ -878,7 +878,7 @@ export default function AdminDashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-[10px] tracking-wider">
+                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
                   <th className="pb-3 font-semibold">Stay</th>
                   <th className="pb-3 font-semibold">Location</th>
                   <th className="pb-3 font-semibold">Category</th>
@@ -897,16 +897,16 @@ export default function AdminDashboardPage() {
                           alt={listing.title}
                           className="w-10 h-10 rounded-xl object-cover shrink-0 bg-vistaro-surface"
                         />
-                        <div className="font-bold text-vistaro-primary truncate max-w-xs">{listing.title}</div>
+                        <div className="font-semibold text-body-sm text-vistaro-primary truncate max-w-xs">{listing.title}</div>
                       </div>
                     </td>
                     <td className="py-3 text-vistaro-secondary">{listing.location}, {listing.country}</td>
                     <td className="py-3">
-                      <span className="bg-vistaro-secondary text-vistaro-secondary border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-[10px]">
+                      <span className="bg-vistaro-secondary text-vistaro-secondary border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-caption">
                         {listing.category || 'Stay'}
                       </span>
                     </td>
-                    <td className="py-3 font-bold text-vistaro-primary">{formatPrice(listing.price)}</td>
+                    <td className="py-3 text-price text-sm text-vistaro-primary">{formatPrice(listing.price)}</td>
                     <td className="py-3 text-vistaro-secondary">@{listing.owner?.username || 'Host'}</td>
                     <td className="py-3 text-right">
                       <div className="inline-flex items-center gap-2">
@@ -980,7 +980,7 @@ export default function AdminDashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-[10px] tracking-wider">
+                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
                   <th className="pb-3 font-semibold">Package Experience</th>
                   <th className="pb-3 font-semibold">Destination</th>
                   <th className="pb-3 font-semibold">Duration</th>
@@ -1008,25 +1008,25 @@ export default function AdminDashboardPage() {
                             className="w-10 h-10 rounded-xl object-cover shrink-0 bg-vistaro-surface"
                           />
                           <div className="min-w-0">
-                            <div className="font-bold text-vistaro-primary truncate max-w-xs">{pkg.title}</div>
-                            <div className="text-[10px] text-vistaro-muted font-mono">/{pkg.slug}</div>
+                            <div className="font-semibold text-body-sm text-vistaro-primary truncate max-w-xs">{pkg.title}</div>
+                            <div className="text-caption text-vistaro-muted font-mono">/{pkg.slug}</div>
                           </div>
                         </div>
                       </td>
                       <td className="py-3">
-                        <span className="bg-vistaro-secondary text-vistaro-accent border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-[10px]">
+                        <span className="bg-vistaro-secondary text-vistaro-accent border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-caption">
                           {pkg.destination?.name || 'Curated'}
                         </span>
                       </td>
                       <td className="py-3 font-medium text-vistaro-secondary">
                         {pkg.duration?.days || 1}D / {pkg.duration?.nights || 0}N
                       </td>
-                      <td className="py-3 font-bold text-vistaro-primary">
+                      <td className="py-3 text-price text-sm text-vistaro-primary">
                         {formatPrice(pkg.price?.basePrice ?? pkg.basePrice ?? 0)}
                       </td>
                       <td className="py-3">
                         <span
-                          className={`font-semibold px-2 py-0.5 rounded-full text-[10px] border border-vistaro-border ${
+                          className={`font-semibold px-2 py-0.5 rounded-full text-caption border border-vistaro-border ${
                             pkg.difficultyLevel === 'Easy'
                               ? 'bg-vistaro-surface text-vistaro-success'
                               : pkg.difficultyLevel === 'Challenging'
@@ -1039,7 +1039,7 @@ export default function AdminDashboardPage() {
                       </td>
                       <td className="py-3">
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize border border-vistaro-border ${
+                          className={`px-2 py-0.5 rounded-full text-caption font-bold capitalize border border-vistaro-border ${
                             pkg.isActive !== false
                               ? 'bg-vistaro-surface text-vistaro-success'
                               : 'bg-vistaro-surface text-vistaro-muted'
@@ -1123,7 +1123,7 @@ export default function AdminDashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-[10px] tracking-wider">
+                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
                   <th className="pb-3 font-semibold">Experience</th>
                   <th className="pb-3 font-semibold">Destination</th>
                   <th className="pb-3 font-semibold">Category</th>
@@ -1151,30 +1151,30 @@ export default function AdminDashboardPage() {
                             className="w-10 h-10 rounded-xl object-cover shrink-0 bg-vistaro-surface"
                           />
                           <div className="min-w-0">
-                            <div className="font-bold text-vistaro-primary truncate max-w-xs">{exp.title}</div>
-                            <div className="text-[10px] text-vistaro-muted font-mono">/{exp.slug}</div>
+                            <div className="font-semibold text-body-sm text-vistaro-primary truncate max-w-xs">{exp.title}</div>
+                            <div className="text-caption text-vistaro-muted font-mono">/{exp.slug}</div>
                           </div>
                         </div>
                       </td>
                       <td className="py-3">
-                        <span className="bg-vistaro-secondary text-vistaro-accent border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-[10px]">
+                        <span className="bg-vistaro-secondary text-vistaro-accent border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-caption">
                           {exp.destination?.name || 'Curated'}
                         </span>
                       </td>
                       <td className="py-3">
-                        <span className="bg-vistaro-secondary text-vistaro-primary border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-[10px]">
+                        <span className="bg-vistaro-secondary text-vistaro-primary border border-vistaro-border font-semibold px-2 py-0.5 rounded-full text-caption">
                           {exp.category || 'Adventure'}
                         </span>
                       </td>
                       <td className="py-3 font-medium text-vistaro-secondary">
                         {exp.durationHours || 2} Hours
                       </td>
-                      <td className="py-3 font-bold text-vistaro-primary">
+                      <td className="py-3 text-price text-sm text-vistaro-primary">
                         {formatPrice(exp.price?.basePrice ?? exp.basePrice ?? 0)}
                       </td>
                       <td className="py-3">
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize border border-vistaro-border ${
+                          className={`px-2 py-0.5 rounded-full text-caption font-bold capitalize border border-vistaro-border ${
                             exp.isActive !== false
                               ? 'bg-vistaro-surface text-vistaro-success'
                               : 'bg-vistaro-surface text-vistaro-muted'
@@ -1244,7 +1244,7 @@ export default function AdminDashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-[10px] tracking-wider">
+                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
                   <th className="pb-3 font-semibold">User</th>
                   <th className="pb-3 font-semibold">Email</th>
                   <th className="pb-3 font-semibold">Joined Date</th>
@@ -1267,7 +1267,7 @@ export default function AdminDashboardPage() {
                           </div>
                           <span>@{u.username}</span>
                           {isCurrentAdmin && (
-                            <span className="text-[10px] bg-vistaro-secondary text-vistaro-accent border border-vistaro-border px-2 py-0.5 rounded-full font-bold">
+                            <span className="text-caption bg-vistaro-secondary text-vistaro-accent border border-vistaro-border px-2 py-0.5 rounded-full font-bold">
                               You
                             </span>
                           )}
@@ -1281,7 +1281,7 @@ export default function AdminDashboardPage() {
                       <td className="py-3 font-semibold text-vistaro-primary">{u.bookingCount || 0}</td>
                       <td className="py-3">
                         <span
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-vistaro-border ${
+                          className={`px-2.5 py-1 rounded-full text-caption font-bold uppercase tracking-wider border border-vistaro-border ${
                             u.role === 'admin'
                               ? 'bg-vistaro-secondary text-vistaro-accent'
                               : 'bg-vistaro-secondary text-vistaro-secondary'
@@ -1296,7 +1296,7 @@ export default function AdminDashboardPage() {
                             type="button"
                             disabled={actionLoading || isCurrentAdmin}
                             onClick={() => handleToggleRole(u)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                            className={`px-3 py-1.5 rounded-xl text-cta transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
                               u.role === 'admin'
                                 ? 'bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border'
                                 : 'bg-vistaro-accent hover:bg-vistaro-accent-hover text-white shadow-xs'
@@ -1339,7 +1339,7 @@ export default function AdminDashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-[10px] tracking-wider">
+                <tr className="border-b border-vistaro-border text-vistaro-muted uppercase text-label">
                   <th className="pb-3 font-semibold">Booking ID</th>
                   <th className="pb-3 font-semibold">Stay</th>
                   <th className="pb-3 font-semibold">Guest</th>
@@ -1353,16 +1353,16 @@ export default function AdminDashboardPage() {
               <tbody className="divide-y divide-vistaro-border">
                 {recentBookings.map((b) => (
                   <tr key={b._id} className="hover:bg-vistaro-secondary/50 transition-colors">
-                    <td className="py-3 font-mono text-vistaro-muted text-[10px]">#{b._id.slice(-6)}</td>
-                    <td className="py-3 font-bold text-vistaro-primary truncate max-w-xs">{b.listing?.title || 'Stay'}</td>
+                    <td className="py-3 font-mono text-vistaro-muted text-caption">#{b._id.slice(-6)}</td>
+                    <td className="py-3 font-semibold text-body-sm text-vistaro-primary truncate max-w-xs">{b.listing?.title || 'Stay'}</td>
                     <td className="py-3 text-vistaro-secondary">@{b.user?.username || 'Guest'}</td>
                     <td className="py-3 text-vistaro-secondary">{new Date(b.checkIn).toLocaleDateString()}</td>
                     <td className="py-3 text-vistaro-secondary">{new Date(b.checkOut).toLocaleDateString()}</td>
                     <td className="py-3 text-vistaro-secondary">{b.guests}</td>
-                    <td className="py-3 font-extrabold text-vistaro-accent">{formatPrice(b.totalPrice || 0)}</td>
+                    <td className="py-3 text-price text-sm text-vistaro-accent">{formatPrice(b.totalPrice || 0)}</td>
                     <td className="py-3 text-right">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize border border-vistaro-border ${
+                        className={`px-2 py-0.5 rounded-full text-caption font-bold capitalize border border-vistaro-border ${
                           b.status === 'confirmed'
                             ? 'bg-vistaro-surface text-vistaro-success'
                             : 'bg-vistaro-surface text-vistaro-error'
@@ -1389,10 +1389,10 @@ export default function AdminDashboardPage() {
                   <Compass className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-lg text-vistaro-primary">
+                  <h3 className="text-display-h3 text-lg text-vistaro-primary">
                     {packageModal.mode === 'create' ? 'Create Tour Package' : 'Edit Tour Package'}
                   </h3>
-                  <p className="text-xs text-vistaro-muted">
+                  <p className="text-body-sm text-vistaro-muted">
                     {packageModal.mode === 'create' ? 'Publish a new regional multi-day package' : 'Update package details, duration, or pricing'}
                   </p>
                 </div>
@@ -1411,7 +1411,7 @@ export default function AdminDashboardPage() {
               {/* Title & Slug */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Package Title *
                   </label>
                   <input
@@ -1432,7 +1432,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     URL Slug *
                   </label>
                   <input
@@ -1449,7 +1449,7 @@ export default function AdminDashboardPage() {
               {/* Destination & Difficulty */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Destination Region *
                   </label>
                   <select
@@ -1468,7 +1468,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Difficulty Level
                   </label>
                   <select
@@ -1485,7 +1485,7 @@ export default function AdminDashboardPage() {
 
               {/* Cover Image URL */}
               <div>
-                <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                <label className="block text-label text-vistaro-primary mb-1">
                   Cover Image URL *
                 </label>
                 <input
@@ -1501,7 +1501,7 @@ export default function AdminDashboardPage() {
               {/* Duration (Days/Nights) & Pricing & Max Group */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Days *
                   </label>
                   <input
@@ -1518,7 +1518,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Nights *
                   </label>
                   <input
@@ -1532,7 +1532,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Base Price (₹) *
                   </label>
                   <input
@@ -1546,7 +1546,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Max Group
                   </label>
                   <input
@@ -1561,7 +1561,7 @@ export default function AdminDashboardPage() {
 
               {/* Short & Long Description */}
               <div>
-                <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                <label className="block text-label text-vistaro-primary mb-1">
                   Short Highlight Tagline
                 </label>
                 <input
@@ -1574,7 +1574,7 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                <label className="block text-label text-vistaro-primary mb-1">
                   Long Detailed Description
                 </label>
                 <textarea
@@ -1590,10 +1590,10 @@ export default function AdminDashboardPage() {
               <div className="space-y-3 pt-3 border-t border-vistaro-border">
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="block font-bold text-vistaro-primary uppercase tracking-wider text-[11px]">
+                    <label className="block text-label text-vistaro-primary">
                       Day-by-Day Itinerary ({packageForm.itinerary?.length || 0} Days)
                     </label>
-                    <p className="text-[11px] text-vistaro-muted">
+                    <p className="text-body-sm text-vistaro-muted">
                       Define daily schedule, locations, and planned activities.
                     </p>
                   </div>
@@ -1601,7 +1601,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={handleAddItineraryDay}
-                    className="inline-flex items-center gap-1 bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-rating border border-vistaro-border text-xs font-bold py-1.5 px-3 rounded-full transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-rating border border-vistaro-border text-cta py-1.5 px-3 rounded-full transition-colors cursor-pointer"
                   >
                     <PlusCircle className="w-3.5 h-3.5" />
                     <span>Add Day</span>
@@ -1615,7 +1615,7 @@ export default function AdminDashboardPage() {
                       className="p-3.5 rounded-2xl bg-vistaro-secondary border border-vistaro-border space-y-2.5 relative group"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="bg-vistaro-accent text-white font-extrabold text-[10px] px-2.5 py-0.5 rounded-full">
+                        <span className="bg-vistaro-accent text-white font-semibold text-caption px-2.5 py-0.5 rounded-full">
                           Day {day.dayNumber || idx + 1}
                         </span>
 
@@ -1654,7 +1654,7 @@ export default function AdminDashboardPage() {
                           placeholder="Activities (comma-separated or one per line, e.g. Shanti Stupa, Local Market)"
                           value={day.activities}
                           onChange={(e) => handleUpdateItineraryDay(idx, 'activities', e.target.value)}
-                          className="w-full bg-vistaro-surface border border-vistaro-border text-[11px] text-vistaro-secondary focus:outline-hidden focus:border-vistaro-accent"
+                          className="w-full bg-vistaro-surface border border-vistaro-border text-caption text-vistaro-secondary focus:outline-hidden focus:border-vistaro-accent"
                         />
                       </div>
                     </div>
@@ -1665,7 +1665,7 @@ export default function AdminDashboardPage() {
               {/* Inclusions & Exclusions */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-vistaro-border">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Inclusions (one item per line)
                   </label>
                   <textarea
@@ -1678,7 +1678,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">
+                  <label className="block text-label text-vistaro-primary mb-1">
                     Exclusions (one item per line)
                   </label>
                   <textarea
@@ -1700,7 +1700,7 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setPackageForm({ ...packageForm, isActive: e.target.checked })}
                   className="w-4 h-4 text-vistaro-accent rounded border-vistaro-border focus:ring-vistaro-accent cursor-pointer"
                 />
-                <label htmlFor="packageIsActive" className="text-xs font-bold text-vistaro-primary cursor-pointer">
+                <label htmlFor="packageIsActive" className="text-body-sm font-semibold text-vistaro-primary cursor-pointer">
                   Publish package immediately (Active on public portal)
                 </label>
               </div>
@@ -1711,14 +1711,14 @@ export default function AdminDashboardPage() {
                   type="button"
                   onClick={() => setPackageModal(null)}
                   disabled={actionLoading}
-                  className="px-5 py-2.5 rounded-full text-xs font-bold bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border transition-colors cursor-pointer"
+                  className="px-5 py-2.5 rounded-full text-cta bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading}
-                  className="px-6 py-2.5 rounded-full text-xs font-bold bg-vistaro-accent hover:bg-vistaro-accent-hover text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-full text-cta bg-vistaro-accent hover:bg-vistaro-accent-hover text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? 'Saving...' : packageModal.mode === 'create' ? 'Create Package' : 'Save Changes'}
                 </button>
@@ -1739,10 +1739,10 @@ export default function AdminDashboardPage() {
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-lg text-vistaro-primary">
+                  <h3 className="text-display-h3 text-lg text-vistaro-primary">
                     {experienceModal.mode === 'create' ? 'Create Experience' : 'Edit Experience'}
                   </h3>
-                  <p className="text-xs text-vistaro-muted">
+                  <p className="text-body-sm text-vistaro-muted">
                     {experienceModal.mode === 'create' ? 'Publish a new host-led immersive activity' : 'Update experience details, category, or pricing'}
                   </p>
                 </div>
@@ -1761,7 +1761,7 @@ export default function AdminDashboardPage() {
               {/* Title & Slug */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Title *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Title *</label>
                   <input
                     type="text"
                     required
@@ -1779,7 +1779,7 @@ export default function AdminDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">URL Slug *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">URL Slug *</label>
                   <input
                     type="text"
                     required
@@ -1794,7 +1794,7 @@ export default function AdminDashboardPage() {
               {/* Destination & Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Destination *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Destination *</label>
                   <select
                     required
                     value={experienceForm.destination}
@@ -1810,7 +1810,7 @@ export default function AdminDashboardPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Category *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Category *</label>
                   <select
                     value={experienceForm.category}
                     onChange={(e) => setExperienceForm({ ...experienceForm, category: e.target.value })}
@@ -1826,7 +1826,7 @@ export default function AdminDashboardPage() {
               {/* Duration, Price, Group Size, Difficulty */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Duration (Hours) *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Duration (Hours) *</label>
                   <input
                     type="number"
                     min="0.5"
@@ -1838,7 +1838,7 @@ export default function AdminDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Price (₹ INR) *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Price (₹ INR) *</label>
                   <input
                     type="number"
                     min="0"
@@ -1849,7 +1849,7 @@ export default function AdminDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Max Group</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Max Group</label>
                   <input
                     type="number"
                     min="1"
@@ -1859,7 +1859,7 @@ export default function AdminDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Difficulty</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Difficulty</label>
                   <select
                     value={experienceForm.difficultyLevel}
                     onChange={(e) => setExperienceForm({ ...experienceForm, difficultyLevel: e.target.value })}
@@ -1875,7 +1875,7 @@ export default function AdminDashboardPage() {
               {/* Cover Image URL & Meeting Point */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Cover Image URL *</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Cover Image URL *</label>
                   <input
                     type="url"
                     required
@@ -1886,7 +1886,7 @@ export default function AdminDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Meeting Point Landmark</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Meeting Point Landmark</label>
                   <input
                     type="text"
                     placeholder="e.g. Heritage Estate Main Gate, Kalimpong"
@@ -1899,7 +1899,7 @@ export default function AdminDashboardPage() {
 
               {/* What's Included */}
               <div>
-                <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">What's Included (1 per line)</label>
+                <label className="block text-label text-vistaro-primary mb-1">What's Included (1 per line)</label>
                 <textarea
                   rows={3}
                   placeholder="Certified local guide&#10;Artisanal tea tasting&#10;Bakery pairing"
@@ -1912,7 +1912,7 @@ export default function AdminDashboardPage() {
               {/* Short & Long Description */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Short Tagline</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Short Tagline</label>
                   <textarea
                     rows={3}
                     placeholder="Quick 1-2 sentence preview"
@@ -1922,7 +1922,7 @@ export default function AdminDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-vistaro-primary uppercase tracking-wider mb-1">Full Long Description</label>
+                  <label className="block text-label text-vistaro-primary mb-1">Full Long Description</label>
                   <textarea
                     rows={3}
                     placeholder="Detailed activity highlights and itinerary overview"
@@ -1942,7 +1942,7 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setExperienceForm({ ...experienceForm, isActive: e.target.checked })}
                   className="w-4 h-4 text-vistaro-accent rounded-sm border-vistaro-border focus:ring-vistaro-accent cursor-pointer"
                 />
-                <label htmlFor="experienceIsActive" className="text-xs font-bold text-vistaro-primary cursor-pointer">
+                <label htmlFor="experienceIsActive" className="text-body-sm font-semibold text-vistaro-primary cursor-pointer">
                   Publish experience immediately (Active on public portal)
                 </label>
               </div>
@@ -1953,14 +1953,14 @@ export default function AdminDashboardPage() {
                   type="button"
                   onClick={() => setExperienceModal(null)}
                   disabled={actionLoading}
-                  className="px-5 py-2.5 rounded-full text-xs font-bold bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border transition-colors cursor-pointer"
+                  className="px-5 py-2.5 rounded-full text-cta bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading}
-                  className="px-6 py-2.5 rounded-full text-xs font-bold bg-vistaro-accent hover:bg-vistaro-accent-hover text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-full text-cta bg-vistaro-accent hover:bg-vistaro-accent-hover text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? 'Saving...' : experienceModal.mode === 'create' ? 'Publish Experience' : 'Save Changes'}
                 </button>
@@ -1979,10 +1979,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="text-center space-y-1">
-              <h3 className="font-extrabold text-lg text-vistaro-primary">
+              <h3 className="text-display-h3 text-lg text-vistaro-primary">
                 Confirm Admin Deletion
               </h3>
-              <p className="text-xs text-vistaro-secondary">
+              <p className="text-body-sm text-vistaro-secondary">
                 Are you sure you want to permanently delete <b>{deleteModal.name}</b>? This action cannot be undone.
               </p>
             </div>
@@ -1992,7 +1992,7 @@ export default function AdminDashboardPage() {
                 type="button"
                 onClick={() => setDeleteModal(null)}
                 disabled={actionLoading}
-                className="flex-1 bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-xs font-bold py-3 rounded-full transition-colors cursor-pointer"
+                className="flex-1 bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-cta py-3 rounded-full transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -2000,7 +2000,7 @@ export default function AdminDashboardPage() {
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={actionLoading}
-                className="flex-1 bg-vistaro-error hover:bg-vistaro-accent-hover text-white text-xs font-bold py-3 rounded-full transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
+                className="flex-1 bg-vistaro-error hover:bg-vistaro-accent-hover text-white text-cta py-3 rounded-full transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
               >
                 {actionLoading ? 'Deleting...' : 'Delete Permanently'}
               </button>

@@ -12,7 +12,7 @@ export default function MapView({ geometry, title = 'Listing Location', location
 
     // Read active computed theme colors
     const computed = getComputedStyle(document.documentElement);
-    const accentColor = computed.getPropertyValue('--vistaro-accent').trim() || (isDark ? '#E86A4D' : '#E86A4D');
+    const accentColor = computed.getPropertyValue('--vistaro-accent').trim() || '#E86A4D';
     const primaryTextColor = computed.getPropertyValue('--vistaro-text-primary').trim() || (isDark ? '#F5F1EA' : '#12100F');
     const secondaryTextColor = computed.getPropertyValue('--vistaro-text-secondary').trim() || (isDark ? '#B7AFA6' : '#6B615A');
     const surfaceColor = computed.getPropertyValue('--vistaro-bg-surface').trim() || (isDark ? '#201C1A' : '#FFFFFF');
@@ -64,8 +64,8 @@ export default function MapView({ geometry, title = 'Listing Location', location
     const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(map);
 
     marker.bindPopup(`
-      <div style="font-family: 'Plus Jakarta Sans', sans-serif; padding: 4px; color: ${primaryTextColor};">
-        <h4 style="margin: 0 0 4px; font-weight: 700; font-size: 14px; color: ${primaryTextColor};">${title}</h4>
+      <div style="font-family: 'General Sans', system-ui, -apple-system, sans-serif; padding: 4px; color: ${primaryTextColor};">
+        <h4 style="margin: 0 0 4px; font-family: 'Fraunces', serif; font-weight: 500; font-size: 15px; color: ${primaryTextColor};">${title}</h4>
         <p style="margin: 0; font-size: 12px; color: ${secondaryTextColor};">${location ? `${location}, ` : ''}${country}</p>
         <p style="margin: 4px 0 0; font-size: 11px; color: ${accentColor}; font-weight: 600;">Exact location provided after booking</p>
       </div>

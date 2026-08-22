@@ -29,7 +29,7 @@ export default function Lightbox({
       
       {/* Top Bar with Counter & Close */}
       <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-50 text-white">
-        <span className="text-xs font-semibold tracking-wider text-vistaro-muted">
+        <span className="text-caption text-vistaro-muted">
           {currentIndex + 1} / {images.length}
         </span>
         <button

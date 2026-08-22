@@ -201,11 +201,11 @@ export default function InboxPage() {
     return (
       <div className="max-w-md mx-auto my-16 p-8 bg-vistaro-surface border border-vistaro-border rounded-3xl text-center space-y-4 shadow-sm text-vistaro-primary">
         <MessageSquare className="w-10 h-10 text-vistaro-accent mx-auto" />
-        <h2 className="text-xl font-bold text-vistaro-primary">Messages & Inbox</h2>
-        <p className="text-sm text-vistaro-muted">Sign in to communicate with hosts and guests.</p>
+        <h2 className="text-display-h2 text-vistaro-primary">Messages & Inbox</h2>
+        <p className="text-body text-vistaro-muted">Sign in to communicate with hosts and guests.</p>
         <Link
           to="/login"
-          className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-sm font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
+          className="inline-block bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-colors cursor-pointer"
         >
           Log In
         </Link>
@@ -225,10 +225,10 @@ export default function InboxPage() {
 
         {/* Inbox Header */}
         <div className="p-4 border-b border-vistaro-border flex items-center justify-between">
-          <h2 className="font-extrabold text-lg text-vistaro-primary flex items-center gap-2">
+          <h2 className="text-display-h3 text-lg text-vistaro-primary flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-vistaro-accent" /> Messages
           </h2>
-          <span className="text-xs font-semibold text-vistaro-muted">
+          <span className="text-caption text-vistaro-muted">
             {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
           </span>
         </div>
@@ -236,7 +236,7 @@ export default function InboxPage() {
         {/* Conversations List */}
         <div className="flex-1 overflow-y-auto divide-y divide-vistaro-border">
           {conversations.length === 0 ? (
-            <div className="p-8 text-center text-xs text-vistaro-muted">
+            <div className="p-8 text-center text-body-sm text-vistaro-muted">
               No conversations yet. Inquire on a stay to message a host!
             </div>
           ) : (
@@ -253,25 +253,25 @@ export default function InboxPage() {
                   className={`w-full p-4 text-left flex items-start gap-3 transition-colors cursor-pointer ${isSelected ? 'bg-vistaro-secondary' : 'hover:bg-vistaro-secondary/50'
                     }`}
                 >
-                  <div className="w-10 h-10 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-bold text-sm shrink-0 uppercase">
+                  <div className="w-10 h-10 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-semibold text-sm shrink-0 uppercase">
                     {(otherName || 'H').charAt(0)}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <h4 className="font-bold text-xs sm:text-sm text-vistaro-primary truncate">@{otherName || 'Host'}</h4>
+                      <h4 className="font-semibold text-body-sm text-vistaro-primary truncate">@{otherName || 'Host'}</h4>
                       {conv.lastMessageAt && (
-                        <span className="text-[10px] text-vistaro-muted">
+                        <span className="text-caption text-vistaro-muted">
                           {new Date(conv.lastMessageAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
                       )}
                     </div>
 
-                    <p className="text-[11px] font-semibold text-vistaro-accent truncate mb-1">
+                    <p className="text-caption font-semibold text-vistaro-accent truncate mb-1">
                       {conv.listing?.title || 'Stay Inquiry'}
                     </p>
 
-                    <p className="text-xs text-vistaro-muted truncate">
+                    <p className="text-body-sm text-vistaro-muted truncate">
                       {typeof conv.lastMessage === 'object' ? conv.lastMessage?.body : (conv.lastMessage || 'Started conversation')}
                     </p>
                   </div>
@@ -288,8 +288,8 @@ export default function InboxPage() {
         {!activeConversation ? (
           <div className="text-center p-8">
             <MessageSquare className="w-12 h-12 text-vistaro-muted mx-auto mb-2" />
-            <h3 className="font-bold text-base text-vistaro-primary">Select a conversation</h3>
-            <p className="text-xs text-vistaro-muted mt-1">Choose from your existing chats on the left to start messaging.</p>
+            <h3 className="text-display-h3 text-base text-vistaro-primary">Select a conversation</h3>
+            <p className="text-body-sm text-vistaro-muted mt-1">Choose from your existing chats on the left to start messaging.</p>
           </div>
         ) : (
           <>
@@ -308,15 +308,15 @@ export default function InboxPage() {
                     >
                       <ArrowLeft className="w-5 h-5 text-vistaro-primary" />
                     </button>
-                    <div className="w-9 h-9 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-bold text-xs uppercase">
+                    <div className="w-9 h-9 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-semibold text-xs uppercase">
                       {(otherName || 'H').charAt(0)}
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm text-vistaro-primary">@{otherName || 'Host'}</h3>
+                      <h3 className="font-semibold text-body text-vistaro-primary">@{otherName || 'Host'}</h3>
                       {activeConversation.listing && (
                         <Link
                           to={`/listings/${activeConversation.listing._id || activeConversation.listing}`}
-                          className="text-[11px] text-vistaro-accent font-semibold hover:underline flex items-center gap-1 truncate max-w-xs"
+                          className="text-caption text-vistaro-accent font-semibold hover:underline flex items-center gap-1 truncate max-w-xs"
                         >
                           <Building className="w-3 h-3" /> {activeConversation.listing.title || 'View Stay'}
                         </Link>
@@ -332,7 +332,7 @@ export default function InboxPage() {
               {loadingMessages ? (
                 <LoadingSpinner text="Loading thread..." />
               ) : messages.length === 0 ? (
-                <div className="text-center py-12 text-xs text-vistaro-muted space-y-2">
+                <div className="text-center py-12 text-body-sm text-vistaro-muted space-y-2">
                   <MessageSquare className="w-8 h-8 text-vistaro-muted mx-auto" />
                   <p>Send your first message below to start chatting with the host!</p>
                 </div>
@@ -349,14 +349,14 @@ export default function InboxPage() {
                         className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} animate-fade-in`}
                       >
                         <div
-                          className={`max-w-xs sm:max-w-md rounded-2xl px-4 py-2.5 text-xs sm:text-sm shadow-xs ${isMe
+                          className={`max-w-xs sm:max-w-md rounded-2xl px-4 py-2.5 text-body-sm shadow-xs ${isMe
                               ? 'bg-vistaro-accent text-white rounded-br-xs'
                               : 'bg-vistaro-surface text-vistaro-primary border border-vistaro-border rounded-bl-xs'
                             }`}
                         >
                           {msg.body}
                         </div>
-                        <span className="text-[10px] text-vistaro-muted mt-1 px-1">
+                        <span className="text-caption text-vistaro-muted mt-1 px-1">
                           {msg.createdAt
                             ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                             : 'Just now'}
@@ -370,13 +370,13 @@ export default function InboxPage() {
 
             {/* Error Banner if sending fails */}
             {sendError && (
-              <div className="mx-4 mb-2 p-3 rounded-2xl bg-vistaro-secondary border border-vistaro-error/30 flex items-center gap-2 text-xs text-vistaro-error animate-fade-in">
+              <div className="mx-4 mb-2 p-3 rounded-2xl bg-vistaro-secondary border border-vistaro-error/30 flex items-center gap-2 text-body-sm text-vistaro-error animate-fade-in">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span className="flex-1 font-medium">{sendError}</span>
                 <button
                   type="button"
                   onClick={() => setSendError('')}
-                  className="font-bold hover:underline cursor-pointer"
+                  className="font-semibold text-cta hover:underline cursor-pointer"
                 >
                   Dismiss
                 </button>
@@ -397,7 +397,7 @@ export default function InboxPage() {
                   if (sendError) setSendError('');
                 }}
                 disabled={isSending}
-                className="flex-1 bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full px-4 py-2.5 text-xs sm:text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors disabled:opacity-50"
+                className="flex-1 bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-full px-4 py-2.5 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors disabled:opacity-50"
                 required
               />
               <button

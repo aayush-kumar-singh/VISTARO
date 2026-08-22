@@ -8,14 +8,14 @@ export default function NotFoundPage() {
       <div className="w-16 h-16 rounded-full bg-vistaro-secondary border border-vistaro-border text-vistaro-accent flex items-center justify-center">
         <Compass className="w-8 h-8 animate-spin" style={{ animationDuration: '8s' }} />
       </div>
-      <h1 className="text-4xl font-extrabold text-vistaro-primary tracking-tight">404</h1>
-      <h2 className="text-xl font-bold text-vistaro-primary">Page Not Found</h2>
-      <p className="text-sm text-vistaro-muted max-w-md">
+      <h1 className="text-display-hero text-6xl sm:text-7xl text-vistaro-primary">404</h1>
+      <h2 className="text-display-h2 text-xl text-vistaro-primary">Page Not Found</h2>
+      <p className="text-body text-vistaro-muted max-w-md">
         We couldn't find the page you were looking for. It might have been moved or removed.
       </p>
       <Link
         to="/"
-        className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full transition-colors shadow-sm cursor-pointer"
+        className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-6 rounded-full transition-colors shadow-sm cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" /> Return to Homepage
       </Link>

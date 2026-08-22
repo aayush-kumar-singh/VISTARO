@@ -110,12 +110,12 @@ export default function ReviewCard({
       {/* Reviewer Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-bold text-sm">
+          <div className="w-10 h-10 rounded-full bg-vistaro-accent text-white flex items-center justify-center font-semibold text-sm">
             {authorName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h4 className="font-semibold text-sm text-vistaro-primary">{authorName}</h4>
-            <p className="text-xs text-vistaro-muted">{formattedDate}</p>
+            <h4 className="text-body-sm font-semibold text-vistaro-primary">{authorName}</h4>
+            <p className="text-muted">{formattedDate}</p>
           </div>
         </div>
 
@@ -137,25 +137,25 @@ export default function ReviewCard({
       <StarRating rating={review.rating || 5} size="xs" />
 
       {/* Comment Body */}
-      <p className="text-sm text-vistaro-secondary leading-relaxed">{review.comment}</p>
+      <p className="text-body text-vistaro-secondary leading-relaxed">{review.comment}</p>
 
       {/* Existing Host Response */}
       {review.ownerReply?.comment && (
         <div className="mt-2 pl-3 border-l-2 border-vistaro-accent bg-vistaro-secondary p-3 rounded-r-xl space-y-1">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-vistaro-accent flex items-center gap-1">
+          <div className="flex items-center justify-between text-caption">
+            <span className="font-semibold text-vistaro-accent flex items-center gap-1">
               <CornerDownRight className="w-3.5 h-3.5" /> Response from Host
             </span>
             {isHost && (
               <button
                 onClick={handleDeleteReply}
-                className="text-vistaro-muted hover:text-vistaro-error text-[11px] underline cursor-pointer"
+                className="text-vistaro-muted hover:text-vistaro-error text-caption underline cursor-pointer"
               >
                 Delete reply
               </button>
             )}
           </div>
-          <p className="text-xs text-vistaro-secondary leading-normal">{review.ownerReply.comment}</p>
+          <p className="text-body-sm text-vistaro-secondary leading-normal">{review.ownerReply.comment}</p>
         </div>
       )}
 
@@ -164,7 +164,7 @@ export default function ReviewCard({
         <div className="mt-1">
           <button
             onClick={() => setIsReplying(true)}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-vistaro-accent hover:underline cursor-pointer"
+            className="inline-flex items-center gap-1 text-cta text-vistaro-accent hover:underline cursor-pointer"
           >
             <MessageSquareReply className="w-3.5 h-3.5" /> Respond to review
           </button>
@@ -179,7 +179,7 @@ export default function ReviewCard({
             placeholder="Write a response as host..."
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl p-2.5 text-xs focus:outline-hidden focus:border-vistaro-accent"
+            className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-xl p-2.5 text-body-sm focus:outline-hidden focus:border-vistaro-accent"
             required
             autoFocus
           />
@@ -190,14 +190,14 @@ export default function ReviewCard({
                 setIsReplying(false);
                 setReplyText('');
               }}
-              className="text-xs text-vistaro-secondary hover:text-vistaro-primary px-3 py-1.5 cursor-pointer"
+              className="text-body-sm text-vistaro-secondary hover:text-vistaro-primary px-3 py-1.5 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmittingReply}
-              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-semibold px-4 py-1.5 rounded-full transition-colors cursor-pointer"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta px-4 py-1.5 rounded-full transition-colors cursor-pointer"
             >
               {isSubmittingReply ? 'Posting...' : 'Post Reply'}
             </button>

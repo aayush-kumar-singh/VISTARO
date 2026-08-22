@@ -42,21 +42,21 @@ export default function HeroBanner({ onExploreClick }) {
       <div className="relative z-10 px-6 sm:px-10 lg:px-14 py-10 sm:py-14 lg:py-16 max-w-5xl">
 
         {/* Top Feature Pill */}
-        <div className="inline-flex items-center gap-2 bg-vistaro-surface/80 hover:bg-vistaro-surface border border-vistaro-border px-3.5 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md transition-all mb-4 text-vistaro-primary">
+        <div className="inline-flex items-center gap-2 bg-vistaro-surface/80 hover:bg-vistaro-surface border border-vistaro-border px-3.5 py-1.5 rounded-full text-caption backdrop-blur-md transition-all mb-4 text-vistaro-primary">
           <Sparkles className="w-3.5 h-3.5 text-vistaro-accent" />
           <span>Discover 1,000+ Verified Stays Worldwide</span>
-          <span className="bg-vistaro-accent text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+          <span className="bg-vistaro-accent text-white text-caption px-2 py-0.5 rounded-full">
             Public Access
           </span>
         </div>
 
         {/* Main Hero Headline */}
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-vistaro-primary leading-tight sm:leading-tight mb-4">
+        <h1 className="text-display-hero text-vistaro-primary mb-4">
           Find Your Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-vistaro-accent to-vistaro-accent-hover">Extraordinary Stay</span>
         </h1>
 
         {/* Subtext */}
-        <p className="text-xs sm:text-sm md:text-base text-vistaro-secondary max-w-2xl leading-relaxed mb-8">
+        <p className="text-body text-vistaro-secondary max-w-2xl mb-8">
           Browse luxury beachfront villas, cozy mountain cabins, and historic retreats freely. Search destinations, check live pricing, and explore traveler reviews without needing an account.
         </p>
 
@@ -72,13 +72,13 @@ export default function HeroBanner({ onExploreClick }) {
               placeholder="Where are you travelling? (e.g. Goa, Paris, Alps...)"
               value={destinationQuery}
               onChange={(e) => setDestinationQuery(e.target.value)}
-              className="w-full bg-transparent border-none text-xs sm:text-sm text-vistaro-primary placeholder-vistaro-muted focus:outline-hidden font-medium"
+              className="w-full bg-transparent border-none text-body-sm text-vistaro-primary placeholder-vistaro-muted focus:outline-hidden font-normal"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full sm:w-auto bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-bold py-3.5 px-7 rounded-xl sm:rounded-full transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 shrink-0 cursor-pointer group"
+            className="w-full sm:w-auto bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3.5 px-7 rounded-xl sm:rounded-full transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 shrink-0 cursor-pointer group"
           >
             <span>Explore Stays</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -87,7 +87,7 @@ export default function HeroBanner({ onExploreClick }) {
 
         {/* Trending Quick Suggestions */}
         <div className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-bold text-vistaro-muted uppercase tracking-wider flex items-center gap-1 mr-1">
+          <span className="text-label text-vistaro-muted flex items-center gap-1 mr-1">
             <Flame className="w-3.5 h-3.5 text-vistaro-rating" /> Popular:
           </span>
           {trendingDestinations.map((dest, idx) => (
@@ -95,7 +95,7 @@ export default function HeroBanner({ onExploreClick }) {
               key={idx}
               type="button"
               onClick={() => navigate(`/search?q=${encodeURIComponent(dest.query)}`)}
-              className="text-[11px] font-medium bg-vistaro-surface hover:bg-vistaro-secondary border border-vistaro-border rounded-full px-3 py-1 text-vistaro-primary transition-all cursor-pointer"
+              className="text-caption bg-vistaro-surface hover:bg-vistaro-secondary border border-vistaro-border rounded-full px-3 py-1 text-vistaro-primary transition-all cursor-pointer"
             >
               {dest.label}
             </button>
@@ -103,7 +103,7 @@ export default function HeroBanner({ onExploreClick }) {
         </div>
 
         {/* Feature Badges Footer */}
-        <div className="mt-8 pt-6 border-t border-vistaro-border grid grid-cols-2 sm:grid-cols-4 gap-4 text-vistaro-secondary text-xs">
+        <div className="mt-8 pt-6 border-t border-vistaro-border grid grid-cols-2 sm:grid-cols-4 gap-4 text-vistaro-secondary text-body-sm">
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4 text-vistaro-accent" />
             <span className="text-vistaro-primary font-medium">100% Free Browsing</span>

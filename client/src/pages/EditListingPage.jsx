@@ -183,16 +183,16 @@ export default function EditListingPage() {
 
       <Link
         to={`/listings/${id}`}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-vistaro-muted hover:text-vistaro-primary mb-4 transition-colors"
+        className="inline-flex items-center gap-1.5 text-nav-link text-vistaro-muted hover:text-vistaro-primary mb-4 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> Cancel & Back to Listing
       </Link>
 
       <div className="bg-vistaro-surface rounded-3xl p-6 sm:p-10 border border-vistaro-border shadow-sm">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-vistaro-primary mb-2 tracking-tight">
+        <h1 className="text-display-hero text-2xl sm:text-3xl text-vistaro-primary mb-2">
           Edit your listing
         </h1>
-        <p className="text-sm text-vistaro-muted mb-8">
+        <p className="text-body-sm text-vistaro-muted mb-8">
           Update property photos, pricing, amenities, or stay description.
         </p>
 
@@ -200,28 +200,28 @@ export default function EditListingPage() {
 
           {/* Title */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+            <label className="block text-label text-vistaro-primary mb-1.5">
               Listing Title *
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+            <label className="block text-label text-vistaro-primary mb-1.5">
               Description *
             </label>
             <textarea
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
             />
           </div>
@@ -229,13 +229,13 @@ export default function EditListingPage() {
           {/* Category, Destination & Price */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+              <label className="block text-label text-vistaro-primary mb-1.5">
                 Category *
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent cursor-pointer"
+                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent cursor-pointer"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -246,13 +246,13 @@ export default function EditListingPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+              <label className="block text-label text-vistaro-primary mb-1.5">
                 Destination (Optional)
               </label>
               <select
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent cursor-pointer"
+                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent cursor-pointer"
               >
                 <option value="">None / Other</option>
                 {destinationsList.map((d) => (
@@ -264,7 +264,7 @@ export default function EditListingPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+              <label className="block text-label text-vistaro-primary mb-1.5">
                 Price per night (₹ INR) *
               </label>
               <input
@@ -272,7 +272,7 @@ export default function EditListingPage() {
                 min="0"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
                 required
               />
             </div>
@@ -281,27 +281,27 @@ export default function EditListingPage() {
           {/* Location & Country */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+              <label className="block text-label text-vistaro-primary mb-1.5">
                 City / Location *
               </label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+              <label className="block text-label text-vistaro-primary mb-1.5">
                 Country *
               </label>
               <input
                 type="text"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
                 required
               />
             </div>
@@ -310,7 +310,7 @@ export default function EditListingPage() {
           {/* Max Guests & Cancellation Policy */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+              <label className="block text-label text-vistaro-primary mb-1.5">
                 Max Guests
               </label>
               <input
@@ -319,18 +319,18 @@ export default function EditListingPage() {
                 max="30"
                 value={maxGuests}
                 onChange={(e) => setMaxGuests(e.target.value)}
-                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+              <label className="block text-label text-vistaro-primary mb-1.5">
                 Cancellation Policy
               </label>
               <select
                 value={cancellationPolicy}
                 onChange={(e) => setCancellationPolicy(e.target.value)}
-                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent cursor-pointer"
+                className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent cursor-pointer"
               >
                 <option value="flexible">Flexible (100% refund up to 48 hrs)</option>
                 <option value="moderate">Moderate (100% up to 5 days, 50% up to 48 hrs)</option>
@@ -341,7 +341,7 @@ export default function EditListingPage() {
 
           {/* Existing Photos Gallery */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+            <label className="block text-label text-vistaro-primary mb-1.5">
               Current Photos
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -359,7 +359,7 @@ export default function EditListingPage() {
                       <button
                         type="button"
                         onClick={() => undoRemoveExistingPhoto(img.filename)}
-                        className="absolute inset-0 m-auto w-8 h-8 bg-vistaro-error text-white rounded-full flex items-center justify-center font-bold text-xs shadow-md"
+                        className="absolute inset-0 m-auto w-8 h-8 bg-vistaro-error text-white rounded-full flex items-center justify-center text-cta shadow-md"
                         title="Undo deletion"
                       >
                         Undo
@@ -382,13 +382,13 @@ export default function EditListingPage() {
 
           {/* Upload Additional Photos */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1.5">
+            <label className="block text-label text-vistaro-primary mb-1.5">
               Add New Photos
             </label>
             <div className="border-2 border-dashed border-vistaro-border hover:border-vistaro-accent rounded-3xl p-6 text-center bg-vistaro-secondary/60 transition-colors">
               <UploadCloud className="w-8 h-8 text-vistaro-muted mx-auto mb-1.5" />
-              <p className="text-xs font-semibold text-vistaro-primary">Add up to 5 total photos</p>
-              <label className="inline-block mt-3 bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary font-bold text-xs py-1.5 px-4 rounded-full cursor-pointer shadow-xs text-vistaro-primary transition-colors">
+              <p className="text-body-sm font-semibold text-vistaro-primary">Add up to 5 total photos</p>
+              <label className="inline-block mt-3 bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary text-cta py-1.5 px-4 rounded-full cursor-pointer shadow-xs text-vistaro-primary transition-colors">
                 <span>Browse Files</span>
                 <input
                   type="file"
@@ -412,7 +412,7 @@ export default function EditListingPage() {
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
-                    <span className="absolute bottom-1 left-1 bg-vistaro-success text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                    <span className="absolute bottom-1 left-1 bg-vistaro-success text-white text-caption px-1.5 py-0.5 rounded-md">
                       New
                     </span>
                   </div>
@@ -423,7 +423,7 @@ export default function EditListingPage() {
 
           {/* Amenities */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-2">
+            <label className="block text-label text-vistaro-primary mb-2">
               Select Amenities
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -434,7 +434,7 @@ export default function EditListingPage() {
                     key={item}
                     type="button"
                     onClick={() => toggleAmenity(item)}
-                    className={`flex items-center justify-between p-3 rounded-2xl border text-xs font-medium transition-all cursor-pointer ${isChecked
+                    className={`flex items-center justify-between p-3 rounded-2xl border text-body-sm font-medium transition-all cursor-pointer ${isChecked
                         ? 'border-vistaro-accent bg-vistaro-secondary text-vistaro-accent font-semibold'
                         : 'border-vistaro-border text-vistaro-secondary hover:border-vistaro-muted bg-vistaro-surface'
                       }`}
@@ -456,14 +456,14 @@ export default function EditListingPage() {
           <div className="pt-4 border-t border-vistaro-border flex justify-end gap-3">
             <Link
               to={`/listings/${id}`}
-              className="bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary text-sm font-semibold py-3 px-6 rounded-full transition-colors"
+              className="bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary text-cta py-3 px-6 rounded-full transition-colors"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-sm font-bold py-3 px-8 rounded-full transition-all shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3 px-8 rounded-full transition-all shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? 'Saving Changes...' : 'Save Changes'}
             </button>

@@ -23,7 +23,7 @@ export default function ToastContainer() {
                 {isSuccess && <CheckCircle2 className="w-5 h-5 text-vistaro-success shrink-0" />}
                 {isError && <AlertCircle className="w-5 h-5 text-vistaro-error shrink-0" />}
                 {!isSuccess && !isError && <Info className="w-5 h-5 text-vistaro-accent shrink-0" />}
-                <p className="text-sm font-medium text-vistaro-primary leading-snug">{toast.message}</p>
+                <p className="text-body-sm text-vistaro-primary leading-snug">{toast.message}</p>
               </div>
               <button
                 onClick={() => removeToast(toast.id)}

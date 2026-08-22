@@ -53,7 +53,7 @@ export default function MobileBottomNav() {
           <NavLink
             key={idx}
             to={item.to}
-            className={`flex flex-col items-center justify-center min-w-[48px] py-1 transition-all active:scale-90 relative ${active ? 'text-vistaro-accent font-bold' : 'text-vistaro-muted hover:text-vistaro-primary font-medium'
+            className={`flex flex-col items-center justify-center min-w-[48px] py-1 transition-all active:scale-90 relative ${active ? 'text-vistaro-accent' : 'text-vistaro-muted hover:text-vistaro-primary'
               }`}
           >
             <div className="relative">
@@ -62,7 +62,7 @@ export default function MobileBottomNav() {
                 <span className="absolute -top-1 -right-1.5 w-2 h-2 bg-vistaro-accent rounded-full ring-2 ring-vistaro-surface" />
               )}
             </div>
-            <span className="text-[11px] tracking-tight">{item.label}</span>
+            <span className={`text-2xs ${active ? 'font-semibold' : 'font-medium'}`}>{item.label}</span>
           </NavLink>
         );
       })}
@@ -79,7 +79,7 @@ export default function MobileBottomNav() {
         ) : (
           <Moon className="w-5 h-5 mb-0.5 text-vistaro-secondary" />
         )}
-        <span className="text-[10px] tracking-tight">{isDark ? 'Light' : 'Dark'}</span>
+        <span className="text-2xs font-medium">{isDark ? 'Light' : 'Dark'}</span>
       </button>
     </nav>
   );

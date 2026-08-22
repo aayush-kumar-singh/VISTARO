@@ -39,10 +39,10 @@ export default function LoginPage() {
           <div className="w-12 h-12 rounded-2xl bg-vistaro-secondary text-vistaro-accent border border-vistaro-border mx-auto flex items-center justify-center">
             <LogIn className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-extrabold text-vistaro-primary tracking-tight">
+          <h1 className="text-display-h2 text-vistaro-primary">
             Welcome back to Vistaro
           </h1>
-          <p className="text-xs text-vistaro-muted">
+          <p className="text-body-sm text-vistaro-muted">
             Log in to manage your bookings, wishlist, and properties.
           </p>
         </div>
@@ -51,7 +51,7 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary font-bold text-xs sm:text-sm text-vistaro-primary py-3 px-4 rounded-2xl transition-all shadow-xs cursor-pointer"
+          className="w-full flex items-center justify-center gap-3 bg-vistaro-surface border border-vistaro-border hover:bg-vistaro-secondary font-semibold text-body-sm text-vistaro-primary py-3 px-4 rounded-2xl transition-all shadow-xs cursor-pointer"
         >
           {/* Google Color SVG (Official Brand Colors - DO NOT MODIFY) */}
           <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@ export default function LoginPage() {
         {/* Divider */}
         <div className="relative flex items-center justify-center">
           <div className="border-t border-vistaro-border w-full" />
-          <span className="bg-vistaro-surface px-3 text-[11px] font-semibold text-vistaro-muted uppercase tracking-wider absolute">
+          <span className="bg-vistaro-surface px-3 text-caption text-vistaro-muted absolute">
             or sign in with email
           </span>
         </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1">
+            <label className="block text-label text-vistaro-primary mb-1">
               Username
             </label>
             <input
@@ -94,13 +94,13 @@ export default function LoginPage() {
               placeholder="Your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-vistaro-primary mb-1">
+            <label className="block text-label text-vistaro-primary mb-1">
               Password
             </label>
             <input
@@ -108,7 +108,7 @@ export default function LoginPage() {
               placeholder="Your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
+              className="w-full bg-vistaro-secondary border border-vistaro-border text-vistaro-primary rounded-2xl px-4 py-3 text-body-sm focus:outline-hidden focus:bg-vistaro-surface focus:border-vistaro-accent transition-colors"
               required
             />
           </div>
@@ -116,7 +116,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white font-bold text-sm py-3.5 px-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-cta py-3.5 px-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
           >
             <span>{loading ? 'Signing In...' : 'Sign In'}</span>
             {!loading && <ArrowRight className="w-4 h-4" />}
@@ -124,9 +124,9 @@ export default function LoginPage() {
         </form>
 
         {/* Footer Link */}
-        <div className="text-center pt-2 text-xs text-vistaro-muted">
+        <div className="text-center pt-2 text-body-sm text-vistaro-muted">
           Don't have an account?{' '}
-          <Link to="/signup" className="font-bold text-vistaro-accent hover:underline">
+          <Link to="/signup" className="text-cta text-vistaro-accent hover:underline">
             Sign Up
           </Link>
         </div>
