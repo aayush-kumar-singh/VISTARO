@@ -16,7 +16,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative w-full min-h-[540px] sm:min-h-[600px] md:min-h-[660px] flex items-center justify-center overflow-hidden rounded-3xl sm:rounded-[36px] my-3 sm:my-5 border border-vistaro-border/60 shadow-lg">
+    <section className="relative w-full min-h-[460px] sm:min-h-[560px] md:min-h-[640px] flex items-center justify-center overflow-hidden rounded-3xl sm:rounded-[36px] my-2 sm:my-5 border border-vistaro-border/60 shadow-lg">
       {/* Background Image with Cinematic Dark Gradient Overlay */}
       <div className="absolute inset-0 z-0">
         <img
@@ -32,10 +32,10 @@ export default function HeroSection() {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-16 text-center text-white space-y-6 sm:space-y-7 animate-fade-in">
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-14 md:py-16 text-center text-white space-y-5 sm:space-y-7 animate-fade-in">
         
         {/* Subtle Category Scope Chips */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 text-xs">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 text-xs">
           {[
             { label: 'Stays', icon: Home, to: '/explore' },
             { label: 'Destinations', icon: Globe, to: '/destinations' },
@@ -50,7 +50,7 @@ export default function HeroSection() {
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'instant' });
                 }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 min-h-[36px] rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white/90 hover:text-white transition-colors backdrop-blur-md text-[11px] sm:text-xs font-medium tracking-wide touch-manipulation"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[34px] sm:min-h-[36px] rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white/90 hover:text-white transition-colors backdrop-blur-md text-[11px] sm:text-xs font-medium tracking-wide touch-manipulation"
               >
                 <Icon className="w-3 h-3 text-vistaro-accent" />
                 <span>{item.label}</span>
@@ -60,11 +60,11 @@ export default function HeroSection() {
         </div>
 
         {/* Editorial Headline in Fraunces */}
-        <div className="space-y-3 sm:space-y-4">
-          <h1 className="font-serif font-normal text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.15] text-white drop-shadow-sm">
+        <div className="space-y-2.5 sm:space-y-4">
+          <h1 className="font-serif font-normal text-2xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.18] text-white drop-shadow-sm">
             Curated Sanctuaries &amp; Transformative Journeys
           </h1>
-          <p className="font-sans text-white/85 text-xs sm:text-base md:text-lg max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="font-sans text-white/85 text-xs sm:text-sm md:text-base max-w-2xl mx-auto font-normal leading-relaxed">
             Discover verified luxury villas, multi-day guided expeditions, and authentic local host immersions across iconic landscapes.
           </p>
         </div>

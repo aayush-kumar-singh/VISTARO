@@ -171,16 +171,16 @@ export default function TravelPlanDetailPage() {
 
   if (error || !plan) {
     return (
-      <div className="max-w-lg mx-auto my-16 p-8 bg-red-500/10 border border-[#FF385C]/20 rounded-3xl text-center space-y-4 shadow-xs text-[#171719]">
-        <div className="w-12 h-12 rounded-full bg-red-500/20 text-[#FF385C] flex items-center justify-center mx-auto">
+      <div className="max-w-lg mx-auto my-16 p-8 bg-red-500/10 border border-vistaro-error/20 rounded-3xl text-center space-y-4 shadow-xs text-vistaro-primary">
+        <div className="w-12 h-12 rounded-full bg-red-500/20 text-vistaro-error flex items-center justify-center mx-auto">
           <Compass className="w-6 h-6" />
         </div>
-        <h3 className="text-xl font-bold text-[#171719]">Travel Plan Not Found</h3>
-        <p className="text-xs text-[#A7A7AC]">{error || 'This plan does not exist or you do not have permission to view it.'}</p>
+        <h3 className="text-xl font-bold text-vistaro-primary">Travel Plan Not Found</h3>
+        <p className="text-xs text-vistaro-muted">{error || 'This plan does not exist or you do not have permission to view it.'}</p>
         <div className="pt-2">
           <Link
             to="/travel-plans"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#151517] text-white text-xs font-bold hover:bg-black transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-vistaro-accent text-white text-xs font-semibold hover:bg-vistaro-accent-hover transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" /> Return to My Plans
           </Link>
@@ -250,10 +250,10 @@ export default function TravelPlanDetailPage() {
     return (
       <div
         key={item._id}
-        className="group relative bg-white rounded-3xl border border-[#171719]/10 hover:border-[#171719]/25 hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden text-[#171719]"
+        className="group relative bg-vistaro-surface rounded-3xl border border-vistaro-border hover:border-vistaro-accent/40 hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden text-vistaro-primary"
       >
         {/* Item Image Preview */}
-        <div className="relative aspect-video w-full overflow-hidden bg-zinc-100">
+        <div className="relative aspect-video w-full overflow-hidden bg-vistaro-secondary">
           <img
             src={imageUrl}
             alt={title}
@@ -264,7 +264,7 @@ export default function TravelPlanDetailPage() {
             type="button"
             onClick={() => handleRemoveItem(item._id, title)}
             disabled={removingId === item._id}
-            className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-red-50 text-zinc-600 hover:text-[#FF385C] shadow-xs transition-colors cursor-pointer border border-white/40"
+            className="absolute top-3 right-3 p-2 rounded-full bg-vistaro-surface/90 hover:bg-red-500/10 text-vistaro-muted hover:text-vistaro-error shadow-xs transition-colors cursor-pointer border border-vistaro-border/40"
             title="Remove from travel plan"
             aria-label="Remove item from travel plan"
           >
@@ -277,33 +277,33 @@ export default function TravelPlanDetailPage() {
           <div className="space-y-1.5">
             <Link
               to={linkUrl}
-              className="block font-extrabold text-base text-[#171719] hover:text-[#FF385C] transition-colors line-clamp-2 leading-snug"
+              className="block font-serif font-medium text-base text-vistaro-primary hover:text-vistaro-accent transition-colors line-clamp-2 leading-snug"
             >
               {title}
             </Link>
 
             {subtitle && (
-              <p className="text-xs text-[#A7A7AC] line-clamp-1">{subtitle}</p>
+              <p className="text-xs text-vistaro-muted line-clamp-1">{subtitle}</p>
             )}
 
             {item.notes && (
-              <div className="p-3 bg-zinc-50 rounded-2xl border border-[#171719]/5 text-xs text-zinc-600 flex items-start gap-2 mt-2">
-                <FileText className="w-3.5 h-3.5 text-[#FF385C] shrink-0 mt-0.5" />
+              <div className="p-3 bg-vistaro-secondary rounded-2xl border border-vistaro-border text-xs text-vistaro-secondary flex items-start gap-2 mt-2">
+                <FileText className="w-3.5 h-3.5 text-vistaro-accent shrink-0 mt-0.5" />
                 <span className="leading-relaxed">{item.notes}</span>
               </div>
             )}
           </div>
 
-          <div className="pt-3 border-t border-[#171719]/10 flex items-center justify-between text-xs">
+          <div className="pt-3 border-t border-vistaro-border flex items-center justify-between text-xs">
             <Link
               to={linkUrl}
-              className="inline-flex items-center gap-1 font-bold text-[#FF385C] hover:underline"
+              className="inline-flex items-center gap-1 font-semibold text-vistaro-accent hover:underline"
             >
               <span>View Details</span>
               <ExternalLink className="w-3 h-3" />
             </Link>
 
-            <span className="text-[11px] text-[#A7A7AC]">
+            <span className="text-[11px] text-vistaro-muted">
               Added {new Date(item.addedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             </span>
           </div>
@@ -319,14 +319,14 @@ export default function TravelPlanDetailPage() {
       <div className="flex items-center justify-between">
         <Link
           to="/travel-plans"
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#A7A7AC] hover:text-[#171719] transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-vistaro-muted hover:text-vistaro-primary transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to My Plans
         </Link>
 
         <div className="flex items-center gap-2">
           {plan.isArchived && (
-            <span className="text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+            <span className="text-xs font-semibold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 px-3 py-1 rounded-full">
               Archived Plan
             </span>
           )}
@@ -337,14 +337,14 @@ export default function TravelPlanDetailPage() {
       {isEditing ? (
         <form
           onSubmit={handleUpdatePlan}
-          className="bg-white rounded-3xl border border-[#171719]/10 p-6 sm:p-8 shadow-xs space-y-5 animate-fade-in"
+          className="bg-vistaro-surface rounded-3xl border border-vistaro-border p-6 sm:p-8 shadow-xs space-y-5 animate-fade-in"
         >
-          <div className="flex items-center justify-between border-b border-[#171719]/10 pb-4">
-            <h3 className="text-lg font-bold text-[#171719]">Edit Travel Plan</h3>
+          <div className="flex items-center justify-between border-b border-vistaro-border pb-4">
+            <h3 className="text-lg font-serif font-medium text-vistaro-primary">Edit Travel Plan</h3>
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="text-xs text-[#A7A7AC] hover:text-[#171719] underline cursor-pointer"
+              className="text-xs text-vistaro-muted hover:text-vistaro-primary underline cursor-pointer"
             >
               Cancel
             </button>
@@ -352,7 +352,7 @@ export default function TravelPlanDetailPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2 space-y-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#171719]">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-vistaro-primary">
                 Plan Title *
               </label>
               <input
@@ -360,18 +360,18 @@ export default function TravelPlanDetailPage() {
                 required
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#171719]/15 text-xs font-medium text-[#171719] bg-white focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C]"
+                className="w-full px-4 py-2.5 rounded-xl border border-vistaro-border text-xs font-medium text-vistaro-primary bg-vistaro-surface focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#171719]">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-vistaro-primary">
                 Primary Destination
               </label>
               <select
                 value={editDestination}
                 onChange={(e) => setEditDestination(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#171719]/15 text-xs font-medium text-[#171719] bg-white focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C]"
+                className="w-full px-4 py-2.5 rounded-xl border border-vistaro-border text-xs font-medium text-vistaro-primary bg-vistaro-surface focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent"
               >
                 <option value="">No Primary Destination (Multi-Destination)</option>
                 {destinations.map((d) => (
@@ -384,42 +384,42 @@ export default function TravelPlanDetailPage() {
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#171719]">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-vistaro-primary">
                   Start Date
                 </label>
                 <input
                   type="date"
                   value={editStartDate}
                   onChange={(e) => setEditStartDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#171719]/15 text-xs font-medium text-[#171719] bg-white focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C]"
+                  className="w-full px-3 py-2 rounded-xl border border-vistaro-border text-xs font-medium text-vistaro-primary bg-vistaro-surface focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#171719]">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-vistaro-primary">
                   End Date
                 </label>
                 <input
                   type="date"
                   value={editEndDate}
                   onChange={(e) => setEditEndDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#171719]/15 text-xs font-medium text-[#171719] bg-white focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C]"
+                  className="w-full px-3 py-2 rounded-xl border border-vistaro-border text-xs font-medium text-vistaro-primary bg-vistaro-surface focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent"
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#171719]/10">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-vistaro-border">
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-5 py-2.5 rounded-full border border-[#171719]/15 text-xs font-bold text-[#171719] hover:bg-zinc-100 transition-colors cursor-pointer"
+              className="px-5 py-2.5 rounded-full border border-vistaro-border text-xs font-semibold text-vistaro-primary hover:bg-vistaro-secondary transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={updating}
-              className="px-6 py-2.5 rounded-full bg-[#FF385C] hover:bg-[#FF5A70] text-white text-xs font-bold shadow-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2.5 rounded-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-2"
             >
               <Check className="w-4 h-4" />
               <span>{updating ? 'Saving...' : 'Save Changes'}</span>
@@ -427,23 +427,23 @@ export default function TravelPlanDetailPage() {
           </div>
         </form>
       ) : (
-        <div className="bg-white rounded-3xl border border-[#171719]/10 p-6 sm:p-8 shadow-xs space-y-4">
+        <div className="bg-vistaro-surface rounded-3xl border border-vistaro-border p-6 sm:p-8 shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 {plan.destination && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-bold text-xs border border-blue-100 shadow-2xs">
-                    <MapPin className="w-3.5 h-3.5" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-vistaro-secondary text-vistaro-primary font-semibold text-xs border border-vistaro-border shadow-2xs">
+                    <MapPin className="w-3.5 h-3.5 text-vistaro-accent" />
                     <span>{plan.destination.name}, {plan.destination.state}</span>
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1 text-xs font-bold text-zinc-500 bg-zinc-50 px-3 py-1 rounded-full border border-zinc-200">
-                  <Layers className="w-3.5 h-3.5 text-[#FF385C]" />
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-vistaro-muted bg-vistaro-secondary px-3 py-1 rounded-full border border-vistaro-border">
+                  <Layers className="w-3.5 h-3.5 text-vistaro-accent" />
                   <span>{items.length} {items.length === 1 ? 'item' : 'items'} planned</span>
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-4xl font-extrabold text-[#171719] tracking-tight">
+              <h1 className="text-2xl sm:text-4xl font-serif font-medium text-vistaro-primary tracking-tight">
                 {plan.title}
               </h1>
             </div>
@@ -452,24 +452,24 @@ export default function TravelPlanDetailPage() {
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#171719]/15 text-xs font-bold text-[#171719] hover:bg-zinc-100 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-vistaro-border text-xs font-semibold text-vistaro-primary hover:bg-vistaro-secondary transition-colors cursor-pointer"
               >
-                <Edit3 className="w-3.5 h-3.5 text-zinc-500" /> Edit
+                <Edit3 className="w-3.5 h-3.5 text-vistaro-muted" /> Edit
               </button>
 
               <button
                 type="button"
                 onClick={handleToggleArchive}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#171719]/15 text-xs font-bold text-[#171719] hover:bg-zinc-100 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-vistaro-border text-xs font-semibold text-vistaro-primary hover:bg-vistaro-secondary transition-colors cursor-pointer"
               >
-                <Archive className="w-3.5 h-3.5 text-zinc-500" />
+                <Archive className="w-3.5 h-3.5 text-vistaro-muted" />
                 {plan.isArchived ? 'Restore' : 'Archive'}
               </button>
 
               <button
                 type="button"
                 onClick={handleDeletePlan}
-                className="p-2 rounded-full border border-red-200 text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                className="p-2 rounded-full border border-vistaro-error/30 text-vistaro-error hover:bg-red-500/10 transition-colors cursor-pointer"
                 title="Delete travel plan"
               >
                 <Trash2 className="w-4 h-4" />
@@ -478,13 +478,13 @@ export default function TravelPlanDetailPage() {
           </div>
 
           {/* Details Strip */}
-          <div className="pt-4 border-t border-[#171719]/10 flex flex-wrap items-center gap-6 text-xs text-[#A7A7AC]">
+          <div className="pt-4 border-t border-vistaro-border flex flex-wrap items-center gap-6 text-xs text-vistaro-muted">
             <div className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-[#FF385C]" />
-              <span className="font-semibold text-[#171719]">{formatDateRange(plan.startDate, plan.endDate)}</span>
+              <Calendar className="w-4 h-4 text-vistaro-accent" />
+              <span className="font-semibold text-vistaro-primary">{formatDateRange(plan.startDate, plan.endDate)}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-zinc-400" />
+              <Clock className="w-4 h-4 text-vistaro-muted" />
               <span>Created {new Date(plan.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
             </div>
           </div>
@@ -493,30 +493,30 @@ export default function TravelPlanDetailPage() {
 
       {/* 3. Empty State (When entire plan has 0 items) */}
       {items.length === 0 ? (
-        <div className="text-center py-16 px-6 bg-zinc-50 rounded-3xl border border-[#171719]/10 max-w-xl mx-auto space-y-4">
-          <div className="w-14 h-14 rounded-full bg-[#FF385C]/10 text-[#FF385C] flex items-center justify-center mx-auto">
+        <div className="text-center py-16 px-6 bg-vistaro-surface rounded-3xl border border-vistaro-border max-w-xl mx-auto space-y-4">
+          <div className="w-14 h-14 rounded-full bg-vistaro-accent/10 text-vistaro-accent flex items-center justify-center mx-auto">
             <Sparkles className="w-7 h-7" />
           </div>
-          <h3 className="font-bold text-lg text-[#171719]">No Items in This Plan Yet</h3>
-          <p className="text-xs text-[#A7A7AC] max-w-sm mx-auto leading-relaxed">
+          <h3 className="font-bold text-lg text-vistaro-primary">No Items in This Plan Yet</h3>
+          <p className="text-xs text-vistaro-muted max-w-sm mx-auto leading-relaxed">
             Start building your dream itinerary! Explore boutique stays, curated multi-day tour packages, and host-led experiences to attach them here.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 bg-[#151517] hover:bg-black text-white text-xs font-bold py-2.5 px-5 rounded-full transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-xs font-semibold py-2.5 px-5 rounded-full transition-colors shadow-xs"
             >
-              <Home className="w-3.5 h-3.5" /> Browse Stays
+              <Home className="w-3.5 h-3.5 text-vistaro-accent" /> Browse Stays
             </Link>
             <Link
               to="/tours"
-              className="inline-flex items-center gap-2 bg-zinc-200 hover:bg-zinc-300 text-[#171719] text-xs font-bold py-2.5 px-5 rounded-full transition-colors"
+              className="inline-flex items-center gap-2 bg-vistaro-secondary hover:bg-vistaro-main text-vistaro-primary border border-vistaro-border text-xs font-semibold py-2.5 px-5 rounded-full transition-colors"
             >
-              <Map className="w-3.5 h-3.5" /> Tour Packages
+              <Map className="w-3.5 h-3.5 text-vistaro-accent" /> Tour Packages
             </Link>
             <Link
               to="/experiences"
-              className="inline-flex items-center gap-2 bg-[#FF385C] hover:bg-[#FF5A70] text-white text-xs font-bold py-2.5 px-5 rounded-full transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-semibold py-2.5 px-5 rounded-full transition-colors shadow-xs"
             >
               <Sparkles className="w-3.5 h-3.5" /> Experiences
             </Link>
@@ -530,18 +530,18 @@ export default function TravelPlanDetailPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-vistaro-secondary text-vistaro-accent flex items-center justify-center">
                   <Home className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[#171719] tracking-tight">Stays & Villas</h2>
-                  <p className="text-xs text-[#A7A7AC]">{stayItems.length} {stayItems.length === 1 ? 'stay' : 'stays'} reserved in plan</p>
+                  <h2 className="text-lg font-serif font-medium text-vistaro-primary tracking-tight">Stays & Villas</h2>
+                  <p className="text-xs text-vistaro-muted">{stayItems.length} {stayItems.length === 1 ? 'stay' : 'stays'} reserved in plan</p>
                 </div>
               </div>
 
               <Link
                 to="/"
-                className="inline-flex items-center gap-1 text-xs font-bold text-[#FF385C] hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-vistaro-accent hover:underline"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Stays
               </Link>
@@ -552,8 +552,8 @@ export default function TravelPlanDetailPage() {
                 {stayItems.map(renderItemCard)}
               </div>
             ) : (
-              <div className="p-6 bg-zinc-50/70 rounded-2xl border border-dashed border-[#171719]/15 text-center text-xs text-[#A7A7AC]">
-                No boutique stays added yet. <Link to="/" className="text-[#FF385C] font-bold hover:underline">Explore stays</Link>
+              <div className="p-6 bg-vistaro-secondary/50 rounded-2xl border border-dashed border-vistaro-border text-center text-xs text-vistaro-muted">
+                No boutique stays added yet. <Link to="/" className="text-vistaro-accent font-semibold hover:underline">Explore stays</Link>
               </div>
             )}
           </div>
@@ -562,18 +562,18 @@ export default function TravelPlanDetailPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-vistaro-secondary text-vistaro-accent flex items-center justify-center">
                   <Map className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[#171719] tracking-tight">Tour Packages & Expeditions</h2>
-                  <p className="text-xs text-[#A7A7AC]">{tourItems.length} {tourItems.length === 1 ? 'package' : 'packages'} reserved in plan</p>
+                  <h2 className="text-lg font-serif font-medium text-vistaro-primary tracking-tight">Tour Packages & Expeditions</h2>
+                  <p className="text-xs text-vistaro-muted">{tourItems.length} {tourItems.length === 1 ? 'package' : 'packages'} reserved in plan</p>
                 </div>
               </div>
 
               <Link
                 to="/tours"
-                className="inline-flex items-center gap-1 text-xs font-bold text-[#FF385C] hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-vistaro-accent hover:underline"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Tours
               </Link>
@@ -584,8 +584,8 @@ export default function TravelPlanDetailPage() {
                 {tourItems.map(renderItemCard)}
               </div>
             ) : (
-              <div className="p-6 bg-zinc-50/70 rounded-2xl border border-dashed border-[#171719]/15 text-center text-xs text-[#A7A7AC]">
-                No tour packages added yet. <Link to="/tours" className="text-[#FF385C] font-bold hover:underline">Explore multi-day tours</Link>
+              <div className="p-6 bg-vistaro-secondary/50 rounded-2xl border border-dashed border-vistaro-border text-center text-xs text-vistaro-muted">
+                No tour packages added yet. <Link to="/tours" className="text-vistaro-accent font-semibold hover:underline">Explore multi-day tours</Link>
               </div>
             )}
           </div>
@@ -594,18 +594,18 @@ export default function TravelPlanDetailPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-rose-50 text-[#FF385C] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-vistaro-secondary text-vistaro-accent flex items-center justify-center">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[#171719] tracking-tight">Host-Led Experiences</h2>
-                  <p className="text-xs text-[#A7A7AC]">{expItems.length} {expItems.length === 1 ? 'experience' : 'experiences'} reserved in plan</p>
+                  <h2 className="text-lg font-serif font-medium text-vistaro-primary tracking-tight">Host-Led Experiences</h2>
+                  <p className="text-xs text-vistaro-muted">{expItems.length} {expItems.length === 1 ? 'experience' : 'experiences'} reserved in plan</p>
                 </div>
               </div>
 
               <Link
                 to="/experiences"
-                className="inline-flex items-center gap-1 text-xs font-bold text-[#FF385C] hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-vistaro-accent hover:underline"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Experiences
               </Link>
@@ -616,8 +616,8 @@ export default function TravelPlanDetailPage() {
                 {expItems.map(renderItemCard)}
               </div>
             ) : (
-              <div className="p-6 bg-zinc-50/70 rounded-2xl border border-dashed border-[#171719]/15 text-center text-xs text-[#A7A7AC]">
-                No host experiences added yet. <Link to="/experiences" className="text-[#FF385C] font-bold hover:underline">Explore experiences</Link>
+              <div className="p-6 bg-vistaro-secondary/50 rounded-2xl border border-dashed border-vistaro-border text-center text-xs text-vistaro-muted">
+                No host experiences added yet. <Link to="/experiences" className="text-vistaro-accent font-semibold hover:underline">Explore experiences</Link>
               </div>
             )}
           </div>
@@ -626,19 +626,19 @@ export default function TravelPlanDetailPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-vistaro-secondary text-vistaro-accent flex items-center justify-center">
                   <Car className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[#171719] tracking-tight">Private Transfers & Cabs</h2>
-                  <p className="text-xs text-[#A7A7AC]">{transferItems.length} {transferItems.length === 1 ? 'transfer' : 'transfers'} reserved in plan</p>
+                  <h2 className="text-lg font-serif font-medium text-vistaro-primary tracking-tight">Private Transfers & Cabs</h2>
+                  <p className="text-xs text-vistaro-muted">{transferItems.length} {transferItems.length === 1 ? 'transfer' : 'transfers'} reserved in plan</p>
                 </div>
               </div>
 
               {plan.destination?.slug && (
                 <Link
                   to={`/destinations/${plan.destination.slug}#transfers-section`}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-[#FF385C] hover:underline"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-vistaro-accent hover:underline"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add Transfers
                 </Link>
@@ -650,10 +650,10 @@ export default function TravelPlanDetailPage() {
                 {transferItems.map(renderItemCard)}
               </div>
             ) : (
-              <div className="p-6 bg-zinc-50/70 rounded-2xl border border-dashed border-[#171719]/15 text-center text-xs text-[#A7A7AC]">
+              <div className="p-6 bg-vistaro-secondary/50 rounded-2xl border border-dashed border-vistaro-border text-center text-xs text-vistaro-muted">
                 No private transfers or chauffeured cabs attached yet.{' '}
                 {plan.destination?.slug ? (
-                  <Link to={`/destinations/${plan.destination.slug}#transfers-section`} className="text-[#FF385C] font-bold hover:underline">
+                  <Link to={`/destinations/${plan.destination.slug}#transfers-section`} className="text-vistaro-accent font-semibold hover:underline">
                     Explore transfers in {plan.destination.name}
                   </Link>
                 ) : (

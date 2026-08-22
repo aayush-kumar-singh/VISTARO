@@ -292,7 +292,7 @@ export default function ListingDetailPage() {
             className="flex items-center gap-1.5 text-cta px-3.5 py-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary transition-colors cursor-pointer"
             title="Add to Travel Plan"
           >
-            <Compass className="w-3.5 h-3.5 text-[#FF385C]" />
+            <Compass className="w-3.5 h-3.5 text-vistaro-accent" />
             <span>Add to Plan</span>
           </button>
 

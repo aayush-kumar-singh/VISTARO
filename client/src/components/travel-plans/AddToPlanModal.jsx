@@ -136,23 +136,23 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
       />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-[#171719]/10 overflow-hidden z-10 animate-fade-in text-[#171719]">
+      <div className="relative w-full max-w-lg bg-vistaro-surface rounded-3xl shadow-2xl border border-vistaro-border overflow-hidden z-10 animate-fade-in text-vistaro-primary">
         
         {/* Header */}
-        <div className="p-6 pb-4 border-b border-[#171719]/10 flex items-center justify-between">
+        <div className="p-6 pb-4 border-b border-vistaro-border flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-full bg-[#FF385C]/10 text-[#FF385C] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-vistaro-accent/10 text-vistaro-accent flex items-center justify-center">
               <Compass className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-[#171719] tracking-tight">Add to Travel Plan</h2>
-              <p className="text-xs text-[#A7A7AC]">Attach this item to your curated journey</p>
+              <h2 className="text-xl font-serif font-medium text-vistaro-primary tracking-tight">Add to Travel Plan</h2>
+              <p className="text-xs text-vistaro-muted">Attach this item to your curated journey</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full text-zinc-400 hover:text-[#171719] hover:bg-zinc-100 transition-colors cursor-pointer"
+            className="p-2 rounded-full text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary transition-colors cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -160,47 +160,47 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
         </div>
 
         {/* Item Preview Strip */}
-        <div className="px-6 py-3 bg-zinc-50 border-b border-[#171719]/10 flex items-center justify-between gap-3">
+        <div className="px-6 py-3 bg-vistaro-secondary/60 border-b border-vistaro-border flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-[#FF385C] bg-red-50 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] uppercase font-semibold tracking-wider text-vistaro-accent bg-vistaro-accent/10 px-2 py-0.5 rounded-full">
               {itemTypeLabels[item.itemType] || item.itemType}
             </span>
-            <h4 className="font-bold text-sm text-[#171719] truncate mt-1">{item.title}</h4>
+            <h4 className="font-semibold text-sm text-vistaro-primary truncate mt-1">{item.title}</h4>
           </div>
         </div>
 
         {/* Modal Body */}
         <div className="p-6 space-y-5">
           {loading ? (
-            <div className="py-12 text-center text-[#A7A7AC] space-y-2">
-              <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#FF385C]" />
+            <div className="py-12 text-center text-vistaro-muted space-y-2">
+              <Loader2 className="w-6 h-6 animate-spin mx-auto text-vistaro-accent" />
               <p className="text-xs">Loading your travel plans...</p>
             </div>
           ) : (
             <>
               {/* If user has no plans yet */}
               {plans.length === 0 && !isCreatingNew ? (
-                <div className="text-center py-6 space-y-3 bg-zinc-50 rounded-2xl border border-[#171719]/10 p-5">
-                  <Compass className="w-8 h-8 text-[#A7A7AC] mx-auto" />
-                  <h4 className="font-bold text-sm text-[#171719]">No Travel Plans Yet</h4>
-                  <p className="text-xs text-[#A7A7AC]">Create your first travel plan to start saving stays and activities.</p>
+                <div className="text-center py-6 space-y-3 bg-vistaro-secondary/50 rounded-2xl border border-vistaro-border p-5">
+                  <Compass className="w-8 h-8 text-vistaro-muted mx-auto" />
+                  <h4 className="font-bold text-sm text-vistaro-primary">No Travel Plans Yet</h4>
+                  <p className="text-xs text-vistaro-muted">Create your first travel plan to start saving stays and activities.</p>
                   <button
                     type="button"
                     onClick={() => setIsCreatingNew(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FF385C] text-white text-xs font-bold shadow-xs hover:bg-[#FF5A70] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-vistaro-accent text-white text-xs font-semibold shadow-xs hover:bg-vistaro-accent-hover transition-colors cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" /> Create a Travel Plan
                   </button>
                 </div>
               ) : isCreatingNew ? (
                 /* Inline New Plan Form */
-                <form onSubmit={handleCreateNewPlan} className="space-y-3 p-4 bg-zinc-50 rounded-2xl border border-[#171719]/10">
+                <form onSubmit={handleCreateNewPlan} className="space-y-3 p-4 bg-vistaro-secondary/50 rounded-2xl border border-vistaro-border">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#171719]">New Plan Details</span>
+                    <span className="text-xs font-semibold text-vistaro-primary">New Plan Details</span>
                     <button
                       type="button"
                       onClick={() => setIsCreatingNew(false)}
-                      className="text-xs text-[#A7A7AC] hover:text-[#171719] underline cursor-pointer"
+                      className="text-xs text-vistaro-muted hover:text-vistaro-primary underline cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -211,13 +211,13 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
                     value={newPlanTitle}
                     onChange={(e) => setNewPlanTitle(e.target.value)}
                     placeholder="e.g. My Upcoming Vacation"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#171719]/15 text-xs font-medium text-[#171719] bg-white focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-vistaro-border text-xs font-medium text-vistaro-primary bg-vistaro-surface focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent"
                     autoFocus
                   />
                   <button
                     type="submit"
                     disabled={creatingPlan}
-                    className="w-full py-2.5 rounded-xl bg-[#151517] hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 rounded-xl bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {creatingPlan ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                     <span>Create & Select Plan</span>
@@ -227,13 +227,13 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
                 /* Plan Selection List */
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#171719]">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-vistaro-primary">
                       Select Travel Plan
                     </label>
                     <button
                       type="button"
                       onClick={() => setIsCreatingNew(true)}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-[#FF385C] hover:underline cursor-pointer"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-vistaro-accent hover:underline cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" /> New Plan
                     </button>
@@ -254,39 +254,39 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
                           }}
                           className={`p-3.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
                             isAlreadyInPlan
-                              ? 'bg-zinc-100/70 border-zinc-200 opacity-60 cursor-not-allowed'
+                              ? 'bg-vistaro-secondary/40 border-vistaro-border opacity-60 cursor-not-allowed'
                               : isSelected
-                              ? 'border-[#FF385C] bg-red-50/40 shadow-xs'
-                              : 'border-[#171719]/10 hover:border-[#171719]/25 hover:bg-zinc-50'
+                              ? 'border-vistaro-accent bg-vistaro-accent/10 shadow-xs'
+                              : 'border-vistaro-border hover:border-vistaro-accent/40 hover:bg-vistaro-secondary/50'
                           }`}
                         >
                           <div className="min-w-0 space-y-0.5">
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-xs text-[#171719] truncate">{p.title}</span>
+                              <span className="font-semibold text-xs text-vistaro-primary truncate">{p.title}</span>
                               {p.destination && (
-                                <span className="text-[10px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full font-semibold">
+                                <span className="text-[10px] text-vistaro-primary bg-vistaro-secondary px-2 py-0.5 rounded-full font-semibold border border-vistaro-border">
                                   {p.destination.name}
                                 </span>
                               )}
                             </div>
-                            <div className="text-[11px] text-[#A7A7AC] flex items-center gap-2">
+                            <div className="text-[11px] text-vistaro-muted flex items-center gap-2">
                               <span className="flex items-center gap-1">
-                                <Layers className="w-3 h-3 text-[#FF385C]" />
+                                <Layers className="w-3 h-3 text-vistaro-accent" />
                                 {p.items?.length || 0} items
                               </span>
                             </div>
                           </div>
 
                           {isAlreadyInPlan ? (
-                            <span className="text-[10px] font-bold text-zinc-500 bg-zinc-200 px-2.5 py-1 rounded-full shrink-0">
+                            <span className="text-[10px] font-semibold text-vistaro-muted bg-vistaro-secondary px-2.5 py-1 rounded-full shrink-0 border border-vistaro-border">
                               Already Added
                             </span>
                           ) : isSelected ? (
-                            <div className="w-5 h-5 rounded-full bg-[#FF385C] text-white flex items-center justify-center shrink-0">
+                            <div className="w-5 h-5 rounded-full bg-vistaro-accent text-white flex items-center justify-center shrink-0">
                               <Check className="w-3 h-3 stroke-[3]" />
                             </div>
                           ) : (
-                            <div className="w-5 h-5 rounded-full border border-zinc-300 shrink-0" />
+                            <div className="w-5 h-5 rounded-full border border-vistaro-border shrink-0" />
                           )}
                         </div>
                       );
@@ -298,7 +298,7 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
               {/* Optional Notes Input */}
               {plans.length > 0 && !isCreatingNew && (
                 <div className="space-y-1.5 pt-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#171719]">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-vistaro-primary">
                     Custom Itinerary Notes (Optional)
                   </label>
                   <input
@@ -306,7 +306,7 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="e.g. Day 2 afternoon activity, stay 3 nights"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#171719]/15 text-xs font-medium text-[#171719] bg-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-vistaro-border text-xs font-medium text-vistaro-primary bg-vistaro-surface placeholder-vistaro-muted focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent"
                   />
                 </div>
               )}
@@ -316,19 +316,19 @@ export default function AddToPlanModal({ isOpen, onClose, item }) {
 
         {/* Footer Actions */}
         {plans.length > 0 && !isCreatingNew && (
-          <div className="p-6 pt-3 border-t border-[#171719]/10 flex items-center justify-end gap-3 bg-zinc-50/50">
+          <div className="p-6 pt-3 border-t border-vistaro-border flex items-center justify-end gap-3 bg-vistaro-secondary/40">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-full border border-[#171719]/15 text-xs font-bold text-[#171719] hover:bg-zinc-100 transition-colors cursor-pointer"
+              className="px-5 py-2.5 rounded-full border border-vistaro-border text-xs font-semibold text-vistaro-primary hover:bg-vistaro-secondary transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
-              type="button"
+              type="submit"
               onClick={handleAddItem}
               disabled={submitting || !selectedPlanId}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#FF385C] hover:bg-[#FF5A70] text-white text-xs font-bold shadow-xs transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50"
             >
               {submitting ? (
                 <>

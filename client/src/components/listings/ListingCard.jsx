@@ -63,8 +63,8 @@ export default function ListingCard({ listing, onWishlistToggle }) {
 
   return (
     <div className="group relative flex flex-col h-full bg-transparent">
-      {/* 1. Image Container (1:1 aspect ratio) */}
-      <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-vistaro-secondary mb-3 shadow-xs">
+      {/* 1. Image Container (4:3 on mobile for sleek proportion, 1:1 on desktop) */}
+      <div className="relative w-full aspect-4/3 sm:aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-vistaro-secondary mb-3 shadow-xs">
         <Link to={`/listings/${listing._id}`} className="block w-full h-full">
           <img
             src={imgError ? 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60' : primaryImage}

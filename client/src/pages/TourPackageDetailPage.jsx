@@ -213,7 +213,7 @@ export default function TourPackageDetailPage() {
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-primary text-cta transition-colors cursor-pointer"
             title="Add to Travel Plan"
           >
-            <Compass className="w-3.5 h-3.5 text-[#FF385C]" />
+            <Compass className="w-3.5 h-3.5 text-vistaro-accent" />
             <span>Add to Plan</span>
           </button>
 

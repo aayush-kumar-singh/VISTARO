@@ -96,16 +96,11 @@ export default function LandingFeaturedTours() {
         </div>
       )}
 
-      {/* Cards Layout: 4-in-a-row on desktop, 2-per-row on tablet, horizontal scroll-snap on mobile */}
+      {/* Responsive Cards Grid: 1-col on mobile, 2-col on tablet, 4-col on desktop */}
       {!loading && tours.length > 0 && (
-        <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 py-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {tours.map((pkg) => (
-            <div
-              key={`landing-featured-tour-${pkg._id}`}
-              className="min-w-[82vw] sm:min-w-0 snap-start shrink-0 sm:shrink"
-            >
-              <TourPackageCard pkg={pkg} />
-            </div>
+            <TourPackageCard key={`landing-featured-tour-${pkg._id}`} pkg={pkg} />
           ))}
         </div>
       )}

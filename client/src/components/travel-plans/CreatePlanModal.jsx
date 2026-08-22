@@ -92,22 +92,22 @@ export default function CreatePlanModal({ isOpen, onClose, onPlanCreated }) {
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-[#171719]/10 overflow-hidden z-10 animate-fade-in text-[#171719]">
+      <div className="relative w-full max-w-lg bg-vistaro-surface rounded-3xl shadow-2xl border border-vistaro-border overflow-hidden z-10 animate-fade-in text-vistaro-primary">
         {/* Header */}
-        <div className="p-6 pb-4 border-b border-[#171719]/10 flex items-center justify-between">
+        <div className="p-6 pb-4 border-b border-vistaro-border flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-full bg-[#FF385C]/10 text-[#FF385C] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-vistaro-accent/10 text-vistaro-accent flex items-center justify-center">
               <Compass className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-[#171719] tracking-tight">Create Travel Plan</h2>
-              <p className="text-xs text-[#A7A7AC]">Start designing your dream journey itinerary</p>
+              <h2 className="text-xl font-serif font-medium text-vistaro-primary tracking-tight">Create Travel Plan</h2>
+              <p className="text-xs text-vistaro-muted">Start designing your dream journey itinerary</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full text-zinc-400 hover:text-[#171719] hover:bg-zinc-100 transition-colors"
+            className="p-2 rounded-full text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary transition-colors cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -118,8 +118,8 @@ export default function CreatePlanModal({ isOpen, onClose, onPlanCreated }) {
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Plan Title */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#171719]">
-              Plan Name <span className="text-[#FF385C]">*</span>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-vistaro-primary">
+              Plan Name <span className="text-vistaro-accent">*</span>
             </label>
             <input
               type="text"
@@ -127,22 +127,22 @@ export default function CreatePlanModal({ isOpen, onClose, onPlanCreated }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Ladakh Monasteries & High Passes, Goa Monsoon"
-              className="w-full px-4 py-3 rounded-2xl border border-[#171719]/15 text-sm font-medium text-[#171719] placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C] transition-all bg-white"
+              className="w-full px-4 py-3 rounded-2xl border border-vistaro-border text-sm font-medium text-vistaro-primary placeholder-vistaro-muted focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent transition-all bg-vistaro-surface"
               autoFocus
             />
           </div>
 
           {/* Primary Destination (Optional) */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#171719] flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-[#FF385C]" />
+            <label className="block text-xs font-semibold uppercase tracking-wider text-vistaro-primary flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-vistaro-accent" />
               <span>Primary Destination (Optional)</span>
             </label>
             <select
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
               disabled={loadingDestinations}
-              className="w-full px-4 py-3 rounded-2xl border border-[#171719]/15 text-sm font-medium text-[#171719] focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C] transition-all bg-white cursor-pointer"
+              className="w-full px-4 py-3 rounded-2xl border border-vistaro-border text-sm font-medium text-vistaro-primary focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent transition-all bg-vistaro-surface cursor-pointer"
             >
               <option value="">-- Multi-Destination / Flexible --</option>
               {destinations.map((d) => (
@@ -155,46 +155,46 @@ export default function CreatePlanModal({ isOpen, onClose, onPlanCreated }) {
 
           {/* Dates Range (Optional) */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#171719] flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-[#FF385C]" />
+            <label className="block text-xs font-semibold uppercase tracking-wider text-vistaro-primary flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-vistaro-accent" />
               <span>Travel Dates (Optional)</span>
             </label>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] text-[#A7A7AC] font-semibold block mb-1">Start Date</label>
+                <label className="text-[11px] text-vistaro-muted font-semibold block mb-1">Start Date</label>
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-[#171719]/15 text-xs font-medium text-[#171719] focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C] transition-all bg-white"
+                  className="w-full px-3 py-2.5 rounded-xl border border-vistaro-border text-xs font-medium text-vistaro-primary focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent transition-all bg-vistaro-surface"
                 />
               </div>
               <div>
-                <label className="text-[11px] text-[#A7A7AC] font-semibold block mb-1">End Date</label>
+                <label className="text-[11px] text-vistaro-muted font-semibold block mb-1">End Date</label>
                 <input
                   type="date"
                   value={endDate}
                   min={startDate || undefined}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-[#171719]/15 text-xs font-medium text-[#171719] focus:outline-none focus:ring-2 focus:ring-[#FF385C]/30 focus:border-[#FF385C] transition-all bg-white"
+                  className="w-full px-3 py-2.5 rounded-xl border border-vistaro-border text-xs font-medium text-vistaro-primary focus:outline-none focus:ring-2 focus:ring-vistaro-accent/30 focus:border-vistaro-accent transition-all bg-vistaro-surface"
                 />
               </div>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="pt-3 border-t border-[#171719]/10 flex items-center justify-end gap-3">
+          <div className="pt-3 border-t border-vistaro-border flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-full border border-[#171719]/15 text-xs font-bold text-[#171719] hover:bg-zinc-100 transition-colors cursor-pointer"
+              className="px-5 py-2.5 rounded-full border border-vistaro-border text-xs font-semibold text-vistaro-primary hover:bg-vistaro-secondary transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#FF385C] hover:bg-[#FF5A70] text-white text-xs font-bold shadow-xs transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50"
             >
               {submitting ? (
                 <>

@@ -38,6 +38,8 @@ export default function Navbar() {
   const desktopCurrencyRef = useRef(null);
   const mobileCurrencyRef = useRef(null);
   const userMenuRef = useRef(null);
+  const mobileDrawerRef = useRef(null);
+  const mobileMenuBtnRef = useRef(null);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -47,7 +49,12 @@ export default function Navbar() {
       if (!clickedInsideDesktop && !clickedInsideMobile) {
         setIsCurrencyOpen(false);
       }
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+
+      const clickedInsideDesktopUserMenu = userMenuRef.current && userMenuRef.current.contains(event.target);
+      const clickedInsideMobileDrawer = mobileDrawerRef.current && mobileDrawerRef.current.contains(event.target);
+      const clickedMobileMenuBtn = mobileMenuBtnRef.current && mobileMenuBtnRef.current.contains(event.target);
+
+      if (!clickedInsideDesktopUserMenu && !clickedInsideMobileDrawer && !clickedMobileMenuBtn) {
         setIsUserMenuOpen(false);
       }
     }
@@ -407,6 +414,7 @@ export default function Navbar() {
           </button>
 
           <button
+            ref={mobileMenuBtnRef}
             onClick={() => setIsUserMenuOpen(true)}
             className="flex items-center gap-1.5 border border-vistaro-border rounded-full py-1 px-2.5 text-vistaro-secondary hover:bg-vistaro-secondary cursor-pointer"
             aria-label="Open navigation drawer"
@@ -434,7 +442,10 @@ export default function Navbar() {
           />
 
           {/* Slide-over Drawer Panel */}
-          <div className="relative ml-auto w-full max-w-sm bg-vistaro-surface h-full shadow-2xl flex flex-col z-10 overflow-y-auto border-l border-vistaro-border">
+          <div
+            ref={mobileDrawerRef}
+            className="relative ml-auto w-full max-w-sm bg-vistaro-surface h-full shadow-2xl flex flex-col z-10 overflow-y-auto border-l border-vistaro-border"
+          >
 
             {/* Drawer Header */}
             <div className="p-5 border-b border-vistaro-border flex items-center justify-between bg-vistaro-secondary">

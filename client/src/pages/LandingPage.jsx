@@ -28,7 +28,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="w-full max-w-[1700px] mx-auto px-4 sm:px-8 md:px-10 lg:px-12 text-vistaro-primary transition-colors duration-200">
+    <div className="w-full text-vistaro-primary transition-colors duration-200 space-y-2">
       {/* 1. Hero Section */}
       <HeroSection />
 

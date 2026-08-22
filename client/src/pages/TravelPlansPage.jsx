@@ -87,16 +87,16 @@ export default function TravelPlansPage() {
     <div className="w-full space-y-8 pb-16 text-vistaro-primary">
       
       {/* 1. Page Header & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#171719]/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-vistaro-border">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF385C]/10 text-[#FF385C] text-xs font-bold mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-vistaro-accent/10 text-vistaro-accent text-xs font-semibold mb-2">
             <Compass className="w-3.5 h-3.5" />
             <span>Itinerary & Trip Planner</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#171719] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-serif font-medium text-vistaro-primary tracking-tight">
             My Travel Plans
           </h1>
-          <p className="text-xs sm:text-sm text-[#A7A7AC] mt-1 max-w-2xl">
+          <p className="text-xs sm:text-sm text-vistaro-muted mt-1 max-w-2xl">
             Curate custom journeys by assembling luxury stays, multi-day tour itineraries, and host experiences into unified plans.
           </p>
         </div>
@@ -104,7 +104,7 @@ export default function TravelPlansPage() {
         <button
           type="button"
           onClick={() => setIsCreateModalOpen(true)}
-          className="inline-flex items-center gap-2 bg-[#FF385C] hover:bg-[#FF5A70] text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full shadow-xs transition-all cursor-pointer shrink-0"
+          className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-semibold py-3 px-6 rounded-full shadow-xs transition-all cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>Create New Plan</span>
@@ -112,14 +112,14 @@ export default function TravelPlansPage() {
       </div>
 
       {/* 2. Tab Navigation Strip */}
-      <div className="flex items-center gap-2 border-b border-[#171719]/10 pb-2">
+      <div className="flex items-center gap-2 border-b border-vistaro-border pb-2">
         <button
           type="button"
           onClick={() => setActiveTab('active')}
-          className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+          className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'active'
-              ? 'bg-[#151517] text-white shadow-xs'
-              : 'text-[#A7A7AC] hover:text-[#171719] hover:bg-zinc-100'
+              ? 'bg-vistaro-accent text-white shadow-xs'
+              : 'text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary'
           }`}
         >
           Active Plans
@@ -127,10 +127,10 @@ export default function TravelPlansPage() {
         <button
           type="button"
           onClick={() => setActiveTab('archived')}
-          className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'archived'
-              ? 'bg-[#151517] text-white shadow-xs'
-              : 'text-[#A7A7AC] hover:text-[#171719] hover:bg-zinc-100'
+              ? 'bg-vistaro-accent text-white shadow-xs'
+              : 'text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary'
           }`}
         >
           <Archive className="w-3.5 h-3.5" />
@@ -145,17 +145,17 @@ export default function TravelPlansPage() {
 
       {/* 4. Error State */}
       {error && !loading && (
-        <div className="bg-red-500/10 border border-[#FF385C]/20 rounded-3xl p-8 sm:p-12 text-center space-y-4 max-w-lg mx-auto my-8 shadow-xs">
-          <div className="w-14 h-14 rounded-full bg-red-500/20 text-[#FF385C] flex items-center justify-center mx-auto shadow-inner">
+        <div className="bg-red-500/10 border border-vistaro-error/20 rounded-3xl p-8 sm:p-12 text-center space-y-4 max-w-lg mx-auto my-8 shadow-xs">
+          <div className="w-14 h-14 rounded-full bg-red-500/20 text-vistaro-error flex items-center justify-center mx-auto shadow-inner">
             <Compass className="w-7 h-7" />
           </div>
-          <h3 className="font-bold text-lg text-[#171719]">Unable to Load Travel Plans</h3>
-          <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">{error}</p>
+          <h3 className="font-bold text-lg text-vistaro-primary">Unable to Load Travel Plans</h3>
+          <p className="text-xs sm:text-sm text-vistaro-muted leading-relaxed">{error}</p>
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               type="button"
               onClick={fetchPlans}
-              className="inline-flex items-center gap-2 bg-[#FF385C] hover:bg-[#FF5A70] text-white text-xs sm:text-sm font-bold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-semibold py-2.5 px-6 rounded-full transition-all cursor-pointer shadow-xs"
             >
               <RefreshCw className="w-4 h-4" /> Try Again
             </button>
@@ -165,14 +165,14 @@ export default function TravelPlansPage() {
 
       {/* 5. Empty State */}
       {!loading && !error && plans.length === 0 && (
-        <div className="text-center py-16 px-6 bg-white rounded-3xl border border-[#171719]/10 max-w-xl mx-auto space-y-4 shadow-xs">
-          <div className="w-16 h-16 rounded-full bg-[#FF385C]/10 text-[#FF385C] flex items-center justify-center mx-auto">
+        <div className="text-center py-16 px-6 bg-vistaro-surface rounded-3xl border border-vistaro-border max-w-xl mx-auto space-y-4 shadow-xs">
+          <div className="w-16 h-16 rounded-full bg-vistaro-accent/10 text-vistaro-accent flex items-center justify-center mx-auto">
             <Compass className="w-8 h-8" />
           </div>
-          <h3 className="font-bold text-xl text-[#171719]">
+          <h3 className="font-bold text-xl text-vistaro-primary">
             {activeTab === 'active' ? 'No Travel Plans Created Yet' : 'No Archived Plans Found'}
           </h3>
-          <p className="text-xs sm:text-sm text-[#A7A7AC] max-w-md mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-vistaro-muted max-w-md mx-auto leading-relaxed">
             {activeTab === 'active'
               ? 'Start organizing your upcoming getaways by creating a travel plan and adding boutique stays, tour itineraries, and local experiences.'
               : 'You have no archived plans at this time.'}
@@ -182,7 +182,7 @@ export default function TravelPlansPage() {
               <button
                 type="button"
                 onClick={() => setIsCreateModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-[#FF385C] hover:bg-[#FF5A70] text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-full shadow-xs transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 bg-vistaro-accent hover:bg-vistaro-accent-hover text-white text-xs sm:text-sm font-semibold py-3 px-6 rounded-full shadow-xs transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Create Your First Plan</span>

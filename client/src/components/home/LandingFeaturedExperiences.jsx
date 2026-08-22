@@ -96,16 +96,11 @@ export default function LandingFeaturedExperiences() {
         </div>
       )}
 
-      {/* Cards Layout: 4-in-a-row on desktop, 2-per-row on tablet, horizontal scroll-snap on mobile */}
+      {/* Responsive Cards Grid: 1-col on mobile, 2-col on tablet, 4-col on desktop */}
       {!loading && experiences.length > 0 && (
-        <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 py-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {experiences.map((exp) => (
-            <div
-              key={`landing-featured-exp-${exp._id}`}
-              className="min-w-[82vw] sm:min-w-0 snap-start shrink-0 sm:shrink"
-            >
-              <ExperienceCard exp={exp} />
-            </div>
+            <ExperienceCard key={`landing-featured-exp-${exp._id}`} exp={exp} />
           ))}
         </div>
       )}
