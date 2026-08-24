@@ -21,6 +21,8 @@ import {
   Moon,
   Sparkles,
   CalendarCheck,
+  ChevronDown,
+  MapPin,
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -31,9 +33,32 @@ export default function Navbar() {
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isServicesNavOpen, setIsServicesNavOpen] = useState(false);
+  const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Track window scroll position to transition navbar into search bar
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const isServiceActive =
+    location.pathname.startsWith('/destinations') ||
+    location.pathname.startsWith('/tours') ||
+    location.pathname.startsWith('/experiences');
 
   const desktopCurrencyRef = useRef(null);
   const mobileCurrencyRef = useRef(null);
@@ -82,87 +107,86 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-vistaro-surface border-b border-vistaro-border shadow-xs transition-colors duration-200">
-      <div className="max-w-[1700px] mx-auto px-4 sm:px-8 md:px-10 lg:px-12 h-20 flex items-center justify-between gap-4">
+    <header className={`sticky top-0 z-40 w-full bg-vistaro-surface border-b border-vistaro-border transition-all duration-300 ${isScrolled ? 'shadow-md bg-vistaro-surface/95 backdrop-blur-md' : 'shadow-xs'}`}>
+      <div className={`max-w-[1700px] mx-auto px-4 sm:px-8 md:px-10 lg:px-12 flex items-center justify-between gap-3 sm:gap-4 transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
 
-        {/* 1. Left: Brand Logo & Explore */}
-        <div className="flex items-center gap-6 shrink-0">
+        {/* 1. Left: Brand Logo & Explore / Services */}
+        <div className="flex items-center gap-4 sm:gap-6 shrink-0 transition-all duration-300">
           <Link
             to="/"
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="flex items-center gap-2 group cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer shrink-0"
           >
             {/* Official Brand Logo */}
             <img
               src="/BrandLogo.png"
               alt="VISTARO Logo"
-              className="w-9 h-9 object-contain transform group-hover:scale-105 transition-transform"
+              className={`object-contain transition-all duration-300 ${isScrolled ? 'w-8 h-8' : 'w-9 h-9'}`}
             />
             <span className="text-brand-logo text-vistaro-primary">
               Vis<span className="text-vistaro-accent">taro</span>
             </span>
           </Link>
 
-          <Link
-            to="/explore"
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className={`hidden lg:inline-flex items-center transition-colors ${location.pathname === '/explore' || location.pathname === '/listings' ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
-          >
-            Explore
-          </Link>
+          {/* Links hide smoothly when scrolled into search-bar dominant mode */}
+          <div className={`hidden lg:flex items-center gap-5 transition-all duration-300 ${isScrolled ? 'opacity-0 max-w-0 overflow-hidden pointer-events-none -translate-x-2' : 'opacity-100 max-w-xs translate-x-0'}`}>
+            <Link
+              to="/explore"
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`inline-flex items-center transition-colors ${location.pathname === '/explore' || location.pathname === '/listings' ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
+            >
+              Explore
+            </Link>
 
-          <Link
-            to="/destinations"
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className={`hidden xl:inline-flex items-center transition-colors ${location.pathname.startsWith('/destinations') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
-          >
-            Destinations
-          </Link>
-
-          <Link
-            to="/tours"
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className={`hidden xl:inline-flex items-center transition-colors ${location.pathname.startsWith('/tours') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
-          >
-            Tours
-          </Link>
-
-          <Link
-            to="/experiences"
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className={`hidden 2xl:inline-flex items-center transition-colors ${location.pathname.startsWith('/experiences') ? 'text-nav-link-active text-vistaro-primary' : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'}`}
-          >
-            Experiences
-          </Link>
+            {/* Services Option (Toggles Secondary Sub-Navbar) */}
+            <button
+              type="button"
+              onClick={() => setIsServicesNavOpen((prev) => !prev)}
+              className={`inline-flex items-center gap-1.5 transition-colors cursor-pointer ${
+                isServicesNavOpen || isServiceActive
+                  ? 'text-nav-link-active text-vistaro-primary font-semibold'
+                  : 'text-nav-link text-vistaro-secondary hover:text-vistaro-accent'
+              }`}
+            >
+              <span>Services</span>
+              <ChevronDown
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                  isServicesNavOpen ? 'rotate-180 text-vistaro-accent' : 'text-vistaro-muted'
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
-        {/* 2. Middle: Search Bar (Desktop & Tablet >= 768px) */}
-        <div className="hidden md:flex flex-1 max-w-xs md:max-w-sm lg:max-w-md mx-2 lg:mx-auto">
+        {/* 2. Middle: Morphing Search Bar (Transitions smoothly into whole search bar on scroll) */}
+        <div
+          className={`hidden md:flex flex-1 transition-all duration-300 ease-in-out mx-2 ${
+            isScrolled
+              ? 'max-w-lg lg:max-w-2xl px-2'
+              : 'max-w-xs md:max-w-sm lg:max-w-md lg:mx-auto'
+          }`}
+        >
           <form
             onSubmit={handleSearchSubmit}
-            className="w-full flex items-center bg-vistaro-surface border border-vistaro-border hover:border-vistaro-muted hover:shadow-md transition-all rounded-full py-1.5 pl-4 pr-1.5 shadow-xs"
+            className={`w-full flex items-center bg-vistaro-surface border border-vistaro-border hover:border-vistaro-muted hover:shadow-md transition-all duration-300 rounded-full pl-4 pr-1.5 shadow-xs ${
+              isScrolled ? 'py-2 ring-2 ring-vistaro-accent/20 shadow-md bg-vistaro-surface/90' : 'py-1.5'
+            }`}
           >
-            <Search className="w-4 h-4 text-vistaro-muted shrink-0 mr-2" />
+            <Search className={`text-vistaro-muted shrink-0 mr-2 transition-colors duration-300 ${isScrolled ? 'w-4 h-4 text-vistaro-accent' : 'w-4 h-4'}`} />
             <input
               type="text"
-              placeholder="Search destinations, villas..."
+              placeholder={isScrolled ? 'Search destinations, luxury villas, tour packages, experiences...' : 'Search destinations, villas...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-transparent border-none text-body-sm text-vistaro-primary placeholder-vistaro-muted focus:outline-hidden"
             />
             <button
               type="submit"
-              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white p-2 rounded-full transition-colors shrink-0 flex items-center justify-center cursor-pointer shadow-xs"
+              className="bg-vistaro-accent hover:bg-vistaro-accent-hover text-white p-2 rounded-full transition-all duration-200 shrink-0 flex items-center justify-center cursor-pointer shadow-xs hover:scale-105"
               aria-label="Submit search"
             >
               <ArrowRight className="w-3.5 h-3.5" />
@@ -170,8 +194,8 @@ export default function Navbar() {
           </form>
         </div>
 
-        {/* 3. Right: Nav actions & User Menu (Desktop) */}
-        <div className="hidden md:flex items-center gap-2.5 lg:gap-4 shrink-0">
+        {/* 3. Right: Nav actions & User Menu (Desktop) with Animated Corner Theme Toggle */}
+        <div className="hidden md:flex items-center gap-2.5 lg:gap-3.5 shrink-0">
 
           {user?.role === 'admin' && (
             <Link
@@ -183,18 +207,18 @@ export default function Navbar() {
             </Link>
           )}
 
-          {/* Theme Toggle Button (Desktop) */}
+          {/* Animated Theme Toggle Button (Corner Placement with Rotation & Scale Animation) */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2 rounded-full border border-vistaro-border hover:bg-vistaro-secondary text-vistaro-secondary hover:text-vistaro-primary transition-colors cursor-pointer"
+            className="group relative p-2.5 rounded-full border border-vistaro-border bg-vistaro-surface hover:bg-vistaro-secondary text-vistaro-secondary hover:text-vistaro-primary transition-all duration-300 transform hover:scale-110 active:scale-95 cursor-pointer shadow-2xs hover:shadow-xs shrink-0"
             aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
             title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
           >
             {isDark ? (
-              <Sun className="w-4 h-4 text-vistaro-rating" />
+              <Sun className="w-4 h-4 text-amber-400 transform transition-transform duration-500 rotate-0 group-hover:rotate-90 group-hover:scale-110" />
             ) : (
-              <Moon className="w-4 h-4 text-vistaro-secondary" />
+              <Moon className="w-4 h-4 text-vistaro-accent transform transition-transform duration-500 rotate-0 group-hover:-rotate-45 group-hover:scale-110" />
             )}
           </button>
 
@@ -417,6 +441,78 @@ export default function Navbar() {
 
       </div>
 
+      {/* 2. Services Secondary Sub-Navbar (Appears when Services option is clicked or active) */}
+      {isServicesNavOpen && (
+        <div className="w-full bg-vistaro-surface border-t border-vistaro-border py-2.5 px-4 sm:px-8 md:px-10 lg:px-12 animate-fade-in shadow-2xs transition-all">
+          <div className="max-w-[1700px] mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto py-0.5 no-scrollbar">
+              <span className="text-2xs font-bold uppercase tracking-wider text-vistaro-muted shrink-0 hidden sm:inline-block pr-1">
+                Services:
+              </span>
+
+              {/* Destination Guide */}
+              <Link
+                to="/destinations"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all shrink-0 ${
+                  location.pathname.startsWith('/destinations')
+                    ? 'bg-vistaro-accent text-white shadow-xs'
+                    : 'text-vistaro-secondary hover:text-vistaro-primary hover:bg-vistaro-secondary'
+                }`}
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                <span>Destinations</span>
+              </Link>
+
+              {/* Tour Packages */}
+              <Link
+                to="/tours"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all shrink-0 ${
+                  location.pathname.startsWith('/tours')
+                    ? 'bg-vistaro-accent text-white shadow-xs'
+                    : 'text-vistaro-secondary hover:text-vistaro-primary hover:bg-vistaro-secondary'
+                }`}
+              >
+                <Compass className="w-3.5 h-3.5" />
+                <span>Tour Packages</span>
+              </Link>
+
+              {/* Host Experiences */}
+              <Link
+                to="/experiences"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all shrink-0 ${
+                  location.pathname.startsWith('/experiences')
+                    ? 'bg-vistaro-accent text-white shadow-xs'
+                    : 'text-vistaro-secondary hover:text-vistaro-primary hover:bg-vistaro-secondary'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Host Experiences</span>
+              </Link>
+            </div>
+
+            {/* Dismiss / Close sub-navbar button */}
+            <button
+              type="button"
+              onClick={() => setIsServicesNavOpen(false)}
+              className="p-1.5 rounded-full text-vistaro-muted hover:text-vistaro-primary hover:bg-vistaro-secondary transition-colors shrink-0 cursor-pointer"
+              aria-label="Close services navbar"
+              title="Close services navbar"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 5. Mobile Full-Screen Navigation Drawer & Sheet */}
       {isUserMenuOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden animate-fade-in">
@@ -535,56 +631,79 @@ export default function Navbar() {
                 <span>Explore Stays & Villas</span>
               </Link>
 
-              <Link
-                to="/destinations"
-                onClick={() => {
-                  setIsUserMenuOpen(false);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Globe className="w-5 h-5 text-vistaro-accent" />
-                  <span>Destinations Guide</span>
-                </div>
-                <span className="text-caption px-2 py-0.5 rounded-full bg-vistaro-secondary text-vistaro-secondary">
-                  6 Regions
-                </span>
-              </Link>
+              {/* Expandable Services Section in Mobile Drawer */}
+              <div className="space-y-1">
+                <button
+                  type="button"
+                  onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-5 h-5 text-vistaro-accent" />
+                    <span className="font-medium">Services</span>
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 text-vistaro-muted transition-transform duration-200 ${
+                      isMobileServicesOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
 
-              <Link
-                to="/tours"
-                onClick={() => {
-                  setIsUserMenuOpen(false);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Compass className="w-5 h-5 text-vistaro-accent" />
-                  <span>Tour Packages</span>
-                </div>
-                <span className="text-caption px-2 py-0.5 rounded-full bg-vistaro-secondary text-vistaro-secondary">
-                  Itineraries
-                </span>
-              </Link>
+                {isMobileServicesOpen && (
+                  <div className="pl-6 pr-2 space-y-1 animate-fade-in border-l-2 border-vistaro-border ml-4 my-1">
+                    <Link
+                      to="/destinations"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl text-body-sm text-vistaro-primary hover:bg-vistaro-secondary"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <MapPin className="w-4 h-4 text-vistaro-accent" />
+                        <span>Destinations</span>
+                      </div>
+                      <span className="text-2xs px-2 py-0.5 rounded-full bg-vistaro-secondary text-vistaro-secondary">
+                        6 Regions
+                      </span>
+                    </Link>
 
-              <Link
-                to="/experiences"
-                onClick={() => {
-                  setIsUserMenuOpen(false);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="flex items-center justify-between px-3 py-2.5 rounded-2xl text-nav-link text-vistaro-primary hover:bg-vistaro-secondary transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Sparkles className="w-5 h-5 text-vistaro-accent" />
-                  <span>Host Experiences</span>
-                </div>
-                <span className="text-caption px-2 py-0.5 rounded-full bg-vistaro-secondary text-vistaro-secondary">
-                  Handcrafted
-                </span>
-              </Link>
+                    <Link
+                      to="/tours"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl text-body-sm text-vistaro-primary hover:bg-vistaro-secondary"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Compass className="w-4 h-4 text-vistaro-accent" />
+                        <span>Tour Packages</span>
+                      </div>
+                      <span className="text-2xs px-2 py-0.5 rounded-full bg-vistaro-secondary text-vistaro-secondary">
+                        Itineraries
+                      </span>
+                    </Link>
+
+                    <Link
+                      to="/experiences"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl text-body-sm text-vistaro-primary hover:bg-vistaro-secondary"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Sparkles className="w-4 h-4 text-vistaro-accent" />
+                        <span>Host Experiences</span>
+                      </div>
+                      <span className="text-2xs px-2 py-0.5 rounded-full bg-vistaro-secondary text-vistaro-secondary">
+                        Handcrafted
+                      </span>
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Authenticated Navigation Links */}

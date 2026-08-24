@@ -253,7 +253,7 @@ export default function TravelPlanDetailPage() {
         className="group relative bg-vistaro-surface rounded-3xl border border-vistaro-border hover:border-vistaro-accent/40 hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden text-vistaro-primary"
       >
         {/* Item Image Preview */}
-        <div className="relative aspect-video w-full overflow-hidden bg-vistaro-secondary">
+        <div className="relative aspect-4/3 w-full overflow-hidden bg-vistaro-secondary">
           <img
             src={imageUrl}
             alt={title}
@@ -548,7 +548,7 @@ export default function TravelPlanDetailPage() {
             </div>
 
             {stayItems.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {stayItems.map(renderItemCard)}
               </div>
             ) : (
@@ -580,7 +580,7 @@ export default function TravelPlanDetailPage() {
             </div>
 
             {tourItems.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {tourItems.map(renderItemCard)}
               </div>
             ) : (
@@ -612,7 +612,7 @@ export default function TravelPlanDetailPage() {
             </div>
 
             {expItems.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {expItems.map(renderItemCard)}
               </div>
             ) : (
@@ -646,7 +646,7 @@ export default function TravelPlanDetailPage() {
             </div>
 
             {transferItems.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {transferItems.map(renderItemCard)}
               </div>
             ) : (

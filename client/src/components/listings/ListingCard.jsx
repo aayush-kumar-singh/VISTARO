@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { useCurrency } from '../../context/CurrencyContext.jsx';
 import { useToast } from '../../context/ToastContext.jsx';
 import { wishlistApi } from '../../api/wishlistApi.js';
-import { Heart, Star, Flame } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
 
 export default function ListingCard({ listing, onWishlistToggle }) {
   const { user, updateUser } = useAuth();
@@ -63,8 +63,8 @@ export default function ListingCard({ listing, onWishlistToggle }) {
 
   return (
     <div className="group relative flex flex-col h-full bg-transparent">
-      {/* 1. Image Container (4:3 on mobile for sleek proportion, 1:1 on desktop) */}
-      <div className="relative w-full aspect-4/3 sm:aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-vistaro-secondary mb-3 shadow-xs">
+      {/* 1. Image Container (Uniform 4:3 aspect ratio across all screen sizes) */}
+      <div className="relative w-full aspect-4/3 rounded-2xl sm:rounded-3xl overflow-hidden bg-vistaro-secondary mb-3 shadow-xs">
         <Link to={`/listings/${listing._id}`} className="block w-full h-full">
           <img
             src={imgError ? 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60' : primaryImage}
@@ -78,26 +78,15 @@ export default function ListingCard({ listing, onWishlistToggle }) {
 
         {/* Top-Left Badge */}
         <div className="absolute top-3 left-3 z-10 flex items-center gap-1 pointer-events-none">
-          {listing.isTrending && (
-            <div
-              className="inline-flex items-center justify-center p-1.5 rounded-full bg-rose-500/95 backdrop-blur-xs text-white shadow-sm"
-              title="Trending"
-              aria-label="Trending"
-            >
-              <Flame className="w-3.5 h-3.5 fill-white" />
+          {isGuestFavourite ? (
+            <div className="bg-vistaro-surface/95 backdrop-blur-xs text-vistaro-primary border border-vistaro-border text-caption px-2.5 py-1 rounded-full shadow-sm">
+              Guest favourite
             </div>
-          )}
-          {!listing.isTrending && (
-            isGuestFavourite ? (
-              <div className="bg-vistaro-surface/95 backdrop-blur-xs text-vistaro-primary border border-vistaro-border text-caption px-2.5 py-1 rounded-full shadow-sm">
-                Guest favourite
-              </div>
-            ) : isNew ? (
-              <div className="bg-vistaro-accent text-white text-caption px-2 py-0.5 rounded-full shadow-sm">
-                New
-              </div>
-            ) : null
-          )}
+          ) : isNew ? (
+            <div className="bg-vistaro-accent text-white text-caption px-2 py-0.5 rounded-full shadow-sm">
+              New
+            </div>
+          ) : null}
         </div>
 
         {/* Top-Right Heart Button (min 40x40px touch area) */}

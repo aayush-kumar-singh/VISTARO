@@ -235,7 +235,7 @@ export default function TourPackagesPage() {
             <span>Showing <b className="text-vistaro-primary">{filteredPackages.length}</b> tour package{filteredPackages.length !== 1 ? 's' : ''}</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredPackages.map((pkg) => (
               <TourPackageCard key={pkg._id} pkg={pkg} />
             ))}

@@ -6,7 +6,6 @@ import {
   MapPin,
   ArrowRight,
   Star,
-  Flame,
 } from 'lucide-react';
 
 export default function TourPackageCard({ pkg }) {
@@ -52,15 +51,6 @@ export default function TourPackageCard({ pkg }) {
               <MapPin className="w-3 h-3 text-vistaro-accent" />
               {destinationName}
             </span>
-            {pkg.isTrending && (
-              <span
-                className="inline-flex items-center justify-center p-1.5 rounded-full bg-rose-500/90 backdrop-blur-md text-white shadow-xs"
-                title="Trending"
-                aria-label="Trending"
-              >
-                <Flame className="w-3.5 h-3.5 fill-white" />
-              </span>
-            )}
           </div>
 
           <span

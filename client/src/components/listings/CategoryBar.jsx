@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Compass,
-  Flame,
+  TrendingUp,
   Palmtree,
   Sprout,
   Sparkles,
@@ -16,7 +16,7 @@ import {
 
 const CATEGORIES = [
   { name: 'All', icon: Compass, description: 'All stays' },
-  { name: 'Trending', icon: Flame, description: 'Most popular' },
+  { name: 'Trending', icon: TrendingUp, description: 'Most popular' },
   { name: 'Beach', icon: Palmtree, description: 'Coastal & ocean' },
   { name: 'Farm', icon: Sprout, description: 'Countryside & farms' },
   { name: 'OMG', icon: Sparkles, description: 'Iconic architecture' },

@@ -93,7 +93,7 @@ export default function DestinationsPage() {
 
       {/* 5. Destination Cards Grid */}
       {!loading && !error && destinations.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {destinations.map((dest) => {
             const heroUrl = dest.heroImage?.url || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80';
             const locationLabel = dest.state ? `${dest.state}, ${dest.country || 'India'}` : (dest.country || 'India');
@@ -105,7 +105,7 @@ export default function DestinationsPage() {
                 className="group flex flex-col bg-vistaro-surface border border-vistaro-border rounded-3xl overflow-hidden shadow-xs hover:shadow-xl hover:border-vistaro-muted transition-all duration-300 transform hover:-translate-y-1"
               >
                 {/* Image Container with Zoom Effect */}
-                <div className="relative w-full aspect-16/10 overflow-hidden bg-vistaro-secondary">
+                <div className="relative w-full aspect-4/3 overflow-hidden bg-vistaro-secondary">
                   <img
                     src={heroUrl}
                     alt={dest.name}

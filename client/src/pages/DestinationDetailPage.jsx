@@ -414,7 +414,7 @@ export default function DestinationDetailPage() {
         )}
 
         {!packagesLoading && tourPackages.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {tourPackages.map((pkg) => (
               <TourPackageCard key={pkg._id} pkg={pkg} />
             ))}
@@ -468,7 +468,7 @@ export default function DestinationDetailPage() {
         )}
 
         {!experiencesLoading && experiences.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {experiences.map((exp) => (
               <ExperienceCard key={exp._id} exp={exp} />
             ))}
@@ -522,7 +522,7 @@ export default function DestinationDetailPage() {
         )}
 
         {!staysLoading && stays.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {stays.map((listing) => (
               <ListingCard key={listing._id} listing={listing} />
             ))}
@@ -562,7 +562,7 @@ export default function DestinationDetailPage() {
         )}
 
         {!transfersLoading && transfers.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {transfers.map((transfer) => (
               <TransferCard
                 key={transfer._id}

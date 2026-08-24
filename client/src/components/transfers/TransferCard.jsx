@@ -29,7 +29,7 @@ export default function TransferCard({ transfer, onAddToPlan }) {
   return (
     <div className="group bg-vistaro-surface border border-vistaro-border rounded-3xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between text-vistaro-primary">
       {/* 1. Image & Badges */}
-      <div className="relative aspect-16/10 overflow-hidden bg-vistaro-secondary">
+      <div className="relative aspect-4/3 overflow-hidden bg-vistaro-secondary">
         <img
           src={imageUrl}
           alt={transfer.title}

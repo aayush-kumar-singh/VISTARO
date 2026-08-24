@@ -17,7 +17,6 @@ import {
   ChevronRight,
   Compass,
   Star,
-  Flame,
   MapPin,
   Sparkles,
   ArrowRight,
@@ -280,121 +279,15 @@ export default function HomePage() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
-                {featuredStays.slice(0, 6).map((listing) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {featuredStays.slice(0, 8).map((listing) => (
                   <ListingCard key={`featured-stay-${listing._id}`} listing={listing} />
                 ))}
               </div>
             </section>
           )}
 
-          {/* B. TRENDING NOW SECTION */}
-          {totalTrendingCount > 0 && (
-            <section className="space-y-6 bg-vistaro-surface/50 border border-vistaro-border p-6 sm:p-8 rounded-3xl animate-fade-in shadow-xs">
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-3 border-b border-vistaro-border">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center">
-                      <Flame className="w-4 h-4 fill-rose-500" />
-                    </div>
-                    <h2 className="text-display-h2 text-xl sm:text-2xl text-vistaro-primary font-bold">
-                      Trending Now
-                    </h2>
-                  </div>
-                  <p className="text-body-sm text-vistaro-muted">
-                    Most popular destinations, stays, guided expeditions, and immersions buzzing right now.
-                  </p>
-                </div>
 
-                {/* Trending Content Type Tabs */}
-                <div className="flex items-center gap-1.5 overflow-x-auto p-1 bg-vistaro-secondary/70 rounded-full border border-vistaro-border text-xs">
-                  {[
-                    { id: 'all', label: 'All Trending' },
-                    ...(trendingItems.stays.length > 0 ? [{ id: 'stays', label: `Stays (${trendingItems.stays.length})` }] : []),
-                    ...(trendingItems.destinations.length > 0 ? [{ id: 'destinations', label: `Destinations (${trendingItems.destinations.length})` }] : []),
-                    ...(trendingItems.packages.length > 0 ? [{ id: 'packages', label: `Tours (${trendingItems.packages.length})` }] : []),
-                    ...(trendingItems.experiences.length > 0 ? [{ id: 'experiences', label: `Experiences (${trendingItems.experiences.length})` }] : []),
-                  ].map((tab) => (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => setTrendingTab(tab.id)}
-                      className={`px-3.5 py-1.5 rounded-full font-medium transition-all cursor-pointer whitespace-nowrap ${
-                        trendingTab === tab.id
-                          ? 'bg-vistaro-accent text-white shadow-xs'
-                          : 'text-vistaro-secondary hover:text-vistaro-primary'
-                      }`}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Trending Grid Container */}
-              <div className="space-y-6">
-                {(trendingTab === 'all' || trendingTab === 'stays') && trendingItems.stays.length > 0 && (
-                  <div className="space-y-3">
-                    {trendingTab === 'all' && (
-                      <h3 className="text-label text-vistaro-muted uppercase tracking-wider text-[11px] font-bold">
-                        Trending Stays
-                      </h3>
-                    )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
-                      {trendingItems.stays.map((s) => (
-                        <ListingCard key={`trend-stay-${s._id}`} listing={s} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {(trendingTab === 'all' || trendingTab === 'destinations') && trendingItems.destinations.length > 0 && (
-                  <div className="space-y-3">
-                    {trendingTab === 'all' && (
-                      <h3 className="text-label text-vistaro-muted uppercase tracking-wider text-[11px] font-bold">
-                        Trending Destinations
-                      </h3>
-                    )}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {trendingItems.destinations.map((d) => (
-                        <DestinationCard key={`trend-dest-${d._id}`} destination={d} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {(trendingTab === 'all' || trendingTab === 'packages') && trendingItems.packages.length > 0 && (
-                  <div className="space-y-3">
-                    {trendingTab === 'all' && (
-                      <h3 className="text-label text-vistaro-muted uppercase tracking-wider text-[11px] font-bold">
-                        Trending Tour Packages
-                      </h3>
-                    )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {trendingItems.packages.map((p) => (
-                        <TourPackageCard key={`trend-pkg-${p._id}`} pkg={p} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {(trendingTab === 'all' || trendingTab === 'experiences') && trendingItems.experiences.length > 0 && (
-                  <div className="space-y-3">
-                    {trendingTab === 'all' && (
-                      <h3 className="text-label text-vistaro-muted uppercase tracking-wider text-[11px] font-bold">
-                        Trending Experiences
-                      </h3>
-                    )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {trendingItems.experiences.map((e) => (
-                        <ExperienceCard key={`trend-exp-${e._id}`} exp={e} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </section>
-          )}
 
           {/* C. FEATURED DESTINATIONS */}
           {featuredDestinations.length > 0 && (
@@ -421,8 +314,8 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredDestinations.slice(0, 6).map((dest) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {featuredDestinations.slice(0, 8).map((dest) => (
                   <DestinationCard key={`featured-dest-${dest._id}`} destination={dest} />
                 ))}
               </div>
@@ -454,7 +347,7 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {featuredPackages.slice(0, 4).map((pkg) => (
                   <TourPackageCard key={`featured-pkg-${pkg._id}`} pkg={pkg} />
                 ))}
@@ -487,7 +380,7 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {featuredExperiences.slice(0, 4).map((exp) => (
                   <ExperienceCard key={`featured-exp-${exp._id}`} exp={exp} />
                 ))}
@@ -545,7 +438,7 @@ export default function HomePage() {
           {/* Listings Grid */}
           {listings.length > 0 && (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {listings.map((listing) => (
                   <ListingCard key={listing._id} listing={listing} />
                 ))}
@@ -605,7 +498,7 @@ export default function HomePage() {
                     <h3 className="text-display-h2 text-vistaro-primary">Recently Viewed Stays</h3>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {recentlyViewed.map((listing) => (
                       <ListingCard key={`recent-${listing._id}`} listing={listing} />
                     ))}

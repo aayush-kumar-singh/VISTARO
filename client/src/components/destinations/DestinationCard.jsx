@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, ArrowRight, Star, Flame } from 'lucide-react';
+import { MapPin, ArrowRight, Star } from 'lucide-react';
 
 export default function DestinationCard({ destination }) {
   if (!destination) return null;
@@ -14,7 +14,7 @@ export default function DestinationCard({ destination }) {
       className="group flex flex-col bg-vistaro-surface border border-vistaro-border rounded-3xl overflow-hidden shadow-xs hover:shadow-xl hover:border-vistaro-muted transition-all duration-300 transform hover:-translate-y-1"
     >
       {/* Image Container with Zoom Effect */}
-      <div className="relative w-full aspect-16/10 overflow-hidden bg-vistaro-secondary">
+      <div className="relative w-full aspect-4/3 overflow-hidden bg-vistaro-secondary">
         <img
           src={heroUrl}
           alt={destination.name}
@@ -28,19 +28,6 @@ export default function DestinationCard({ destination }) {
         <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white text-caption">
           <MapPin className="w-3.5 h-3.5 text-vistaro-accent" />
           <span>{locationLabel}</span>
-        </div>
-
-        {/* Curation Badges top-right */}
-        <div className="absolute top-4 right-4 flex items-center gap-1.5">
-          {destination.isTrending && (
-            <span
-              className="inline-flex items-center justify-center p-1.5 rounded-full bg-rose-500/90 backdrop-blur-md text-white shadow-xs"
-              title="Trending"
-              aria-label="Trending"
-            >
-              <Flame className="w-3.5 h-3.5 fill-white" />
-            </span>
-          )}
         </div>
 
         {/* Name overlay on bottom of image */}

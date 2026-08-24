@@ -7,7 +7,6 @@ import {
   ArrowRight,
   CheckCircle2,
   Star,
-  Flame,
 } from 'lucide-react';
 
 export default function ExperienceCard({ exp }) {
@@ -46,15 +45,6 @@ export default function ExperienceCard({ exp }) {
               <MapPin className="w-3 h-3 text-vistaro-accent" />
               {destinationName}
             </span>
-            {exp.isTrending && (
-              <span
-                className="inline-flex items-center justify-center p-1.5 rounded-full bg-rose-500/90 backdrop-blur-md text-white shadow-xs"
-                title="Trending"
-                aria-label="Trending"
-              >
-                <Flame className="w-3.5 h-3.5 fill-white" />
-              </span>
-            )}
           </div>
 
           <span className="text-caption px-2.5 py-0.5 rounded-full border border-vistaro-border backdrop-blur-md bg-vistaro-surface/90 text-vistaro-primary shadow-xs">

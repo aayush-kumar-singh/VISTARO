@@ -8,7 +8,7 @@ import {
   ArrowRight,
   Star,
   Globe,
-  Flame,
+  Compass,
 } from 'lucide-react';
 
 export default function HeroBanner({ onExploreClick }) {
@@ -88,7 +88,7 @@ export default function HeroBanner({ onExploreClick }) {
         {/* Trending Quick Suggestions */}
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <span className="text-label text-vistaro-muted flex items-center gap-1 mr-1">
-            <Flame className="w-3.5 h-3.5 text-vistaro-rating" /> Popular:
+            <Compass className="w-3.5 h-3.5 text-vistaro-accent" /> Popular:
           </span>
           {trendingDestinations.map((dest, idx) => (
             <button
