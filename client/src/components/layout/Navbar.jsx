@@ -40,13 +40,26 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Track window scroll position to transition navbar into search bar
+  // Track window scroll position with hysteresis & requestAnimationFrame to eliminate jitter
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          setIsScrolled((prevScrolled) => {
+            // Hysteresis: enter at > 70px, exit at < 20px to prevent flip-flop vibration
+            if (!prevScrolled && currentScrollY > 70) {
+              return true;
+            } else if (prevScrolled && currentScrollY < 20) {
+              return false;
+            }
+            return prevScrolled;
+          });
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -107,11 +120,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className={`sticky top-0 z-40 w-full bg-vistaro-surface border-b border-vistaro-border transition-all duration-300 ${isScrolled ? 'shadow-md bg-vistaro-surface/95 backdrop-blur-md' : 'shadow-xs'}`}>
-      <div className={`max-w-[1700px] mx-auto px-4 sm:px-8 md:px-10 lg:px-12 flex items-center justify-between gap-3 sm:gap-4 transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
+    <header className={`sticky top-0 z-40 w-full bg-vistaro-surface border-b border-vistaro-border transition-shadow duration-300 ${isScrolled ? 'shadow-md bg-vistaro-surface/95 backdrop-blur-md' : 'shadow-xs'}`}>
+      <div className="max-w-[1700px] mx-auto px-4 sm:px-8 md:px-10 lg:px-12 h-20 flex items-center justify-between gap-3 sm:gap-4">
 
         {/* 1. Left: Brand Logo & Explore / Services */}
-        <div className="flex items-center gap-4 sm:gap-6 shrink-0 transition-all duration-300">
+        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
           <Link
             to="/"
             onClick={() => {
@@ -123,7 +136,7 @@ export default function Navbar() {
             <img
               src="/BrandLogo.png"
               alt="VISTARO Logo"
-              className={`object-contain transition-all duration-300 ${isScrolled ? 'w-8 h-8' : 'w-9 h-9'}`}
+              className="w-9 h-9 object-contain"
             />
             <span className="text-brand-logo text-vistaro-primary">
               Vis<span className="text-vistaro-accent">taro</span>
@@ -131,7 +144,7 @@ export default function Navbar() {
           </Link>
 
           {/* Links hide smoothly when scrolled into search-bar dominant mode */}
-          <div className={`hidden lg:flex items-center gap-5 transition-all duration-300 ${isScrolled ? 'opacity-0 max-w-0 overflow-hidden pointer-events-none -translate-x-2' : 'opacity-100 max-w-xs translate-x-0'}`}>
+          <div className={`hidden lg:flex items-center gap-5 transition-all duration-300 ease-out transform-gpu ${isScrolled ? 'opacity-0 max-w-0 overflow-hidden pointer-events-none -translate-x-2' : 'opacity-100 max-w-xs translate-x-0'}`}>
             <Link
               to="/explore"
               onClick={() => {
@@ -164,19 +177,19 @@ export default function Navbar() {
 
         {/* 2. Middle: Morphing Search Bar (Transitions smoothly into whole search bar on scroll) */}
         <div
-          className={`hidden md:flex flex-1 transition-all duration-300 ease-in-out mx-2 ${
+          className={`hidden md:flex flex-1 transition-all duration-300 ease-out mx-2 transform-gpu ${
             isScrolled
-              ? 'max-w-lg lg:max-w-2xl px-2'
+              ? 'max-w-lg lg:max-w-2xl'
               : 'max-w-xs md:max-w-sm lg:max-w-md lg:mx-auto'
           }`}
         >
           <form
             onSubmit={handleSearchSubmit}
             className={`w-full flex items-center bg-vistaro-surface border border-vistaro-border hover:border-vistaro-muted hover:shadow-md transition-all duration-300 rounded-full pl-4 pr-1.5 shadow-xs ${
-              isScrolled ? 'py-2 ring-2 ring-vistaro-accent/20 shadow-md bg-vistaro-surface/90' : 'py-1.5'
+              isScrolled ? 'py-2 ring-2 ring-vistaro-accent/20 shadow-md bg-vistaro-surface' : 'py-1.5'
             }`}
           >
-            <Search className={`text-vistaro-muted shrink-0 mr-2 transition-colors duration-300 ${isScrolled ? 'w-4 h-4 text-vistaro-accent' : 'w-4 h-4'}`} />
+            <Search className={`shrink-0 mr-2 transition-colors duration-300 ${isScrolled ? 'w-4 h-4 text-vistaro-accent' : 'w-4 h-4 text-vistaro-muted'}`} />
             <input
               type="text"
               placeholder={isScrolled ? 'Search destinations, luxury villas, tour packages, experiences...' : 'Search destinations, villas...'}
