@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const bookingSchema = new Schema({
     bookingType: {
         type: String,
-        enum: ["stay", "package", "experience"],
+        enum: ["stay", "package", "experience", "transfer"],
         default: "stay",
         index: true,
     },
@@ -21,6 +21,11 @@ const bookingSchema = new Schema({
     experience: {
         type: Schema.Types.ObjectId,
         ref: "Experience",
+        default: null,
+    },
+    transfer: {
+        type: Schema.Types.ObjectId,
+        ref: "Transfer",
         default: null,
     },
     user: {
@@ -61,6 +66,32 @@ const bookingSchema = new Schema({
         enum: ["flexible", "moderate", "strict"],
         default: "flexible",
     },
+    transferBookingDetails: {
+        pickupLocation: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        dropLocation: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        pickupDateTime: {
+            type: Date,
+            default: null,
+        },
+        passengers: {
+            type: Number,
+            min: 1,
+            default: 1,
+        },
+        luggageCount: {
+            type: Number,
+            min: 0,
+            default: 0,
+        },
+    },
     cancellation: {
         reason: { type: String, default: "" },
         cancelledAt: { type: Date },
@@ -77,5 +108,6 @@ const bookingSchema = new Schema({
 bookingSchema.index({ user: 1, checkIn: -1 });
 bookingSchema.index({ user: 1, bookingType: 1, checkIn: -1 });
 bookingSchema.index({ listing: 1, checkIn: 1, checkOut: 1, status: 1 });
+bookingSchema.index({ transfer: 1, checkIn: 1, status: 1 });
 
 module.exports = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);

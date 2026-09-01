@@ -7,25 +7,54 @@ client/node_modules/
 .pnp.js
 
 # ==========================================
-# Production Build Outputs
+# Production Build Outputs & Caches
 # ==========================================
 dist/
 dist-ssr/
 client/dist/
 build/
+.vite/
+.cache/
+.parcel-cache/
 
 # ==========================================
-# Environment Variables & Local Secrets
+# Environment Variables & Critical Secrets
 # ==========================================
 .env
+.env.*
+!.env.example
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 *.local
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+secrets/
 
 # ==========================================
-# Logs
+# Internal Audits, Planning & Non-Essential MD Files
+# (Preserving README.md for GitHub repository)
+# ==========================================
+CAB_FEATURE_ANALYSIS.md
+VISTARO_PROJECT_CONTEXT.md
+VISTARO_ARCHITECTURE_MIGRATION_PHASE1.md
+VISTARO_COLOR_THEME_AUDIT_PHASE1.md
+VISTARO_TYPOGRAPHY_AUDIT_REPORT.md
+*_AUDIT*.md
+*_MIGRATION*.md
+*_ANALYSIS*.md
+*_CONTEXT*.md
+*_REPORT*.md
+walkthrough*.md
+implementation_plan*.md
+
+# ==========================================
+# Logs & Debugging
 # ==========================================
 logs/
 *.log
@@ -36,7 +65,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # ==========================================
-# OS Junk & Temporary Files
+# OS Junk & Temporary / Scratch Files
 # ==========================================
 .DS_Store
 .DS_Store?
@@ -45,9 +74,14 @@ lerna-debug.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
+*.tmp
+*.temp
+temp/
+tmp/
+scratch/
 
 # ==========================================
-# Editor & IDE Directories
+# Editor, IDE & AI Agent Metadata
 # ==========================================
 .vscode/
 !.vscode/extensions.json
@@ -57,9 +91,13 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
-
-# ==========================================
-# Antigravity IDE
-# ==========================================
 .antigravity/
 .agents/
+.gemini/
+.system_generated/
+
+# ==========================================
+# Testing & Coverage
+# ==========================================
+coverage/
+.nyc_output/

@@ -116,6 +116,85 @@ const transferSchema = new Schema(
             enum: ["flexible", "moderate", "strict"],
             default: "flexible",
         },
+        driverIncluded: {
+            type: Boolean,
+            default: false,
+            index: true,
+        },
+        driver: {
+            name: {
+                type: String,
+                trim: true,
+                default: "",
+            },
+            photo: {
+                url: {
+                    type: String,
+                    default: "",
+                },
+                filename: {
+                    type: String,
+                    default: "",
+                },
+            },
+            experienceYears: {
+                type: Number,
+                min: 0,
+                default: 0,
+            },
+            languages: [
+                {
+                    type: String,
+                    trim: true,
+                },
+            ],
+            rating: {
+                type: Number,
+                min: 0,
+                max: 5,
+                default: null,
+            },
+            isVerified: {
+                type: Boolean,
+                default: false,
+            },
+        },
+        vehicleDetails: {
+            registrationNumber: {
+                type: String,
+                trim: true,
+                default: "",
+            },
+            luggageCapacity: {
+                type: Number,
+                min: 0,
+                default: 2,
+            },
+            hasAC: {
+                type: Boolean,
+                default: true,
+            },
+            features: [
+                {
+                    type: String,
+                    trim: true,
+                },
+            ],
+            image: {
+                url: {
+                    type: String,
+                    default: "",
+                },
+                filename: {
+                    type: String,
+                    default: "",
+                },
+            },
+            isVerified: {
+                type: Boolean,
+                default: false,
+            },
+        },
         isActive: {
             type: Boolean,
             default: true,
@@ -129,6 +208,8 @@ const transferSchema = new Schema(
     },
     { timestamps: true }
 );
+
+transferSchema.index({ driverIncluded: 1, isActive: 1 });
 
 // Indexes
 transferSchema.index({ slug: 1 }, { unique: true });

@@ -2,6 +2,7 @@ const Booking = require("../models/Booking.js");
 const Listing = require("../models/Listing.js");
 const TourPackage = require("../models/TourPackage.js");
 const Experience = require("../models/Experience.js");
+const Transfer = require("../models/Transfer.js");
 const { sendBookingConfirmation, sendCancellationConfirmation } = require("../utils/sendEmail.js");
 
 // --------------------------------------------------
@@ -314,6 +315,195 @@ module.exports.createExperienceBooking = async (req, res) => {
         booking: newBooking,
     });
 };
+
+// --------------------------------------------------
+// Transfer Pricing & Availability Business Logic Helpers (Prompt 4)
+// --------------------------------------------------
+
+/**
+ * Parses estimated duration string or multiplier into milliseconds duration.
+ * Fallback is 2 hours (7,200,000 ms).
+ */
+const parseDurationToMilliseconds = (durationStr, priceUnit, unitMultiplier = 1) => {
+    if (priceUnit === "per-day") {
+        const days = Math.max(1, parseInt(unitMultiplier, 10) || 1);
+        return days * 24 * 60 * 60 * 1000;
+    }
+    if (priceUnit === "per-hour") {
+        const hours = Math.max(1, parseFloat(unitMultiplier) || 1);
+        return hours * 60 * 60 * 1000;
+    }
+
+    if (durationStr && typeof durationStr === "string") {
+        const lower = durationStr.toLowerCase().trim();
+        // Check for minutes (e.g. "30 mins", "45 min", "90 minutes")
+        const minMatch = lower.match(/^([\d.]+)\s*(min|mins|minute|minutes)$/);
+        if (minMatch) {
+            const mins = parseFloat(minMatch[1]);
+            if (!isNaN(mins) && mins > 0) return Math.round(mins * 60 * 1000);
+        }
+        // Check for hours (e.g. "2 hours", "1.5 hrs", "3 hr")
+        const hrMatch = lower.match(/^([\d.]+)\s*(hr|hrs|hour|hours)$/);
+        if (hrMatch) {
+            const hrs = parseFloat(hrMatch[1]);
+            if (!isNaN(hrs) && hrs > 0) return Math.round(hrs * 60 * 60 * 1000);
+        }
+        // Check for days (e.g. "1 day", "2 days")
+        const dayMatch = lower.match(/^([\d.]+)\s*(day|days)$/);
+        if (dayMatch) {
+            const days = parseFloat(dayMatch[1]);
+            if (!isNaN(days) && days > 0) return Math.round(days * 24 * 60 * 60 * 1000);
+        }
+    }
+
+    // Default fallback: 2 hours
+    return 2 * 60 * 60 * 1000;
+};
+
+/**
+ * Calculates base price, 18% GST, and total price for a transfer booking.
+ */
+const calculateTransferPricing = (transfer, bookingData = {}) => {
+    const baseRate = transfer.price?.basePrice ?? transfer.basePrice ?? 0;
+    const priceUnit = transfer.priceUnit || "per-trip";
+
+    let unitMultiplier = 1;
+    if (priceUnit === "per-hour") {
+        unitMultiplier = Math.max(1, parseInt(bookingData.durationHours || bookingData.hours || 1, 10));
+    } else if (priceUnit === "per-day") {
+        unitMultiplier = Math.max(1, parseInt(bookingData.durationDays || bookingData.days || 1, 10));
+    }
+
+    const basePrice = baseRate * unitMultiplier;
+    const gstPrice = Math.round(basePrice * 0.18);
+    const totalPrice = basePrice + gstPrice;
+
+    return {
+        unitMultiplier,
+        baseRate,
+        basePrice,
+        gstPrice,
+        totalPrice,
+        priceUnit,
+    };
+};
+
+/**
+ * Validates availability, capacity, driver-included status, and creates the ready-to-save Booking payload.
+ */
+const validateAndPrepareTransferBooking = async ({ transferId, bookingData = {}, user }) => {
+    if (!transferId) {
+        throw new Error("Transfer service ID is required.");
+    }
+
+    const transfer = await Transfer.findById(transferId);
+    if (!transfer) {
+        throw new Error("Transfer service not found.");
+    }
+
+    if (!transfer.isActive) {
+        throw new Error("This transfer service is currently unavailable or inactive.");
+    }
+
+    if (transfer.driverIncluded !== true) {
+        throw new Error("This booking engine is reserved for driver-included cab/taxi rentals. Selected transfer does not include a verified driver.");
+    }
+
+    const userId = user._id || user;
+    if (transfer.createdBy && transfer.createdBy.equals(userId)) {
+        throw new Error("You cannot book your own transfer service!");
+    }
+
+    const rawDateTime = bookingData.pickupDateTime || bookingData.date || bookingData.startDate || bookingData.checkIn;
+    if (!rawDateTime) {
+        throw new Error("Pickup date and time is required.");
+    }
+
+    const pickupDateTime = new Date(rawDateTime);
+    if (isNaN(pickupDateTime.getTime())) {
+        throw new Error("Invalid pickup date and time provided.");
+    }
+
+    const now = new Date();
+    if (pickupDateTime < now) {
+        throw new Error("Pickup date and time cannot be in the past.");
+    }
+
+    // Passengers capacity validation
+    const passengersCount = parseInt(bookingData.passengers || bookingData.guests || 1, 10);
+    if (isNaN(passengersCount) || passengersCount < 1) {
+        throw new Error("At least 1 passenger is required.");
+    }
+
+    const maxAllowedCapacity = transfer.capacity || 4;
+    if (passengersCount > maxAllowedCapacity) {
+        throw new Error(`Passenger count (${passengersCount}) exceeds maximum vehicle capacity of ${maxAllowedCapacity} passengers.`);
+    }
+
+    // Pricing calculation
+    const pricing = calculateTransferPricing(transfer, bookingData);
+
+    // Duration and window calculation
+    const durationMs = parseDurationToMilliseconds(
+        transfer.estimatedDuration,
+        transfer.priceUnit,
+        pricing.unitMultiplier
+    );
+
+    const checkIn = pickupDateTime;
+    const checkOut = new Date(checkIn.getTime() + durationMs);
+
+    // Overlap / double-booking check
+    const conflict = await Booking.findOne({
+        transfer: transfer._id,
+        status: "confirmed",
+        checkIn: { $lt: checkOut },
+        checkOut: { $gt: checkIn },
+    });
+
+    if (conflict) {
+        throw new Error("Selected time slot is no longer available for this cab/vehicle transfer. Please choose a different pickup time.");
+    }
+
+    const pickupLocation = (bookingData.pickupLocation || transfer.pickupLocation || "").trim();
+    const dropLocation = (bookingData.dropLocation || transfer.dropLocation || "").trim();
+    const luggageCount = Math.max(0, parseInt(bookingData.luggageCount || 0, 10) || 0);
+
+    const bookingPayload = {
+        bookingType: "transfer",
+        transfer: transfer._id,
+        listing: null,
+        tourPackage: null,
+        experience: null,
+        user: userId,
+        checkIn,
+        checkOut,
+        nights: 1,
+        guests: passengersCount,
+        totalPrice: pricing.totalPrice,
+        policySnapshot: transfer.cancellationPolicy || "flexible",
+        status: "confirmed",
+        transferBookingDetails: {
+            pickupLocation,
+            dropLocation,
+            pickupDateTime: checkIn,
+            passengers: passengersCount,
+            luggageCount,
+        },
+    };
+
+    return {
+        transfer,
+        pricing,
+        durationMs,
+        bookingPayload,
+        createDocument: () => new Booking(bookingPayload),
+    };
+};
+
+module.exports.parseDurationToMilliseconds = parseDurationToMilliseconds;
+module.exports.calculateTransferPricing = calculateTransferPricing;
+module.exports.validateAndPrepareTransferBooking = validateAndPrepareTransferBooking;
 
 // --------------------------------------------------
 // Booking Normalizer Helper
